@@ -26,5 +26,14 @@ import lombok.Data;
 @TableName("sys_role")
 public class Role extends SuperEntity<Role> {
 
+    /**
+     * 名称
+     */
     private String name;
+
+
+    /**
+     * 编号
+     */
+    private String code;
 }

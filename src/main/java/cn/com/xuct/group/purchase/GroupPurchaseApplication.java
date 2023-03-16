@@ -27,4 +27,5 @@ public class GroupPurchaseApplication {
         SpringApplication.run(GroupPurchaseApplication.class, args);
     }
 
+
 }
