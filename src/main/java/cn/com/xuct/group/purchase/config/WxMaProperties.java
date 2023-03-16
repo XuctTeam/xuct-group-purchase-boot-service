@@ -30,6 +30,7 @@ public class WxMaProperties {
 
     private List<Config> configs;
 
+
     @Data
     public static class Config {
         /**

@@ -23,6 +23,7 @@ import me.chanjar.weixin.common.bean.result.WxMediaUploadResult;
 import me.chanjar.weixin.common.error.WxErrorException;
 import me.chanjar.weixin.common.error.WxRuntimeException;
 import me.chanjar.weixin.common.redis.RedisTemplateWxRedisOps;
+import org.jasypt.encryption.StringEncryptor;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.context.properties.EnableConfigurationProperties;
 import org.springframework.context.annotation.Configuration;
@@ -52,9 +53,13 @@ public class WxMaConfiguration {
 
     private final StringRedisTemplate stringRedisTemplate;
 
+    private final StringEncryptor codeSheepEncryptorBean;
+
+
     @Autowired
-    public WxMaConfiguration(WxMaProperties properties, StringRedisTemplate stringRedisTemplate) {
+    public WxMaConfiguration(WxMaProperties properties, StringEncryptor codeSheepEncryptorBean , StringRedisTemplate stringRedisTemplate) {
         this.properties = properties;
+        this.codeSheepEncryptorBean = codeSheepEncryptorBean;
         this.stringRedisTemplate = stringRedisTemplate;
     }
 
@@ -89,7 +94,7 @@ public class WxMaConfiguration {
 //                WxMaDefaultConfigImpl config = new WxMaRedisConfigImpl(new JedisPool());
                     // 使用上面的配置时，需要同时引入jedis-lock的依赖，否则会报类无法找到的异常
                     config.setAppid(a.getAppid());
-                    config.setSecret(a.getSecret());
+                    config.setSecret(this.decrypt(a.getSecret()));
                     config.setToken(a.getToken());
                     config.setAesKey(a.getAesKey());
                     config.setMsgDataFormat(a.getMsgDataFormat());
@@ -160,5 +165,8 @@ public class WxMaConfiguration {
         return null;
     };
 
-
+    private String decrypt( String encryptedPassword ) {
+        String decryptStr = codeSheepEncryptorBean.decrypt( encryptedPassword );
+        return decryptStr;
+    }
 }
