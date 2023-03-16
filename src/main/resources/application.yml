@@ -7,7 +7,7 @@ spring:
 
   datasource:
     driver-class-name: com.mysql.cj.jdbc.Driver
-    url: jdbc:mysql://119.96.193.174:3306/calendar?useSSL=false&useUnicode=true&characterEncoding=utf-8&serverTimezone=GMT%2B8
+    url: jdbc:mysql://119.96.193.174:3306/group_purchase?useSSL=false&useUnicode=true&characterEncoding=utf-8&serverTimezone=GMT%2B8
     username: root
     password: ENC(UN+JxSOD6zt45ZdIMeqs8f9lTm0bHIQ6pIu9hvM9liXSELHEoq9Ex3g4Y/Gug312)
     hikari:

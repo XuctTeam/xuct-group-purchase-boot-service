@@ -15,7 +15,7 @@ import com.baomidou.mybatisplus.annotation.TableName;
 import lombok.Data;
 
 /**
- * 〈一句话功能简述〉<br> 
+ * 〈一句话功能简述〉<br>
  * 〈〉
  *
  * @author Derek Xu
@@ -32,6 +32,11 @@ public class User extends SuperEntity<User> {
     private String openId;
 
     /**
+     * 头像
+     */
+    private String avatar;
+
+    /**
      * 角色ID
      */
     private Long roleId;
@@ -45,5 +50,10 @@ public class User extends SuperEntity<User> {
      * 电话
      */
     private String phone;
+
+    /**
+     * 积分
+     */
+    private Long integral;
 
 }
