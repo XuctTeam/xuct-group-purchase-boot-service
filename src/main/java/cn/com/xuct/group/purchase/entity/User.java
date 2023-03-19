@@ -11,6 +11,8 @@
 package cn.com.xuct.group.purchase.entity;
 
 import cn.com.xuct.group.purchase.base.dao.SuperEntity;
+import cn.com.xuct.group.purchase.constants.RoleCodeEnum;
+import com.baomidou.mybatisplus.annotation.TableField;
 import com.baomidou.mybatisplus.annotation.TableName;
 import lombok.Data;
 
@@ -55,5 +57,9 @@ public class User extends SuperEntity<User> {
      * 积分
      */
     private Long integral;
+
+
+    @TableField(exist = false)
+    private RoleCodeEnum roleCode;
 
 }

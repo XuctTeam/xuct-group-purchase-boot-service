@@ -11,6 +11,7 @@
 package cn.com.xuct.group.purchase.entity;
 
 import cn.com.xuct.group.purchase.base.dao.SuperEntity;
+import cn.com.xuct.group.purchase.constants.RoleCodeEnum;
 import com.baomidou.mybatisplus.annotation.TableName;
 import lombok.Data;
 
@@ -31,9 +32,8 @@ public class Role extends SuperEntity<Role> {
      */
     private String name;
 
-
     /**
-     * 编号
+     * 编码
      */
-    private String code;
+    private RoleCodeEnum code;
 }

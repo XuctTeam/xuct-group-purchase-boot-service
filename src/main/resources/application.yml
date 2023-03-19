@@ -23,7 +23,7 @@ spring:
       password: ENC(UKZxR/QnjQ9efGcsK5GpybMf8Uz+WI2x016a+o6RktGzGqxItMNyg/8GsDPN3Acu)
       port: 6379
       # 连接超时时间
-      timeout: 10s
+      timeout: 30s
       lettuce:
         pool:
           # 连接池最大连接数
@@ -61,6 +61,9 @@ knife4j:
   enable: true
   setting:
     language: zh_cn
+
+sa-token:
+  token-prefix: Bearer
 
 wx:
   miniapp:
