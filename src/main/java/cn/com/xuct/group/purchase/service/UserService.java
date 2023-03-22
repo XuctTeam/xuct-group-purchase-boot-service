@@ -15,7 +15,7 @@ import cn.com.xuct.group.purchase.entity.User;
 import cn.com.xuct.group.purchase.mapper.UserMapper;
 
 /**
- * 〈一句话功能简述〉<br> 
+ * 〈一句话功能简述〉<br>
  * 〈〉
  *
  * @author Derek Xu
@@ -24,5 +24,31 @@ import cn.com.xuct.group.purchase.mapper.UserMapper;
  */
 public interface UserService extends IBaseService<UserMapper, User> {
 
+    /**
+     * 通过OpenId查询
+     *
+     * @param openId
+     * @return
+     */
     User findByOpenId(final String openId);
+
+    /**
+     * 通过ID查询
+     *
+     * @param id
+     * @return
+     */
+    User findById(final Long id);
+
+    /**
+     * 修改用户信息
+     *
+     * @param user
+     * @param phone
+     * @param nickname
+     * @param avatar
+     */
+    User updateUserInfo(User user, final String phone, final String nickname , final String avatar);
+
+
 }

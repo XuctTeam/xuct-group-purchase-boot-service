@@ -58,8 +58,22 @@ public class User extends SuperEntity<User> {
      */
     private Long integral;
 
+    /**
+     * 昵称
+     */
+    @TableField("nick_name")
+    private String nickname;
+
 
     @TableField(exist = false)
     private RoleCodeEnum roleCode;
+
+
+    public void cleanData(){
+        super.setCreateTime(null);
+        super.setUpdateTime(null);
+        this.setId(null);
+        this.status = null;
+    }
 
 }

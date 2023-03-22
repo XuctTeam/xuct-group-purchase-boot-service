@@ -15,9 +15,11 @@
         <maven.compiler.target>17</maven.compiler.target>
 
         <mybaties.plus.start.version>3.5.3.1</mybaties.plus.start.version>
+        <mybaties.puls.join.start.version>1.4.4</mybaties.puls.join.start.version>
         <sa.token.start.version>1.34.0</sa.token.start.version>
         <jasypt.start.version>3.0.5</jasypt.start.version>
         <knife4j.start.version>4.0.0</knife4j.start.version>
+        <ok.http.start.version>0.0.4-SNAPSHOT</ok.http.start.version>
         <!-- lib-->
         <lib.mysql.version>8.0.32</lib.mysql.version>
         <!-- compiler-->
@@ -67,12 +69,25 @@
             <groupId>org.springframework.boot</groupId>
             <artifactId>spring-boot-starter-test</artifactId>
         </dependency>
-
+        <dependency>
+            <groupId>org.springframework.boot</groupId>
+            <artifactId>spring-boot-starter-cache</artifactId>
+        </dependency>
 
         <dependency>
             <groupId>com.baomidou</groupId>
             <artifactId>mybatis-plus-boot-starter</artifactId>
             <version>${mybaties.plus.start.version}</version>
+        </dependency>
+        <dependency>
+            <groupId>com.github.yulichang</groupId>
+            <artifactId>mybatis-plus-join-boot-starter</artifactId>
+            <version>${mybaties.puls.join.start.version}</version>
+        </dependency>
+        <dependency>
+            <groupId>com.github.chengtengfei</groupId>
+            <artifactId>okhttp3-fast-spring-boot-starter</artifactId>
+            <version>${ok.http.start.version}</version>
         </dependency>
         <dependency>
             <groupId>cn.dev33</groupId>

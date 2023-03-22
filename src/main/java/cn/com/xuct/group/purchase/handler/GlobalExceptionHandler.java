@@ -13,6 +13,7 @@ package cn.com.xuct.group.purchase.handler;
 import cn.com.xuct.group.purchase.base.res.R;
 import cn.com.xuct.group.purchase.base.res.SvrResCode;
 import cn.com.xuct.group.purchase.exception.SvrException;
+import cn.dev33.satoken.exception.NotLoginException;
 import lombok.extern.slf4j.Slf4j;
 import me.chanjar.weixin.common.error.WxErrorException;
 import org.springframework.http.HttpStatus;
@@ -41,6 +42,21 @@ public class GlobalExceptionHandler {
         log.error("微信访问异常！原因是：{}", e.getMessage());
         return R.fail(e.getError().getErrorCode(), e.getMessage());
     }
+    @ResponseStatus(HttpStatus.BAD_REQUEST)
+    @ResponseBody
+    @ExceptionHandler(value = HttpRequestMethodNotSupportedException.class)
+    public R<String> methodNotSupportHandler(Exception e) {
+        log.error("方法不匹配异常！原因是：{}", e.getMessage());
+        return R.fail(SvrResCode.BASIC_METHOD_NOT_SUPPORT_ERROR);
+    }
+
+    @ResponseStatus(HttpStatus.UNAUTHORIZED)
+    @ResponseBody
+    @ExceptionHandler(value = NotLoginException.class)
+    public R<String> notLoginException(SvrException e) {
+        log.error("未登录！原因是：{}", e.getMessage());
+        return R.fail(e.getCode(), e.getMessage());
+    }
 
     @ResponseStatus(HttpStatus.INTERNAL_SERVER_ERROR)
     @ResponseBody
@@ -48,14 +64,6 @@ public class GlobalExceptionHandler {
     public R<String> svrExceptionHandler(SvrException e) {
         log.error("数据异常！原因是：{}", e.getMessage());
         return R.fail(e.getCode(), e.getMessage());
-    }
-
-    @ResponseStatus(HttpStatus.INTERNAL_SERVER_ERROR)
-    @ResponseBody
-    @ExceptionHandler(value = HttpRequestMethodNotSupportedException.class)
-    public R<String> methodNotSupportHandler(Exception e) {
-        log.error("方法不匹配异常！原因是：{}", e.getMessage());
-        return R.fail(SvrResCode.BASIC_METHOD_NOT_SUPPORT_ERROR);
     }
 
     @ResponseStatus(HttpStatus.INTERNAL_SERVER_ERROR)

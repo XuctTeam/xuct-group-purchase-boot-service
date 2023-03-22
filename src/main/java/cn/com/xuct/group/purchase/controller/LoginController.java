@@ -17,6 +17,7 @@ import cn.com.xuct.group.purchase.entity.User;
 import cn.com.xuct.group.purchase.service.UserService;
 import cn.com.xuct.group.purchase.vo.param.WxCodeParam;
 import cn.com.xuct.group.purchase.vo.result.LoginResult;
+import cn.dev33.satoken.annotation.SaIgnore;
 import cn.dev33.satoken.stp.SaTokenInfo;
 import cn.dev33.satoken.stp.StpUtil;
 import io.swagger.v3.oas.annotations.Operation;
@@ -38,7 +39,7 @@ import org.springframework.web.bind.annotation.RestController;
  * @since 1.0.0
  */
 @Tag(name = "【登录模块】")
-@RequestMapping("/login")
+@RequestMapping("/api/v1/login")
 @RequiredArgsConstructor
 @RestController
 public class LoginController {
@@ -47,8 +48,9 @@ public class LoginController {
 
     private final UserService userService;
 
+    @SaIgnore
     @Operation(summary = "获取微信Session", description = "根据code获取小程序SessionInfo")
-    @PostMapping("/code")
+    @PostMapping
     public R<LoginResult> login(@Validated @RequestBody WxCodeParam wxCodeParam) throws WxErrorException {
         WxMaJscode2SessionResult session = wxMaConfiguration.getMaService().jsCode2SessionInfo(wxCodeParam.getCode());
         if(session == null){
@@ -59,6 +61,7 @@ public class LoginController {
         StpUtil.login(user.getId());
         // 第2步，获取 Token  相关参数
         SaTokenInfo tokenInfo = StpUtil.getTokenInfo();
-        return R.data(LoginResult.builder().tokenName(tokenInfo.getTokenName()).tokenValue(tokenInfo.getTokenValue()).openId(user.getOpenId()).build());
+        user.cleanData();
+        return R.data(LoginResult.builder().user(user).tokenName(tokenInfo.getTokenName()).tokenValue(tokenInfo.getTokenValue()).build());
     }
 }

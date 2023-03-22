@@ -65,8 +65,26 @@ knife4j:
 sa-token:
   token-prefix: Bearer
 
+feign:
+  # Okhttp参数配置
+  httpclient:
+    enabled: false
+  okhttp:
+    enabled: true
+    max-connections: 200 # 默认值
+    max-connections-per-route: 50 # 默认值
+
+
 wx:
   miniapp:
     configs:
       - appid: wxd1cee317f1b0df7c
         secret: ENC(sSGkzeqOqCbuAG8kBL2x4jYn71iKMVzD7tJO6LroLoRTXPhWuA/SWtFm0dNu1Fr9sBK/0ZU7gMtClzdn+uz1oat5lvSsrw6SM6CMRYBCX8Y=)
+
+
+img:
+  url:
+    path: https://www.imgurl.org/api/v2/upload
+    token: ENC(9Xikx4mJJcfLicu25nUrYIPX/bRKW1LO3Yvto26omiVFG4uGXAgiDpaC/gOQvry0DwtVjQuKhfAeQeZWJUtWdpn4+ksiS5nFi1+B0Wpq5oU=)
+    uid:  0b4d45e4a19ba56f7139294d78f5b2d5
+    tmpdir: /var/data/upload
