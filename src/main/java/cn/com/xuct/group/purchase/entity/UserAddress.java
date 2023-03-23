@@ -10,7 +10,9 @@
  */
 package cn.com.xuct.group.purchase.entity;
 
+import cn.com.xuct.group.purchase.base.dao.SuperEntity;
 import com.baomidou.mybatisplus.annotation.TableName;
+import io.swagger.v3.oas.annotations.media.Schema;
 import lombok.Data;
 
 /**
@@ -23,21 +25,33 @@ import lombok.Data;
  */
 @Data
 @TableName("sys_user_address")
-public class UserAddress {
+public class UserAddress extends SuperEntity<UserAddress> {
 
-    /**
-     * 用户ID
-     */
+    @Schema(title = "用户ID")
     private Long userId;
 
+    @Schema(title = "省")
+    private String provinceName;
 
-    /**
-     * 详细地址
-     */
-    private String address;
 
-    /**
-     * 是否首选 0不是 1是
-     */
+    @Schema(title = "市")
+    private String cityName;
+
+
+    @Schema(title = "县区")
+    private String countyName;
+
+
+    @Schema(title = "电话")
+    private String telNumber;
+
+
+    @Schema(title = "详细地址")
+    private String detailInfo;
+
+    @Schema(title = "姓名")
+    private String userName;
+
+    @Schema(title = "是否首选 0不是 1是")
     private Integer firstChoose;
 }

@@ -13,6 +13,7 @@ package cn.com.xuct.group.purchase;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 import org.springframework.cache.annotation.EnableCaching;
+import org.springframework.transaction.annotation.EnableTransactionManagement;
 
 /**
  * 〈一句话功能简述〉<br>
@@ -24,6 +25,7 @@ import org.springframework.cache.annotation.EnableCaching;
  */
 @SpringBootApplication
 @EnableCaching
+@EnableTransactionManagement
 public class GroupPurchaseApplication {
     public static void main(String[] args) {
 
