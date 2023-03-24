@@ -46,14 +46,29 @@ public class UserAddressController {
     @Operation(summary = "获取用户地址", description = "获取用户地址")
     @GetMapping("/list")
     public R<List<UserAddress>> list() {
-        return R.data(userAddressService.find(Lists.newArrayList(Column.of("user_id", StpUtil.getLoginIdAsLong())), Sort.of("create_time", SortEnum.desc)));
+        return R.data(userAddressService.find(Lists.newArrayList(Column.of("user_id", StpUtil.getLoginIdAsLong())), Sort.of("first_choose", SortEnum.desc)));
     }
 
     @Operation(summary = "保存地址", description = "保存地址")
     @PostMapping
     public R<String> save(@RequestBody UserAddress address){
-        address.setUserId(StpUtil.getLoginIdAsLong());
+        if(address.getId() == null){
+            address.setUserId(StpUtil.getLoginIdAsLong());
+        }
         userAddressService.saveAddress(address);
+        return R.status(true);
+    }
+
+    @Operation(summary = "查询地址", description = "查询地址")
+    @GetMapping()
+    public R<UserAddress> get(@RequestParam("id") String id){
+        return R.data(userAddressService.getById(Long.valueOf(id)));
+    }
+
+    @Operation(summary = "删除地址", description = "删除地址")
+    @DeleteMapping
+    public R<String> delete(@RequestParam("id")String id){
+        userAddressService.removeById(id);
         return R.status(true);
     }
 }

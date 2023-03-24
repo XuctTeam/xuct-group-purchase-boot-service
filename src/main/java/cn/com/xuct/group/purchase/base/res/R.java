@@ -47,8 +47,6 @@ public class R<T> implements Serializable {
     @Schema(description = "是否成功")
     private boolean success;
 
-    @JsonSerialize(nullsUsing = JsonSerializer.None.class)
-    @Schema(description = "承载数据")
     private T data;
 
     @Schema(description = "返回消息")

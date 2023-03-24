@@ -38,10 +38,18 @@ public class UserAddressServiceImpl extends BaseServiceImpl<UserAddressMapper, U
     public void saveAddress(UserAddress userAddress) {
         if (userAddress.getFirstChoose() != null && userAddress.getFirstChoose() == 1) {
             UserAddress firstChoose = this.get(Lists.newArrayList(Column.of("user_id", userAddress.getUserId()), Column.of("first_choose", 1)));
-            if(firstChoose != null){
+            if (firstChoose != null) {
                 firstChoose.setFirstChoose(0);
                 this.updateById(firstChoose);
             }
+        }
+        if (userAddress.getId() != null) {
+            this.updateById(userAddress);
+            return;
+        }
+        long count = this.count(Column.of("user_id", userAddress.getUserId()));
+        if(count == 0){
+            userAddress.setFirstChoose(1);
         }
         this.save(userAddress);
     }
