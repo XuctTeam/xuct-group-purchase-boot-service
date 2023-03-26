@@ -15,10 +15,14 @@ import cn.com.xuct.group.purchase.base.vo.Column;
 import cn.com.xuct.group.purchase.entity.UserAddress;
 import cn.com.xuct.group.purchase.mapper.UserAddressMapper;
 import cn.com.xuct.group.purchase.service.UserAddressService;
+import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import lombok.extern.slf4j.Slf4j;
 import org.assertj.core.util.Lists;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+import org.springframework.util.StringUtils;
+
+import java.util.List;
 
 /**
  * 〈一句话功能简述〉<br>
@@ -32,6 +36,18 @@ import org.springframework.transaction.annotation.Transactional;
 @Service
 public class UserAddressServiceImpl extends BaseServiceImpl<UserAddressMapper, UserAddress> implements UserAddressService {
 
+
+    @Override
+    public List<UserAddress> findList(Long userId , String searchValue) {
+
+        QueryWrapper<UserAddress> qr = this.getQuery().eq("user_id" , userId);
+        if(StringUtils.hasLength(searchValue)){
+            qr.and(i -> i.like("user_name" , searchValue).or().like("tel_number" , searchValue));
+        }
+        qr.orderByDesc("first_choose");
+
+        return this.getBaseMapper().selectList(qr);
+    }
 
     @Override
     @Transactional

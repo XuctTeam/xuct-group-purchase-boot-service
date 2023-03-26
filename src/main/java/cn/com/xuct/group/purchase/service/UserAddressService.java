@@ -14,6 +14,8 @@ import cn.com.xuct.group.purchase.base.service.IBaseService;
 import cn.com.xuct.group.purchase.entity.UserAddress;
 import cn.com.xuct.group.purchase.mapper.UserAddressMapper;
 
+import java.util.List;
+
 /**
  * 〈一句话功能简述〉<br> 
  * 〈〉
@@ -23,6 +25,14 @@ import cn.com.xuct.group.purchase.mapper.UserAddressMapper;
  * @since 1.0.0
  */
 public interface UserAddressService extends IBaseService<UserAddressMapper , UserAddress> {
+
+    /**
+     * 通过搜索查询
+     * @param userId
+     * @param searchValue
+     * @return
+     */
+    List<UserAddress> findList(Long userId, String searchValue);
 
     /**
      * 保存联系地址
