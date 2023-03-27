@@ -46,6 +46,7 @@ public class UserAddressServiceImpl extends BaseServiceImpl<UserAddressMapper, U
         }
         qr.orderByDesc("first_choose");
 
+
         return this.getBaseMapper().selectList(qr);
     }
 

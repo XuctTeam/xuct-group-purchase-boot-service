@@ -14,6 +14,8 @@ import cn.com.xuct.group.purchase.base.service.IBaseService;
 import cn.com.xuct.group.purchase.entity.Good;
 import cn.com.xuct.group.purchase.mapper.GoodMapper;
 
+import java.util.List;
+
 /**
  * 〈一句话功能简述〉<br> 
  * 〈〉
@@ -24,4 +26,9 @@ import cn.com.xuct.group.purchase.mapper.GoodMapper;
  */
 public interface GoodService extends IBaseService<GoodMapper ,Good>  {
 
+    /**
+     * 查询列表
+     * @return
+     */
+    List<Good> findList();
 }

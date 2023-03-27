@@ -47,13 +47,13 @@ public class GoodController {
     @Operation(summary = "获取商品", description = "获取商品")
     @GetMapping("/list")
     public R<List<Good>> list() {
-        return R.data(goodService.find(Column.of("status", 1)));
+        return R.data(goodService.findList());
     }
 
 
     @Operation(summary = "获取详情", description = "获取详情")
     @GetMapping
-    public R<Good> get(@RequestParam("id")Long id){
+    public R<Good> get(@RequestParam("id") Long id) {
         return R.data(goodService.getById(id));
     }
 }
