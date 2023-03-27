@@ -12,6 +12,8 @@ package cn.com.xuct.group.purchase.entity;
 
 import cn.com.xuct.group.purchase.base.dao.SuperEntity;
 import com.baomidou.mybatisplus.annotation.TableName;
+import com.fasterxml.jackson.databind.annotation.JsonSerialize;
+import com.fasterxml.jackson.databind.ser.std.ToStringSerializer;
 import io.swagger.v3.oas.annotations.media.Schema;
 import lombok.Data;
 
@@ -28,6 +30,7 @@ import lombok.Data;
 public class UserAddress extends SuperEntity<UserAddress> {
 
     @Schema(title = "用户ID")
+    @JsonSerialize(using = ToStringSerializer.class)
     private Long userId;
 
     @Schema(title = "省")
