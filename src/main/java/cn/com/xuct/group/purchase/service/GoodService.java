@@ -13,21 +13,32 @@ package cn.com.xuct.group.purchase.service;
 import cn.com.xuct.group.purchase.base.service.IBaseService;
 import cn.com.xuct.group.purchase.entity.Good;
 import cn.com.xuct.group.purchase.mapper.GoodMapper;
+import cn.com.xuct.group.purchase.vo.result.GoodResult;
 
 import java.util.List;
 
 /**
- * 〈一句话功能简述〉<br> 
+ * 〈一句话功能简述〉<br>
  * 〈〉
  *
  * @author Derek Xu
  * @create 2023/3/27
  * @since 1.0.0
  */
-public interface GoodService extends IBaseService<GoodMapper ,Good>  {
+public interface GoodService extends IBaseService<GoodMapper, Good> {
+
+    /**
+     * 获取获取详情
+     *
+     * @param id
+     * @param userId
+     * @return
+     */
+    GoodResult getGood(final Long id, final Long userId);
 
     /**
      * 查询列表
+     *
      * @return
      */
     List<Good> findList();
