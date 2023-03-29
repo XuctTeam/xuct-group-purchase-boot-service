@@ -10,8 +10,10 @@
  */
 package cn.com.xuct.group.purchase.vo.param;
 
+import io.swagger.v3.oas.annotations.media.Schema;
 import lombok.Data;
 
+import javax.validation.constraints.NotNull;
 import java.io.Serializable;
 
 /**
@@ -25,5 +27,7 @@ import java.io.Serializable;
 @Data
 public class GoodCollectParam implements Serializable {
 
+    @Schema(description = "商品ID")
+    @NotNull
     private Long gid;
 }

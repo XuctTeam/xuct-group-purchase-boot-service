@@ -15,7 +15,7 @@ import cn.com.xuct.group.purchase.entity.UserGoodCollect;
 import cn.com.xuct.group.purchase.mapper.UserGoodCollectMapper;
 
 /**
- * 〈一句话功能简述〉<br> 
+ * 〈一句话功能简述〉<br>
  * 〈〉
  *
  * @author Derek Xu
@@ -26,8 +26,9 @@ public interface UserGoodCollectService extends IBaseService<UserGoodCollectMapp
 
     /**
      * 收藏或取消收藏
+     *
      * @param userId
      * @param goodId
      */
-    void collect(final Long userId , final Long goodId);
+    void collect(final Long userId, final Long goodId);
 }

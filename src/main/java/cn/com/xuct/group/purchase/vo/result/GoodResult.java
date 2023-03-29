@@ -12,7 +12,9 @@ package cn.com.xuct.group.purchase.vo.result;
 
 import cn.com.xuct.group.purchase.entity.Good;
 import io.swagger.v3.oas.annotations.media.Schema;
+import lombok.AllArgsConstructor;
 import lombok.Data;
+import lombok.NoArgsConstructor;
 
 /**
  * 〈一句话功能简述〉<br>
@@ -23,9 +25,11 @@ import lombok.Data;
  * @since 1.0.0
  */
 @Data
+@AllArgsConstructor
+@NoArgsConstructor
 public class GoodResult extends Good {
 
     @Schema(title = "是否收藏")
-    private Long userId;
+    private boolean collect;
 
 }

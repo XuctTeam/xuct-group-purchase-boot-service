@@ -28,7 +28,7 @@ import java.io.Serializable;
 public class WxCodeParam implements Serializable {
 
     @NotNull
-    @Schema(name = "小程序Code")
+    @Schema(description = "小程序Code")
     private String code;
 
 }

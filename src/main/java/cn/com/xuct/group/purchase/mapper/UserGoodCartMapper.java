@@ -1,8 +1,8 @@
 /**
  * Copyright (C), 2015-2023, XXX有限公司
- * FileName: GoodMapper
+ * FileName: UserCartMapper
  * Author:   Derek Xu
- * Date:     2023/3/27 11:24
+ * Date:     2023/3/29 10:09
  * Description:
  * History:
  * <author>          <time>          <version>          <desc>
@@ -10,8 +10,7 @@
  */
 package cn.com.xuct.group.purchase.mapper;
 
-import cn.com.xuct.group.purchase.entity.Good;
-import cn.com.xuct.group.purchase.vo.result.GoodResult;
+import cn.com.xuct.group.purchase.entity.UserGoodCart;
 import com.baomidou.mybatisplus.core.mapper.BaseMapper;
 import org.apache.ibatis.annotations.Param;
 
@@ -20,18 +19,16 @@ import org.apache.ibatis.annotations.Param;
  * 〈〉
  *
  * @author Derek Xu
- * @create 2023/3/27
+ * @create 2023/3/29
  * @since 1.0.0
  */
-public interface GoodMapper extends BaseMapper<Good> {
-
+public interface UserGoodCartMapper extends BaseMapper<UserGoodCart> {
 
     /**
-     * 获取商品详情
-     *
-     * @param gid
+     * 添加商品到购物车
+     * @
+     * @param goodId
      * @param userId
-     * @return
      */
-    GoodResult getGoodInfo(@Param("gid") Long gid, @Param("userId") Long userId);
+    void addGoodCart(@Param("goodId") final Long goodId, @Param("userId") final Long userId);
 }

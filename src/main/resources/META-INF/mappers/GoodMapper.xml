@@ -1,0 +1,23 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="cn.com.xuct.group.purchase.mapper.GoodMapper">
+
+
+    <select id="getGoodInfo" resultType="cn.com.xuct.group.purchase.vo.result.GoodResult">
+        select g.id , g.name , g.first_drawing , g.swiper_images , g.detail , g.inventory
+
+        <if test="userId != null">
+            , if(uc.user_id , 1, 0) as  collect
+
+        </if>
+        from bu_good g
+        <if test="userId != null">
+            left join (select user_id , good_id from bu_good_user_collect uc where user_id = #{userId}) uc on g.id =
+            uc.good_id
+        </if>
+        where g.id = #{gid}
+    </select>
+</mapper>

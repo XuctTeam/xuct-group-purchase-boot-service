@@ -32,14 +32,14 @@ public interface GoodService extends IBaseService<GoodMapper, Good> {
      *
      * @param id
      * @param userId
-     * @return
+     * @return cn.com.xuct.group.purchase.vo.result.GoodResult
      */
     GoodResult getGood(final Long id, final Long userId);
 
     /**
      * 查询列表
      *
-     * @return
+     * @return java.lang.List
      */
     List<Good> findList();
 }

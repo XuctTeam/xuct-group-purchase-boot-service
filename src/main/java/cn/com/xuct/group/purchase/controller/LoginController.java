@@ -24,6 +24,7 @@ import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import lombok.RequiredArgsConstructor;
 import me.chanjar.weixin.common.error.WxErrorException;
+import org.springframework.util.StringUtils;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
@@ -53,7 +54,7 @@ public class LoginController {
     @PostMapping
     public R<LoginResult> login(@Validated @RequestBody WxCodeParam wxCodeParam) throws WxErrorException {
         WxMaJscode2SessionResult session = wxMaConfiguration.getMaService().jsCode2SessionInfo(wxCodeParam.getCode());
-        if(session == null){
+        if(session == null || !StringUtils.hasLength(session.getOpenid())){
             R.fail("查询session失败");
         }
         User user = userService.findByOpenId(session.getOpenid());

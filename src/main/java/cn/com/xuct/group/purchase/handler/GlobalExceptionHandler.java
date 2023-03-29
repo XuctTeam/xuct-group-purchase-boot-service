@@ -53,7 +53,7 @@ public class GlobalExceptionHandler {
     @ResponseStatus(HttpStatus.UNAUTHORIZED)
     @ResponseBody
     @ExceptionHandler(value = NotLoginException.class)
-    public R<String> notLoginException(SvrException e) {
+    public R<String> notLoginException(NotLoginException e) {
         log.error("未登录！原因是：{}", e.getMessage());
         return R.fail(e.getCode(), e.getMessage());
     }

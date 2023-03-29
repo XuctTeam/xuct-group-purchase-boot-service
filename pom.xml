@@ -6,7 +6,7 @@
 
 
     <groupId>cn.com.xuct</groupId>
-    <artifactId>xuct-group-purchase</artifactId>
+    <artifactId>xuct-group-purchase-boot-service</artifactId>
     <version>1.0</version>
 
 

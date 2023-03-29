@@ -29,32 +29,32 @@ import lombok.Data;
 @TableName("sys_user_address")
 public class UserAddress extends SuperEntity<UserAddress> {
 
-    @Schema(title = "用户ID")
+    @Schema(description = "用户ID")
     @JsonSerialize(using = ToStringSerializer.class)
     private Long userId;
 
-    @Schema(title = "省")
+    @Schema(description = "省")
     private String provinceName;
 
 
-    @Schema(title = "市")
+    @Schema(description = "市")
     private String cityName;
 
 
-    @Schema(title = "县区")
+    @Schema(description = "县区")
     private String countyName;
 
 
-    @Schema(title = "电话")
+    @Schema(description = "电话")
     private String telNumber;
 
 
-    @Schema(title = "详细地址")
+    @Schema(description = "详细地址")
     private String detailInfo;
 
-    @Schema(title = "姓名")
+    @Schema(description = "姓名")
     private String userName;
 
-    @Schema(title = "是否首选 0不是 1是")
+    @Schema(description = "是否首选 0不是 1是")
     private Integer firstChoose;
 }
