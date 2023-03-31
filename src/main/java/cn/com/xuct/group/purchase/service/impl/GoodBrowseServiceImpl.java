@@ -18,7 +18,7 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 
 /**
- * 〈一句话功能简述〉<br> 
+ * 〈一句话功能简述〉<br>
  * 〈〉
  *
  * @author Derek Xu
@@ -29,4 +29,8 @@ import org.springframework.stereotype.Service;
 @Service
 public class GoodBrowseServiceImpl extends BaseServiceImpl<GoodBrowseMapper, GoodBrowse> implements GoodBrowseService {
 
+    @Override
+    public void browse(Long goodId) {
+        ((GoodBrowseMapper)this.getBaseMapper()).browse(goodId);
+    }
 }

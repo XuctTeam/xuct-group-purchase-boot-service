@@ -29,7 +29,10 @@ import lombok.NoArgsConstructor;
 @NoArgsConstructor
 public class GoodResult extends Good {
 
-    @Schema(title = "是否收藏")
+    @Schema(description = "是否收藏")
     private boolean collect;
+
+    @Schema(description = "浏览量")
+    private Integer browse;
 
 }

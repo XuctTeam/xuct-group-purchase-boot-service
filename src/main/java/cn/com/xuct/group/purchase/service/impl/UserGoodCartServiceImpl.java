@@ -14,8 +14,11 @@ import cn.com.xuct.group.purchase.base.service.BaseServiceImpl;
 import cn.com.xuct.group.purchase.entity.UserGoodCart;
 import cn.com.xuct.group.purchase.mapper.UserGoodCartMapper;
 import cn.com.xuct.group.purchase.service.UserGoodCartService;
+import cn.com.xuct.group.purchase.vo.result.CartResult;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
+
+import java.util.List;
 
 /**
  * 〈一句话功能简述〉<br> 
@@ -33,5 +36,10 @@ public class UserGoodCartServiceImpl extends BaseServiceImpl<UserGoodCartMapper,
     @Override
     public void addCart(Long gid, Long uid) {
         ((UserGoodCartMapper)super.getBaseMapper()).addGoodCart(gid , uid);
+    }
+
+    @Override
+    public List<CartResult> cartList(Long uid) {
+        return ((UserGoodCartMapper)super.getBaseMapper()).cartList(uid);
     }
 }

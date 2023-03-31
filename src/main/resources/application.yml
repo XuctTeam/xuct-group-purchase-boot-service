@@ -65,14 +65,6 @@ knife4j:
 sa-token:
   token-prefix: Bearer
 
-feign:
-  # Okhttp参数配置
-  httpclient:
-    enabled: false
-  okhttp:
-    enabled: true
-    max-connections: 200 # 默认值
-    max-connections-per-route: 50 # 默认值
 
 
 wx:

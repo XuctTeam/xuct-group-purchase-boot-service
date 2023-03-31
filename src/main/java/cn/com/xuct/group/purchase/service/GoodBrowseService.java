@@ -24,4 +24,11 @@ import cn.com.xuct.group.purchase.mapper.GoodBrowseMapper;
  */
 public interface GoodBrowseService extends IBaseService<GoodBrowseMapper, GoodBrowse> {
 
+    /**
+     * 收藏或取消收藏
+     *
+     * @param userId
+     * @param goodId
+     */
+    void browse(final Long goodId);
 }

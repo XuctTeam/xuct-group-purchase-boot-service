@@ -11,8 +11,11 @@
 package cn.com.xuct.group.purchase.mapper;
 
 import cn.com.xuct.group.purchase.entity.UserGoodCart;
+import cn.com.xuct.group.purchase.vo.result.CartResult;
 import com.baomidou.mybatisplus.core.mapper.BaseMapper;
 import org.apache.ibatis.annotations.Param;
+
+import java.util.List;
 
 /**
  * 〈一句话功能简述〉<br>
@@ -26,9 +29,18 @@ public interface UserGoodCartMapper extends BaseMapper<UserGoodCart> {
 
     /**
      * 添加商品到购物车
-     * @
+     *
      * @param goodId
      * @param userId
+     * @
      */
     void addGoodCart(@Param("goodId") final Long goodId, @Param("userId") final Long userId);
+
+    /**
+     *
+     * @param userId
+     * @return
+     * 查询购物车列表
+     */
+    List<CartResult> cartList(@Param("userId") final Long userId);
 }

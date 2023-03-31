@@ -13,9 +13,12 @@ package cn.com.xuct.group.purchase.service;
 import cn.com.xuct.group.purchase.base.service.IBaseService;
 import cn.com.xuct.group.purchase.entity.UserGoodCart;
 import cn.com.xuct.group.purchase.mapper.UserGoodCartMapper;
+import cn.com.xuct.group.purchase.vo.result.CartResult;
+
+import java.util.List;
 
 /**
- * 〈一句话功能简述〉<br> 
+ * 〈一句话功能简述〉<br>
  * 〈〉
  *
  * @author Derek Xu
@@ -30,5 +33,13 @@ public interface UserGoodCartService extends IBaseService<UserGoodCartMapper, Us
      * @param gid
      * @param uid
      */
-    void addCart(final Long gid , final Long uid);
+    void addCart(final Long gid, final Long uid);
+
+    /**
+     * 查询购物车数据
+     *
+     * @param uid
+     * @return
+     */
+    List<CartResult> cartList(final Long uid);
 }

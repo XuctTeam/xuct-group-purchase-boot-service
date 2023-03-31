@@ -25,7 +25,7 @@ import java.io.Serializable;
  * @since 1.0.0
  */
 @Data
-public class GoodCollectParam implements Serializable {
+public class GoodParam implements Serializable {
 
     @Schema(description = "商品ID")
     @NotNull

@@ -17,7 +17,8 @@ import cn.com.xuct.group.purchase.service.GoodService;
 import cn.com.xuct.group.purchase.service.UserGoodCartService;
 import cn.com.xuct.group.purchase.service.UserGoodCollectService;
 import cn.com.xuct.group.purchase.vo.param.AddCartParam;
-import cn.com.xuct.group.purchase.vo.param.GoodCollectParam;
+import cn.com.xuct.group.purchase.vo.param.GoodParam;
+import cn.com.xuct.group.purchase.vo.result.CartResult;
 import cn.dev33.satoken.annotation.SaIgnore;
 import cn.dev33.satoken.stp.StpUtil;
 import io.swagger.v3.oas.annotations.Operation;
@@ -47,7 +48,6 @@ public class GoodController {
     private final GoodService goodService;
     private final UserGoodCollectService userGoodCollectService;
     private final UserGoodCartService userGoodCartService;
-
     private final GoodBrowseService goodBrowseService;
 
     @SaIgnore
@@ -64,22 +64,32 @@ public class GoodController {
         return R.data(goodService.getGood(id, StpUtil.isLogin() ? StpUtil.getLoginIdAsLong() : null));
     }
 
+    @SaIgnore
+    @Operation(summary = "【商品】观看次数", description = "自增商品观看次数")
+    @PostMapping("/browse")
+    public R<String> addGoodBrowse(@RequestBody @Validated GoodParam param) {
+        goodBrowseService.browse(param.getGid());
+        return R.status(true);
+    }
+
     @Operation(summary = "【商品】收藏或取消收藏", description = "收藏或取消收藏")
     @PostMapping("/collect")
-    public R<String> collect(@RequestBody @Validated GoodCollectParam param) {
+    public R<String> collect(@RequestBody @Validated GoodParam param) {
         userGoodCollectService.collect(StpUtil.getLoginIdAsLong(), param.getGid());
         return R.status(true);
     }
 
-    @Operation(summary = "【商品】观看次数", description = "自增商品观看次数")
-    public R<String> addGoodBrowse() {
-        return null;
-    }
-
     @Operation(summary = "【商品】添加购物车", description = "添加购物车")
-    @PostMapping("/addcart")
+    @PostMapping("/cart/add")
     public R<String> addCart(@RequestBody @Validated AddCartParam addCartParam) {
         userGoodCartService.addCart(addCartParam.getGid(), StpUtil.getLoginIdAsLong());
         return R.status(true);
+    }
+
+
+    @GetMapping("/cart/list")
+    @Operation(summary = "【商品】购物车列表", description = "购物车列表")
+    public R<List<CartResult>> cartList() {
+        return R.data(userGoodCartService.cartList(StpUtil.getLoginIdAsLong()));
     }
 }

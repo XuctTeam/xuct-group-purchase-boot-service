@@ -12,9 +12,10 @@ package cn.com.xuct.group.purchase.mapper;
 
 import cn.com.xuct.group.purchase.entity.GoodBrowse;
 import com.baomidou.mybatisplus.core.mapper.BaseMapper;
+import org.apache.ibatis.annotations.Param;
 
 /**
- * 〈一句话功能简述〉<br> 
+ * 〈一句话功能简述〉<br>
  * 〈〉
  *
  * @author Derek Xu
@@ -23,4 +24,6 @@ import com.baomidou.mybatisplus.core.mapper.BaseMapper;
  */
 public interface GoodBrowseMapper extends BaseMapper<GoodBrowse> {
 
+
+   void browse(@Param("goodId") Long goodId);
 }

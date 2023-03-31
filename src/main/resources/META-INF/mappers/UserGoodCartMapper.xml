@@ -12,4 +12,12 @@
         update
            num = num + 1
     </insert>
+
+    <select id="cartList" resultType="cn.com.xuct.group.purchase.vo.result.CartResult">
+        select  ca.num , g.name , g.first_drawing
+            from bu_good_user_cart ca
+        inner join bu_good g on ca.good_id = g.id
+        where ca.user_id = #{userId}
+
+    </select>
 </mapper>
