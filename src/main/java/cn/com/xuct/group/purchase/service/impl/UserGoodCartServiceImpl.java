@@ -11,17 +11,19 @@
 package cn.com.xuct.group.purchase.service.impl;
 
 import cn.com.xuct.group.purchase.base.service.BaseServiceImpl;
+import cn.com.xuct.group.purchase.base.vo.Column;
 import cn.com.xuct.group.purchase.entity.UserGoodCart;
 import cn.com.xuct.group.purchase.mapper.UserGoodCartMapper;
 import cn.com.xuct.group.purchase.service.UserGoodCartService;
 import cn.com.xuct.group.purchase.vo.result.CartResult;
 import lombok.extern.slf4j.Slf4j;
+import org.assertj.core.util.Lists;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
 
 /**
- * 〈一句话功能简述〉<br> 
+ * 〈一句话功能简述〉<br>
  * 〈〉
  *
  * @author Derek Xu
@@ -35,11 +37,21 @@ public class UserGoodCartServiceImpl extends BaseServiceImpl<UserGoodCartMapper,
 
     @Override
     public void addCart(Long gid, Long uid) {
-        ((UserGoodCartMapper)super.getBaseMapper()).addGoodCart(gid , uid);
+        ((UserGoodCartMapper) super.getBaseMapper()).addGoodCart(gid, uid);
     }
 
     @Override
     public List<CartResult> cartList(Long uid) {
-        return ((UserGoodCartMapper)super.getBaseMapper()).cartList(uid);
+        return ((UserGoodCartMapper) super.getBaseMapper()).cartList(uid);
+    }
+
+    @Override
+    public void updateCartGoodNum(Long uid, Long gid, Integer num) {
+        UserGoodCart userGoodCart = this.get(Lists.newArrayList(Column.of("user_id", uid), Column.of("good_id", gid)));
+        if(userGoodCart == null){
+            return;
+        }
+        userGoodCart.setNum(num);
+        this.updateById(userGoodCart);
     }
 }

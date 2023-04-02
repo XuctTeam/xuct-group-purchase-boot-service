@@ -10,6 +10,8 @@
  */
 package cn.com.xuct.group.purchase.vo.result;
 
+import com.fasterxml.jackson.databind.annotation.JsonSerialize;
+import com.fasterxml.jackson.databind.ser.std.ToStringSerializer;
 import io.swagger.v3.oas.annotations.media.Schema;
 import lombok.Data;
 
@@ -25,6 +27,11 @@ import java.io.Serializable;
  */
 @Data
 public class CartResult implements Serializable {
+
+
+    @JsonSerialize(using = ToStringSerializer.class)
+    @Schema(description = "商品ID")
+    private Long goodId;
 
     @Schema(description = "名称")
     private String name;

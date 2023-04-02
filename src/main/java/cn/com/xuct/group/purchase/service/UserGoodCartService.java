@@ -42,4 +42,13 @@ public interface UserGoodCartService extends IBaseService<UserGoodCartMapper, Us
      * @return
      */
     List<CartResult> cartList(final Long uid);
+
+    /**
+     * 修改购物车数量
+     *
+     * @param uid
+     * @param gid
+     * @param num
+     */
+    void updateCartGoodNum(final Long uid, final Long gid, final Integer num);
 }

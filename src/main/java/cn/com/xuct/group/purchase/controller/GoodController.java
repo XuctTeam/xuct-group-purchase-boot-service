@@ -11,6 +11,7 @@
 package cn.com.xuct.group.purchase.controller;
 
 import cn.com.xuct.group.purchase.base.res.R;
+import cn.com.xuct.group.purchase.base.vo.Column;
 import cn.com.xuct.group.purchase.entity.Good;
 import cn.com.xuct.group.purchase.service.GoodBrowseService;
 import cn.com.xuct.group.purchase.service.GoodService;
@@ -18,6 +19,7 @@ import cn.com.xuct.group.purchase.service.UserGoodCartService;
 import cn.com.xuct.group.purchase.service.UserGoodCollectService;
 import cn.com.xuct.group.purchase.vo.param.AddCartParam;
 import cn.com.xuct.group.purchase.vo.param.GoodParam;
+import cn.com.xuct.group.purchase.vo.param.UpdateCartNumParam;
 import cn.com.xuct.group.purchase.vo.result.CartResult;
 import cn.dev33.satoken.annotation.SaIgnore;
 import cn.dev33.satoken.stp.StpUtil;
@@ -91,5 +93,19 @@ public class GoodController {
     @Operation(summary = "【商品】购物车列表", description = "购物车列表")
     public R<List<CartResult>> cartList() {
         return R.data(userGoodCartService.cartList(StpUtil.getLoginIdAsLong()));
+    }
+
+    @PostMapping("/cart/update/num")
+    @Operation(summary = "【商品】修改购物车数量", description = "修改购物车数量")
+    public R<String> updateCartGoodNum(@RequestBody @Validated UpdateCartNumParam param) {
+        userGoodCartService.updateCartGoodNum(StpUtil.getLoginIdAsLong(), param.getGid(), param.getNum());
+        return R.status(true);
+    }
+
+    @Operation(summary = "【商品】清空购物车", description = "清空购物车")
+    @DeleteMapping("/cart/del/all")
+    public R<String> cleanCart() {
+        userGoodCartService.delete(Column.of("user_id", StpUtil.getLoginIdAsLong()));
+        return R.status(true);
     }
 }
