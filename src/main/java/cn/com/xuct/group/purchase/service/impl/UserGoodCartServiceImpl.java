@@ -16,6 +16,7 @@ import cn.com.xuct.group.purchase.entity.UserGoodCart;
 import cn.com.xuct.group.purchase.mapper.UserGoodCartMapper;
 import cn.com.xuct.group.purchase.service.UserGoodCartService;
 import cn.com.xuct.group.purchase.vo.result.CartResult;
+import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import lombok.extern.slf4j.Slf4j;
 import org.assertj.core.util.Lists;
 import org.springframework.stereotype.Service;
@@ -41,17 +42,24 @@ public class UserGoodCartServiceImpl extends BaseServiceImpl<UserGoodCartMapper,
     }
 
     @Override
-    public List<CartResult> cartList(Long uid) {
-        return ((UserGoodCartMapper) super.getBaseMapper()).cartList(uid);
+    public List<CartResult> cartList(Long uid, List<Long> gids) {
+        return ((UserGoodCartMapper) super.getBaseMapper()).cartList(uid, gids);
     }
 
     @Override
     public void updateCartGoodNum(Long uid, Long gid, Integer num) {
         UserGoodCart userGoodCart = this.get(Lists.newArrayList(Column.of("user_id", uid), Column.of("good_id", gid)));
-        if(userGoodCart == null){
+        if (userGoodCart == null) {
             return;
         }
         userGoodCart.setNum(num);
         this.updateById(userGoodCart);
+    }
+
+    @Override
+    public void deleteCartGood(List<Long> gids, final Long uid) {
+        QueryWrapper<UserGoodCart> qr = super.getQuery();
+        qr.eq("user_id", uid).in("good_id", gids);
+        this.remove(qr);
     }
 }

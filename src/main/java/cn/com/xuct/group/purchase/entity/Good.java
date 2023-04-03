@@ -57,4 +57,7 @@ public class Good extends SuperEntity<Good> {
 
     @Schema(description = "描述")
     private String detail;
+
+    @Schema(description = "单位")
+    private String unit;
 }

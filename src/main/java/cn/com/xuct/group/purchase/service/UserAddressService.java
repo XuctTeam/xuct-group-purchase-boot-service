@@ -17,17 +17,18 @@ import cn.com.xuct.group.purchase.mapper.UserAddressMapper;
 import java.util.List;
 
 /**
- * 〈一句话功能简述〉<br> 
+ * 〈一句话功能简述〉<br>
  * 〈〉
  *
  * @author Derek Xu
  * @create 2023/3/23
  * @since 1.0.0
  */
-public interface UserAddressService extends IBaseService<UserAddressMapper , UserAddress> {
+public interface UserAddressService extends IBaseService<UserAddressMapper, UserAddress> {
 
     /**
      * 通过搜索查询
+     *
      * @param userId
      * @param searchValue
      * @return
@@ -40,4 +41,12 @@ public interface UserAddressService extends IBaseService<UserAddressMapper , Use
      * @param userAddress
      */
     void saveAddress(UserAddress userAddress);
+
+    /**
+     * 获取默认地址
+     *
+     * @param userId
+     * @return
+     */
+    UserAddress getDefault(Long userId);
 }

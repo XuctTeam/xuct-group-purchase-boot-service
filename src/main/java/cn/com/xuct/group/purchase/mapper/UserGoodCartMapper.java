@@ -37,10 +37,8 @@ public interface UserGoodCartMapper extends BaseMapper<UserGoodCart> {
     void addGoodCart(@Param("goodId") final Long goodId, @Param("userId") final Long userId);
 
     /**
-     *
      * @param userId
-     * @return
-     * 查询购物车列表
+     * @return 查询购物车列表
      */
-    List<CartResult> cartList(@Param("userId") final Long userId);
+    List<CartResult> cartList(@Param("userId") final Long userId, @Param("gids") List<Long> gids);
 }

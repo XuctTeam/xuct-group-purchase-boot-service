@@ -18,6 +18,7 @@ import cn.com.xuct.group.purchase.service.GoodService;
 import cn.com.xuct.group.purchase.service.UserGoodCartService;
 import cn.com.xuct.group.purchase.service.UserGoodCollectService;
 import cn.com.xuct.group.purchase.vo.param.AddCartParam;
+import cn.com.xuct.group.purchase.vo.param.CartManyGoodParam;
 import cn.com.xuct.group.purchase.vo.param.GoodParam;
 import cn.com.xuct.group.purchase.vo.param.UpdateCartNumParam;
 import cn.com.xuct.group.purchase.vo.result.CartResult;
@@ -27,6 +28,7 @@ import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.assertj.core.util.Lists;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 
@@ -53,59 +55,73 @@ public class GoodController {
     private final GoodBrowseService goodBrowseService;
 
     @SaIgnore
-    @Operation(summary = "【商品】列表", description = "查询商品列表")
     @GetMapping("/list")
+    @Operation(summary = "【商品】列表", description = "查询商品列表")
     public R<List<Good>> list() {
         return R.data(goodService.findList());
     }
 
     @SaIgnore
-    @Operation(summary = "【商品】详情", description = "查询商品详情")
     @GetMapping
+    @Operation(summary = "【商品】详情", description = "查询商品详情")
     public R<Good> get(@RequestParam("id") Long id) {
         return R.data(goodService.getGood(id, StpUtil.isLogin() ? StpUtil.getLoginIdAsLong() : null));
     }
 
     @SaIgnore
-    @Operation(summary = "【商品】观看次数", description = "自增商品观看次数")
     @PostMapping("/browse")
+    @Operation(summary = "【商品】观看次数", description = "自增商品观看次数")
     public R<String> addGoodBrowse(@RequestBody @Validated GoodParam param) {
         goodBrowseService.browse(param.getGid());
         return R.status(true);
     }
 
-    @Operation(summary = "【商品】收藏或取消收藏", description = "收藏或取消收藏")
     @PostMapping("/collect")
+    @Operation(summary = "【商品】收藏或取消收藏", description = "收藏或取消收藏")
     public R<String> collect(@RequestBody @Validated GoodParam param) {
         userGoodCollectService.collect(StpUtil.getLoginIdAsLong(), param.getGid());
         return R.status(true);
     }
 
-    @Operation(summary = "【商品】添加购物车", description = "添加购物车")
     @PostMapping("/cart/add")
+    @Operation(summary = "【购物车】添加购物车", description = "添加购物车")
     public R<String> addCart(@RequestBody @Validated AddCartParam addCartParam) {
         userGoodCartService.addCart(addCartParam.getGid(), StpUtil.getLoginIdAsLong());
         return R.status(true);
     }
 
-
     @GetMapping("/cart/list")
-    @Operation(summary = "【商品】购物车列表", description = "购物车列表")
+    @Operation(summary = "【购物车】购物车列表", description = "购物车列表")
     public R<List<CartResult>> cartList() {
-        return R.data(userGoodCartService.cartList(StpUtil.getLoginIdAsLong()));
+        return R.data(userGoodCartService.cartList(StpUtil.getLoginIdAsLong(), Lists.newArrayList()));
+    }
+
+    @PostMapping("/cart/order/list")
+    @Operation(summary = "【购物车】确认购物车列表", description = "确认购物车列表")
+    public R<List<CartResult>> cartOrderList(@RequestBody @Validated CartManyGoodParam param) {
+        return R.data(userGoodCartService.cartList(StpUtil.getLoginIdAsLong(), param.getGids()));
     }
 
     @PostMapping("/cart/update/num")
-    @Operation(summary = "【商品】修改购物车数量", description = "修改购物车数量")
+    @Operation(summary = "【购物车】修改购物车数量", description = "修改购物车数量")
     public R<String> updateCartGoodNum(@RequestBody @Validated UpdateCartNumParam param) {
         userGoodCartService.updateCartGoodNum(StpUtil.getLoginIdAsLong(), param.getGid(), param.getNum());
         return R.status(true);
     }
 
-    @Operation(summary = "【商品】清空购物车", description = "清空购物车")
+    @PostMapping("/cart/del")
+    @Operation(summary = "【购物车】删除购物车商品", description = "删除购物车商品")
+    public R<String> deleteCartGood(@RequestBody @Validated CartManyGoodParam param) {
+        userGoodCartService.deleteCartGood(param.getGids(), StpUtil.getLoginIdAsLong());
+        return R.status(true);
+    }
+
     @DeleteMapping("/cart/del/all")
+    @Operation(summary = "【购物车】清空购物车", description = "清空购物车")
     public R<String> cleanCart() {
         userGoodCartService.delete(Column.of("user_id", StpUtil.getLoginIdAsLong()));
         return R.status(true);
     }
+
+
 }

@@ -41,7 +41,7 @@ public interface UserGoodCartService extends IBaseService<UserGoodCartMapper, Us
      * @param uid
      * @return
      */
-    List<CartResult> cartList(final Long uid);
+    List<CartResult> cartList(final Long uid  , List<Long> gids);
 
     /**
      * 修改购物车数量
@@ -51,4 +51,11 @@ public interface UserGoodCartService extends IBaseService<UserGoodCartMapper, Us
      * @param num
      */
     void updateCartGoodNum(final Long uid, final Long gid, final Integer num);
+
+    /**
+     * 删除购物车中商品
+     *
+     * @param gids
+     */
+    void deleteCartGood(final List<Long> gids , final Long uid);
 }

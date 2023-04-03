@@ -10,8 +10,10 @@
  */
 package cn.com.xuct.group.purchase.service.impl;
 
+import cn.com.xuct.group.purchase.base.enums.SortEnum;
 import cn.com.xuct.group.purchase.base.service.BaseServiceImpl;
 import cn.com.xuct.group.purchase.base.vo.Column;
+import cn.com.xuct.group.purchase.base.vo.Sort;
 import cn.com.xuct.group.purchase.entity.UserAddress;
 import cn.com.xuct.group.purchase.mapper.UserAddressMapper;
 import cn.com.xuct.group.purchase.service.UserAddressService;
@@ -20,6 +22,7 @@ import lombok.extern.slf4j.Slf4j;
 import org.assertj.core.util.Lists;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+import org.springframework.util.CollectionUtils;
 import org.springframework.util.StringUtils;
 
 import java.util.List;
@@ -38,11 +41,11 @@ public class UserAddressServiceImpl extends BaseServiceImpl<UserAddressMapper, U
 
 
     @Override
-    public List<UserAddress> findList(Long userId , String searchValue) {
+    public List<UserAddress> findList(Long userId, String searchValue) {
 
-        QueryWrapper<UserAddress> qr = this.getQuery().eq("user_id" , userId);
-        if(StringUtils.hasLength(searchValue)){
-            qr.and(i -> i.like("user_name" , searchValue).or().like("tel_number" , searchValue));
+        QueryWrapper<UserAddress> qr = this.getQuery().eq("user_id", userId);
+        if (StringUtils.hasLength(searchValue)) {
+            qr.and(i -> i.like("user_name", searchValue).or().like("tel_number", searchValue));
         }
         qr.orderByDesc("first_choose");
 
@@ -65,9 +68,26 @@ public class UserAddressServiceImpl extends BaseServiceImpl<UserAddressMapper, U
             return;
         }
         long count = this.count(Column.of("user_id", userAddress.getUserId()));
-        if(count == 0){
+        if (count == 0) {
             userAddress.setFirstChoose(1);
         }
         this.save(userAddress);
+    }
+
+    @Override
+    public UserAddress getDefault(Long userId) {
+        UserAddress firstChoose = this.get(Lists.newArrayList(Column.of("user_id", userId), Column.of("first_choose", 1)));
+        if (firstChoose != null) {
+            return firstChoose;
+        }
+        UserAddress qr = new UserAddress();
+        qr.setUpdateTime(null);
+        qr.setCreateTime(null);
+        qr.setUserId(userId);
+        List<UserAddress> userAddresses = this.list(qr, Sort.of("create_time", SortEnum.desc));
+        if(CollectionUtils.isEmpty(userAddresses)){
+            return null;
+        }
+        return userAddresses.get(0);
     }
 }

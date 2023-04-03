@@ -42,4 +42,6 @@ public class CartResult implements Serializable {
     @Schema(description = "购买数量")
     private Integer num;
 
+    @Schema(description = "单位")
+    private String unit;
 }
