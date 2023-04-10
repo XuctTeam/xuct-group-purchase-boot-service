@@ -21,6 +21,7 @@ import org.assertj.core.util.Lists;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
+import java.util.Map;
 
 /**
  * 〈一句话功能简述〉<br>
@@ -45,5 +46,20 @@ public class GoodServiceImpl extends BaseServiceImpl<GoodMapper, Good> implement
         qr.select(Lists.newArrayList("id", "name", "first_drawing", "swiper_images", "start_time", "end_time", "inventory"));
         qr.eq("status", 1);
         return this.getBaseMapper().selectList(qr);
+    }
+
+    @Override
+    public void updateStokByGoodIds(Map<Long, Integer> stokeMap) {
+        List<Good> goods = Lists.newArrayList();
+        Good good = null;
+        for (Long gid : stokeMap.keySet()) {
+            good = new Good();
+            good.setCreateTime(null);
+            good.setUpdateTime(null);
+            good.setId(gid);
+            good.setInventory(stokeMap.get(gid));
+            goods.add(good);
+        }
+        this.updateBatchById(goods);
     }
 }

@@ -21,4 +21,10 @@ package cn.com.xuct.group.purchase.constants;
 public interface RedisCacheConstants {
 
     String USER_CACHE_ABLE_CACHE_NAME = "group::purchase::user::cache#3600";
+
+
+    /**
+     * 商品
+     */
+    String GOOD_INVENTORY_REDIS_KEY = "group::purchase::good::inventory:";
 }

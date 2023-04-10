@@ -48,7 +48,16 @@ public interface UserService extends IBaseService<UserMapper, User> {
      * @param nickname
      * @param avatar
      */
-    User updateUserInfo(User user, final String phone, final String nickname , final String avatar);
+    User updateUserInfo(User user, final String phone, final String nickname, final String avatar);
+
+    /**
+     * 更新用户积分
+     *
+     * @param userId
+     * @param integral
+     * @return
+     */
+    User updateUserIntegral(final Long userId, final Integer integral);
 
 
 }

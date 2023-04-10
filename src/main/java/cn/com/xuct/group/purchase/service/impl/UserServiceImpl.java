@@ -85,4 +85,16 @@ public class UserServiceImpl extends BaseServiceImpl<UserMapper, User> implement
         this.updateById(user);
         return user;
     }
+
+    @Override
+    @CachePut(cacheNames = RedisCacheConstants.USER_CACHE_ABLE_CACHE_NAME, key = "#userId", unless = "#result == null")
+    public User updateUserIntegral(Long userId, Integer integral) {
+        User user = this.getById(userId);
+        if (user == null) {
+            return null;
+        }
+        user.setIntegral(user.getIntegral() + integral);
+        this.updateById(user);
+        return user;
+    }
 }

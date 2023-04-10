@@ -16,6 +16,7 @@ import cn.com.xuct.group.purchase.mapper.GoodMapper;
 import cn.com.xuct.group.purchase.vo.result.GoodResult;
 
 import java.util.List;
+import java.util.Map;
 
 /**
  * 〈一句话功能简述〉<br>
@@ -42,4 +43,11 @@ public interface GoodService extends IBaseService<GoodMapper, Good> {
      * @return java.lang.List
      */
     List<Good> findList();
+
+    /**
+     * 根据商品ID更新库存
+     *
+     * @param goodIds
+     */
+    void updateStokByGoodIds(Map<Long , Integer> stokeMap);
 }

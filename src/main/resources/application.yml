@@ -68,7 +68,7 @@ sa-token:
 
 
 wx:
-  miniapp:
+  minimap:
     configs:
       - appid: wxd1cee317f1b0df7c
         secret: ENC(sSGkzeqOqCbuAG8kBL2x4jYn71iKMVzD7tJO6LroLoRTXPhWuA/SWtFm0dNu1Fr9sBK/0ZU7gMtClzdn+uz1oat5lvSsrw6SM6CMRYBCX8Y=)

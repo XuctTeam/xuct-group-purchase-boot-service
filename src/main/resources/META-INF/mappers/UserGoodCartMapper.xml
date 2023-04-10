@@ -14,8 +14,8 @@
     </insert>
 
     <select id="cartList" resultType="cn.com.xuct.group.purchase.vo.result.CartResult">
-        select ca.num , g.name , g.first_drawing , g.unit, ca.good_id
-            from bu_good_user_cart ca
+        select ca.num , g.name , g.first_drawing , g.unit, ca.good_id , g.inventory
+        from bu_good_user_cart ca
         inner join bu_good g on ca.good_id = g.id
         where ca.user_id = #{userId}
         <if test="gids!= null and gids.size()>0">

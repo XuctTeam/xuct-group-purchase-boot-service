@@ -28,7 +28,6 @@ import java.io.Serializable;
 @Data
 public class CartResult implements Serializable {
 
-
     @JsonSerialize(using = ToStringSerializer.class)
     @Schema(description = "商品ID")
     private Long goodId;
@@ -44,4 +43,7 @@ public class CartResult implements Serializable {
 
     @Schema(description = "单位")
     private String unit;
+
+    @Schema(description = "库存")
+    private Integer inventory;
 }

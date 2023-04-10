@@ -12,6 +12,7 @@ package cn.com.xuct.group.purchase.config;
 
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.lang3.StringUtils;
+import org.jetbrains.annotations.NotNull;
 import org.springframework.data.redis.cache.*;
 import org.springframework.data.redis.serializer.GenericJackson2JsonRedisSerializer;
 import org.springframework.data.redis.serializer.RedisSerializationContext;
@@ -30,6 +31,7 @@ import java.time.Duration;
 @Slf4j
 public class RedisConfigCacheManager extends RedisCacheManager {
 
+    private static final CacheKeyPrefix DEFAULT_CACHE_KEY_PREFIX = cacheName -> cacheName + ":";
 
     public RedisConfigCacheManager(RedisCacheWriter cacheWriter, RedisCacheConfiguration defaultCacheConfiguration) {
         super(cacheWriter, defaultCacheConfiguration);
@@ -38,10 +40,10 @@ public class RedisConfigCacheManager extends RedisCacheManager {
     private static final RedisSerializationContext.SerializationPair<Object> DEFAULT_PAIR = RedisSerializationContext.SerializationPair
             .fromSerializer(new GenericJackson2JsonRedisSerializer());
 
-    private static final CacheKeyPrefix DEFAULT_CACHE_KEY_PREFIX = cacheName -> cacheName + ":";
 
+    @NotNull
     @Override
-    protected RedisCache createRedisCache(String name, RedisCacheConfiguration cacheConfig) {
+    protected RedisCache createRedisCache(@NotNull String name, RedisCacheConfiguration cacheConfig) {
         final int lastIndexOf = StringUtils.lastIndexOf(name, '#');
         if (lastIndexOf > -1) {
             final String ttl = StringUtils.substring(name, lastIndexOf + 1);
@@ -57,4 +59,6 @@ public class RedisConfigCacheManager extends RedisCacheManager {
             return super.createRedisCache(name, cacheConfig);
         }
     }
+
+
 }

@@ -54,8 +54,8 @@ public class LoginController {
     @PostMapping
     public R<LoginResult> login(@Validated @RequestBody WxCodeParam wxCodeParam) throws WxErrorException {
         WxMaJscode2SessionResult session = wxMaConfiguration.getMaService().jsCode2SessionInfo(wxCodeParam.getCode());
-        if(session == null || !StringUtils.hasLength(session.getOpenid())){
-            R.fail("查询session失败");
+        if (session == null || !StringUtils.hasLength(session.getOpenid())) {
+            return R.fail("查询session失败");
         }
         User user = userService.findByOpenId(session.getOpenid());
         // 第1步，先登录上

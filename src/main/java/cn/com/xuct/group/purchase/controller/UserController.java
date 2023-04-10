@@ -15,6 +15,7 @@ import cn.com.xuct.group.purchase.client.imgurl.ImgUrlClient;
 import cn.com.xuct.group.purchase.client.imgurl.ImgUrlData;
 import cn.com.xuct.group.purchase.entity.User;
 import cn.com.xuct.group.purchase.service.UserService;
+import cn.com.xuct.group.purchase.utils.JsonUtils;
 import cn.com.xuct.group.purchase.vo.param.UserParam;
 import cn.dev33.satoken.stp.StpUtil;
 import io.swagger.v3.oas.annotations.Operation;
@@ -27,7 +28,7 @@ import org.springframework.web.multipart.MultipartFile;
 import org.wildfly.common.Assert;
 
 /**
- * 〈一句话功能简述〉<br> 
+ * 〈一句话功能简述〉<br>
  * 〈〉
  *
  * @author Derek Xu
@@ -48,11 +49,11 @@ public class UserController {
 
     @Operation(summary = "修改用户信息")
     @PutMapping
-    public R<String> modify(@Validated @RequestBody UserParam param){
+    public R<String> modify(@Validated @RequestBody UserParam param) {
         Long userId = StpUtil.getLoginIdAsLong();
         User user = userService.findById(userId);
         Assert.assertNotNull(user);
-        userService.updateUserInfo(user , param.getPhone(), param.getNickname() , null);
+        userService.updateUserInfo(user, param.getPhone(), param.getNickname(), null);
         return R.status(true);
     }
 
@@ -60,12 +61,13 @@ public class UserController {
     @PostMapping("/avatar/upload")
     public R<String> uploadAvatar(MultipartFile file) {
         ImgUrlData data = imgUrlClient.upload(file);
-        if(data == null){
+        if (data == null) {
             return R.fail("上传失败");
         }
         Long userId = StpUtil.getLoginIdAsLong();
         User user = userService.findById(userId);
-        userService.updateUserInfo(user , null, null , data.getUrl());
+        User updateUser = userService.updateUserInfo(user, null, null, data.getUrl());
+        log.info("UserController:: user = {}", JsonUtils.obj2json(updateUser));
         return R.data(data.getUrl());
     }
 }

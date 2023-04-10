@@ -25,7 +25,7 @@ import java.util.List;
  * @since 1.0.0
  */
 @Data
-@ConfigurationProperties(prefix = "wx.miniapp")
+@ConfigurationProperties(prefix = "wx.minimap")
 public class WxMaProperties {
 
     private List<Config> configs;

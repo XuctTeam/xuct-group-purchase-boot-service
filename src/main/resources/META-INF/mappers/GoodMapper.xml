@@ -7,11 +7,9 @@
 
 
     <select id="getGoodInfo" resultType="cn.com.xuct.group.purchase.vo.result.GoodResult">
-        select g.id , g.name , g.first_drawing , g.swiper_images , g.detail , g.inventory , ifnull(br.num , 1)  as browse
-
+        select g.id , g.name , g.first_drawing , g.swiper_images , g.detail , g.inventory , ifnull(br.num , 1) as browse
         <if test="userId != null">
-            , if(uc.user_id , 1, 0) as  collect
-
+            , if(uc.user_id , 1, 0) as collect
         </if>
         from bu_good g
         <if test="userId != null">
