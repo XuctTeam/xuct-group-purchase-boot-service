@@ -36,5 +36,5 @@ public interface UserOrderService extends IBaseService<UserOrderMapper, UserOrde
      * @param remarks
      * @param goodIds
      */
-    int saveOrder(final Long userId, Long addressId, Integer integral, String remarks, List<Long> goodIds);
+    String saveOrder(final Long userId, Long addressId, Integer integral, String remarks, List<Long> goodIds);
 }

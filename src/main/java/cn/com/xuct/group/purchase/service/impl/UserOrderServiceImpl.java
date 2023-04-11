@@ -11,6 +11,7 @@
 package cn.com.xuct.group.purchase.service.impl;
 
 import cn.com.xuct.group.purchase.base.service.BaseServiceImpl;
+import cn.com.xuct.group.purchase.constants.OrderResultConstants;
 import cn.com.xuct.group.purchase.constants.RedisCacheConstants;
 import cn.com.xuct.group.purchase.entity.UserOrder;
 import cn.com.xuct.group.purchase.entity.UserOrderItem;
@@ -56,11 +57,11 @@ public class UserOrderServiceImpl extends BaseServiceImpl<UserOrderMapper, UserO
 
     @Override
     @Transactional(rollbackFor = Exception.class)
-    public int saveOrder(Long userId, Long addressId, Integer integral, String remarks, List<Long> goodIds) {
+    public String saveOrder(Long userId, Long addressId, Integer integral, String remarks, List<Long> goodIds) {
         List<CartResult> cartResult = userGoodCartService.cartList(userId, goodIds);
         if (CollectionUtils.isEmpty(cartResult)) {
             log.error("UserOrderServiceImpl:: user id = {} , cart ids empty , good ids = {}", userId, cartResult);
-            return 1000;
+            return OrderResultConstants.CART_EMPTY;
         }
         Map<Long, Integer> stokMap = Maps.newHashMap();
         boolean canCreate = true;
@@ -77,21 +78,22 @@ public class UserOrderServiceImpl extends BaseServiceImpl<UserOrderMapper, UserO
             for (Long goodId : stokMap.keySet()) {
                 redisTemplate.opsForValue().increment(RedisCacheConstants.GOOD_INVENTORY_REDIS_KEY.concat(String.valueOf(goodId)), stokMap.get(goodId));
             }
-            return 2000;
+            return OrderResultConstants.NOT_ENOUGH;
         }
+        Long orderId = null;
         try {
-            this.save(userId, addressId, integral, remarks, cartResult);
+            orderId = this.save(userId, addressId, integral, remarks, cartResult);
         } catch (Exception ee) {
             log.error("UserOrderServiceImpl:: save order error , msg = {}", ee.getMessage());
             for (Long goodId : stokMap.keySet()) {
                 redisTemplate.opsForValue().increment(RedisCacheConstants.GOOD_INVENTORY_REDIS_KEY.concat(String.valueOf(goodId)), stokMap.get(goodId));
             }
-            return 3000;
+            return OrderResultConstants.ERROR;
         }
-        return 0;
+        return String.valueOf(orderId);
     }
 
-    private void save(Long userId, Long addressId, Integer integral, String remarks, List<CartResult> cartResult) {
+    private Long save(Long userId, Long addressId, Integer integral, String remarks, List<CartResult> cartResult) {
         UserOrder userOrder = new UserOrder();
         userOrder.setUserId(userId);
         userOrder.setAddressId(addressId);
@@ -124,5 +126,6 @@ public class UserOrderServiceImpl extends BaseServiceImpl<UserOrderMapper, UserO
         if (integral > 0) {
             userService.updateUserIntegral(userId, -integral);
         }
+        return userOrder.getId();
     }
 }

@@ -11,6 +11,7 @@
 package cn.com.xuct.group.purchase.controller;
 
 import cn.com.xuct.group.purchase.base.res.R;
+import cn.com.xuct.group.purchase.constants.OrderResultConstants;
 import cn.com.xuct.group.purchase.service.UserOrderService;
 import cn.com.xuct.group.purchase.vo.param.OrderParam;
 import cn.dev33.satoken.stp.StpUtil;
@@ -44,12 +45,12 @@ public class UserOrderController {
     @Operation(summary = "下订单")
     @PostMapping
     public R<String> place(@Validated @RequestBody OrderParam param) {
-        int result = userOrderService.saveOrder(StpUtil.getLoginIdAsLong(), param.getAddressId(), param.getIntegral(), param.getRemarks(), param.getGoodIds());
+        String result = userOrderService.saveOrder(StpUtil.getLoginIdAsLong(), param.getAddressId(), param.getIntegral(), param.getRemarks(), param.getGoodIds());
         return switch (result) {
-            case 1000 -> R.fail("商品错误");
-            case 2000 -> R.fail("库存不足");
-            case 3000 -> R.fail("下单异常");
-            default -> R.status(true);
+            case OrderResultConstants.CART_EMPTY -> R.fail("购买商品错误");
+            case OrderResultConstants.NOT_ENOUGH -> R.fail("库存不足");
+            case OrderResultConstants.ERROR -> R.fail("下单异常");
+            default -> R.data(result);
         };
     }
 }
