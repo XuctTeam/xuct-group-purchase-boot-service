@@ -13,6 +13,7 @@ package cn.com.xuct.group.purchase.service;
 import cn.com.xuct.group.purchase.base.service.IBaseService;
 import cn.com.xuct.group.purchase.entity.UserOrder;
 import cn.com.xuct.group.purchase.mapper.UserOrderMapper;
+import com.baomidou.mybatisplus.core.metadata.IPage;
 
 import java.util.List;
 
@@ -37,4 +38,16 @@ public interface UserOrderService extends IBaseService<UserOrderMapper, UserOrde
      * @param goodIds
      */
     String saveOrder(final Long userId, Long addressId, Integer integral, String remarks, List<Long> goodIds);
+
+    /**
+     * 订单分页查询
+     *
+     * @param userId
+     * @param status   状态
+     * @param pageNo
+     * @param pageSize
+     * @return
+     */
+    IPage<UserOrder> list(final Long userId, final Integer status, int pageNo, int pageSize);
+
 }

@@ -12,9 +12,12 @@ package cn.com.xuct.group.purchase.mapper;
 
 import cn.com.xuct.group.purchase.entity.UserOrder;
 import com.baomidou.mybatisplus.core.mapper.BaseMapper;
+import com.baomidou.mybatisplus.core.metadata.IPage;
+import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
+import org.apache.ibatis.annotations.Param;
 
 /**
- * 〈一句话功能简述〉<br> 
+ * 〈一句话功能简述〉<br>
  * 〈〉
  *
  * @author Derek Xu
@@ -23,4 +26,13 @@ import com.baomidou.mybatisplus.core.mapper.BaseMapper;
  */
 public interface UserOrderMapper extends BaseMapper<UserOrder> {
 
+    /**
+     * 分页查哈讯
+     *
+     * @param userId
+     * @param status
+     * @param page
+     * @return
+     */
+    IPage<UserOrder> list(@Param("userId") Long userId, @Param("status") Integer status, Page<UserOrder> page);
 }

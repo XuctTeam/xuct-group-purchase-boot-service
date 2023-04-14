@@ -19,6 +19,8 @@ import cn.com.xuct.group.purchase.mapper.UserOrderMapper;
 import cn.com.xuct.group.purchase.service.*;
 import cn.com.xuct.group.purchase.utils.JsonUtils;
 import cn.com.xuct.group.purchase.vo.result.CartResult;
+import com.baomidou.mybatisplus.core.metadata.IPage;
+import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.google.common.collect.Maps;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -93,6 +95,11 @@ public class UserOrderServiceImpl extends BaseServiceImpl<UserOrderMapper, UserO
         return String.valueOf(orderId);
     }
 
+    @Override
+    public IPage<UserOrder> list(Long userId, Integer status, int pageNo, int pageSize) {
+        return ((UserOrderMapper) this.getBaseMapper()).list(userId, status, Page.of(pageNo, pageSize));
+    }
+
     private Long save(Long userId, Long addressId, Integer integral, String remarks, List<CartResult> cartResult) {
         UserOrder userOrder = new UserOrder();
         userOrder.setUserId(userId);
@@ -101,6 +108,7 @@ public class UserOrderServiceImpl extends BaseServiceImpl<UserOrderMapper, UserO
         userOrder.setRemarks(remarks);
         userOrder.setGoodNum(cartResult.stream().map(CartResult::getNum).mapToInt(x -> x).sum());
         userOrder.setTotalPrice(0L);
+        userOrder.setStatus(2);
         //1.保存订单
         this.save(userOrder);
 

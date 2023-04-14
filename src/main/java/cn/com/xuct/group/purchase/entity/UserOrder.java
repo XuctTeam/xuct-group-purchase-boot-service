@@ -12,13 +12,18 @@ package cn.com.xuct.group.purchase.entity;
 
 import cn.com.xuct.group.purchase.base.dao.SuperEntity;
 import com.baomidou.mybatisplus.annotation.IdType;
+import com.baomidou.mybatisplus.annotation.TableField;
 import com.baomidou.mybatisplus.annotation.TableId;
 import com.baomidou.mybatisplus.annotation.TableName;
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
+import com.fasterxml.jackson.databind.annotation.JsonSerialize;
+import com.fasterxml.jackson.databind.ser.std.ToStringSerializer;
 import io.swagger.v3.oas.annotations.media.Schema;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
 
 import java.util.Date;
+import java.util.List;
 
 /**
  * 〈一句话功能简述〉<br>
@@ -31,9 +36,11 @@ import java.util.Date;
 @Data
 @EqualsAndHashCode(callSuper = true)
 @TableName("bu_user_order")
+@JsonIgnoreProperties(value = {"handler"})
 public class UserOrder extends SuperEntity<UserOrder> {
 
-    @TableId(value = "id" , type = IdType.ASSIGN_ID)
+    @TableId(value = "id", type = IdType.ASSIGN_ID)
+    @JsonSerialize(using = ToStringSerializer.class)
     private Long id;
 
     @Schema(description = "用户ID")
@@ -54,7 +61,7 @@ public class UserOrder extends SuperEntity<UserOrder> {
     @Schema(description = "总金额")
     private Long totalPrice;
 
-    @Schema(description = "状态 0 待配送 1 配送中 2 已配送 3 已完成")
+    @Schema(description = "状态 1待付款  2待配送 3待收货  4已完成")
     private Integer status;
 
     @Schema(description = "配送时间")
@@ -71,5 +78,8 @@ public class UserOrder extends SuperEntity<UserOrder> {
 
     @Schema(description = "完成时间")
     private Date successTime;
+
+    @TableField(exist = false)
+    private List<UserOrderItem> items;
 
 }
