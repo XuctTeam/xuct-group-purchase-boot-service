@@ -19,7 +19,7 @@ import java.io.Serializable;
 import java.util.List;
 
 /**
- * 〈一句话功能简述〉<br> 
+ * 〈一句话功能简述〉<br>
  * 〈〉
  *
  * @author Derek Xu
@@ -28,6 +28,9 @@ import java.util.List;
  */
 @Data
 public class OrderParam implements Serializable {
+
+    @Schema(description = "场景 cart 购物车 good 立即购买")
+    private String scene;
 
     @NotNull
     @Schema(description = "收货地址")

@@ -49,5 +49,5 @@ public interface GoodService extends IBaseService<GoodMapper, Good> {
      *
      * @param goodIds
      */
-    void updateStokByGoodIds(Map<Long , Integer> stokeMap);
+    void updateGoodInventory(Map<Long , Integer> inventoryMap);
 }

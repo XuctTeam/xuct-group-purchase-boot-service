@@ -60,7 +60,11 @@ public class ImgUrlClient {
     public ImgUrlData upload(MultipartFile file) {
         File tempFile = new File(file.getOriginalFilename());
         FileUtils.copyInputStreamToFile(file.getInputStream(), tempFile);
-        return this.load(tempFile);
+        ImgUrlData data = this.load(tempFile);
+        if (tempFile != null) {
+            tempFile.delete();
+        }
+        return data;
     }
 
     private ImgUrlData load(File file) throws IOException {

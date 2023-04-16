@@ -57,4 +57,7 @@ public class UserAddress extends SuperEntity<UserAddress> {
 
     @Schema(description = "是否首选 0不是 1是")
     private Integer firstChoose;
+
+
+    private boolean deleted = false;
 }

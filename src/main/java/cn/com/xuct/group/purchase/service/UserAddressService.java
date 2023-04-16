@@ -49,4 +49,13 @@ public interface UserAddressService extends IBaseService<UserAddressMapper, User
      * @return
      */
     UserAddress getDefault(Long userId);
+
+    /**
+     * 删除地址
+     *
+     * @param userId
+     * @param addressId
+     * @return
+     */
+    boolean delete(final Long userId, final Long addressId);
 }

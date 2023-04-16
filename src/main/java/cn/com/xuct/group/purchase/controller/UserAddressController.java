@@ -64,7 +64,7 @@ public class UserAddressController {
     @DeleteMapping
     @Operation(summary = "删除地址", description = "删除地址")
     public R<String> delete(@RequestParam("id") String id) {
-        userAddressService.removeById(id);
+        userAddressService.delete(StpUtil.getLoginIdAsLong(), Long.valueOf(id));
         return R.status(true);
     }
 

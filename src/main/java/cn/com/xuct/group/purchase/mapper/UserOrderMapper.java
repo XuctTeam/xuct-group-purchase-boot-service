@@ -15,6 +15,7 @@ import com.baomidou.mybatisplus.core.mapper.BaseMapper;
 import com.baomidou.mybatisplus.core.metadata.IPage;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import org.apache.ibatis.annotations.Param;
+import org.springframework.web.bind.annotation.RequestParam;
 
 /**
  * 〈一句话功能简述〉<br>
@@ -35,4 +36,13 @@ public interface UserOrderMapper extends BaseMapper<UserOrder> {
      * @return
      */
     IPage<UserOrder> list(@Param("userId") Long userId, @Param("status") Integer status, Page<UserOrder> page);
+
+    /**
+     * 获取订单详情
+     *
+     * @param userId
+     * @param orderId
+     * @return
+     */
+    UserOrder getOrderDetail(@Param("userId") Long userId, @RequestParam("orderId") Long orderId);
 }

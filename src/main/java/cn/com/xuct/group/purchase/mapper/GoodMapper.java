@@ -11,6 +11,7 @@
 package cn.com.xuct.group.purchase.mapper;
 
 import cn.com.xuct.group.purchase.entity.Good;
+import cn.com.xuct.group.purchase.vo.dto.GoodInventoryDto;
 import cn.com.xuct.group.purchase.vo.result.GoodResult;
 import com.baomidou.mybatisplus.core.mapper.BaseMapper;
 import org.apache.ibatis.annotations.Param;
@@ -36,4 +37,12 @@ public interface GoodMapper extends BaseMapper<Good> {
      * @return
      */
     GoodResult getGoodInfo(@Param("gid") Long gid, @Param("userId") Long userId);
+
+    /**
+     * 更新商品
+     *
+     * @param goods
+     * @return
+     */
+    int updateGoodInventory(@Param("goods") List<GoodInventoryDto> goods);
 }

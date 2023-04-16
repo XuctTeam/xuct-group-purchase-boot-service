@@ -43,7 +43,7 @@ public class UserAddressServiceImpl extends BaseServiceImpl<UserAddressMapper, U
     @Override
     public List<UserAddress> findList(Long userId, String searchValue) {
 
-        QueryWrapper<UserAddress> qr = this.getQuery().eq("user_id", userId);
+        QueryWrapper<UserAddress> qr = this.getQuery().eq("user_id", userId).eq("deleted", false);
         if (StringUtils.hasLength(searchValue)) {
             qr.and(i -> i.like("user_name", searchValue).or().like("tel_number", searchValue));
         }
@@ -85,9 +85,20 @@ public class UserAddressServiceImpl extends BaseServiceImpl<UserAddressMapper, U
         qr.setCreateTime(null);
         qr.setUserId(userId);
         List<UserAddress> userAddresses = this.list(qr, Sort.of("create_time", SortEnum.desc));
-        if(CollectionUtils.isEmpty(userAddresses)){
+        if (CollectionUtils.isEmpty(userAddresses)) {
             return null;
         }
         return userAddresses.get(0);
+    }
+
+    @Override
+    public boolean delete(Long userId, Long addressId) {
+        UserAddress address = this.getById(addressId);
+        if (!String.valueOf(address.getUserId()).equals(String.valueOf(userId))) {
+            return false;
+        }
+        address.setDeleted(true);
+        this.updateById(address);
+        return true;
     }
 }

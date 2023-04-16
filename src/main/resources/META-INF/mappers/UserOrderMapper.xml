@@ -6,21 +6,32 @@
 <mapper namespace="cn.com.xuct.group.purchase.mapper.UserOrderMapper">
     <!-- 通用查询映射结果 -->
     <resultMap id="BaseResultMap" type="cn.com.xuct.group.purchase.entity.UserOrder">
-        <id column="id" property="id" />
-        <result column="create_time" property="createTime" />
-        <result column="deliver_time" property="deliverTime" />
-        <result column="serve_time" property="serveTime" />
+        <id column="id" property="id"/>
+        <result column="create_time" property="createTime"/>
+        <result column="deliver_time" property="deliverTime"/>
+        <result column="serve_time" property="serveTime"/>
         <result column="good_num" property="goodNum"/>
-        <collection property="items" column="{orderId=id}" select="cn.com.xuct.group.purchase.mapper.UserOrderItemMapper.getOrderItemByOrderId"/>
+        <result column="remarks" property="remarks"/>
+        <collection property="items" column="{orderId=id}"
+                    select="cn.com.xuct.group.purchase.mapper.UserOrderItemMapper.getOrderItemByOrderId"/>
     </resultMap>
 
     <select id="list" resultMap="BaseResultMap">
-        select id , create_time ,  deliver_time , serve_time , status , good_num from bu_user_order
+        select id , create_time , deliver_time , serve_time , status , good_num
+        from bu_user_order
         where 1 =1
         and user_id = #{userId}
         <if test="status != null">
             and status = #{status}
         </if>
+    </select>
+
+    <select id="getOrderDetail" resultMap="BaseResultMap">
+        select id, create_time, deliver_time, serve_time, status, good_num
+        from bu_user_order
+        where 1 = 1
+          and user_id = #{userId}
+          and id = #{orderId}
     </select>
 
 

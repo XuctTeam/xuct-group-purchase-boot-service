@@ -13,11 +13,13 @@ package cn.com.xuct.group.purchase.vo.param;
 import io.swagger.v3.oas.annotations.media.Schema;
 import lombok.Data;
 
+import javax.validation.constraints.NotEmpty;
+import javax.validation.constraints.NotNull;
 import java.io.Serializable;
 import java.util.List;
 
 /**
- * 〈一句话功能简述〉<br> 
+ * 〈一句话功能简述〉<br>
  * 〈〉
  *
  * @author Derek Xu
@@ -27,7 +29,11 @@ import java.util.List;
 @Data
 public class CartManyGoodParam implements Serializable {
 
+    @Schema(description = "场景值")
+    @NotNull
+    private String scene;
 
     @Schema(description = "购物车商品IDS")
+    @NotEmpty
     private List<Long> gids;
 }

@@ -20,6 +20,10 @@ package cn.com.xuct.group.purchase.constants;
  */
 public interface RConstants {
 
+    Integer SUCCESS = 200;
+
+    Integer FAILURE = 400;
+
     /**
      * 默认为空消息
      */
@@ -33,13 +37,11 @@ public interface RConstants {
      */
     String DEFAULT_FAILURE_MESSAGE = "操作失败";
 
-
-
-    Integer SUCCESS = 200;
-
-
-    Integer FAILURE = 400;
-
+    /* 购物车为空 */
+    public static final String CART_EMPTY = "-1000";
+    public static final String NOT_ENOUGH  = "-2000";
+    public static final String ORDER_SCENE_ERROR = "-3000";
+    public static final String ERROR   = "-4000";
 
 
 }

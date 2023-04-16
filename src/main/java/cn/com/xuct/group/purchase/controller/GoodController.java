@@ -96,12 +96,6 @@ public class GoodController {
         return R.data(userGoodCartService.cartList(StpUtil.getLoginIdAsLong(), Lists.newArrayList()));
     }
 
-    @PostMapping("/cart/order/list")
-    @Operation(summary = "【购物车】确认购物车列表", description = "确认购物车列表")
-    public R<List<CartResult>> cartOrderList(@RequestBody @Validated CartManyGoodParam param) {
-        return R.data(userGoodCartService.cartList(StpUtil.getLoginIdAsLong(), param.getGids()));
-    }
-
     @PostMapping("/cart/update/num")
     @Operation(summary = "【购物车】修改购物车数量", description = "修改购物车数量")
     public R<String> updateCartGoodNum(@RequestBody @Validated UpdateCartNumParam param) {
@@ -122,6 +116,4 @@ public class GoodController {
         userGoodCartService.delete(Column.of("user_id", StpUtil.getLoginIdAsLong()));
         return R.status(true);
     }
-
-
 }
