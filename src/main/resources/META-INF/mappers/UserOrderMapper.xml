@@ -12,6 +12,8 @@
         <result column="serve_time" property="serveTime"/>
         <result column="good_num" property="goodNum"/>
         <result column="remarks" property="remarks"/>
+        <result column="integral" property="integral"/>
+        <result column="address_id" property="addressId"/>
         <collection property="items" column="{orderId=id}"
                     select="cn.com.xuct.group.purchase.mapper.UserOrderItemMapper.getOrderItemByOrderId"/>
     </resultMap>
@@ -27,7 +29,7 @@
     </select>
 
     <select id="getOrderDetail" resultMap="BaseResultMap">
-        select id, create_time, deliver_time, serve_time, status, good_num
+        select id, create_time, deliver_time, serve_time, status, good_num , address_id ,integral
         from bu_user_order
         where 1 = 1
           and user_id = #{userId}

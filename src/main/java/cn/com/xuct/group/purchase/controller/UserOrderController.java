@@ -79,6 +79,9 @@ public class UserOrderController {
 
     @Operation(summary = "【订单】订单详情", description = "订单详情")
     @GetMapping("/")
+    @Parameters(value = {
+            @Parameter(name = "orderId", description = "订单ID"),
+    })
     public R<OrderResult> getDetail(@RequestParam("orderId") String orderId) {
         return R.data(userOrderService.getDetail(StpUtil.getLoginIdAsLong(), Long.valueOf(orderId)));
     }
