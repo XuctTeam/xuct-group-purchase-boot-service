@@ -75,4 +75,12 @@ public interface UserOrderService extends IBaseService<UserOrderMapper, UserOrde
      */
     OrderResult getDetail(final Long userId, final Long orderId);
 
+    /**
+     * 取消订单
+     *
+     * @param userId
+     * @param orderId
+     */
+    String cancelOrder(final Long userId, final Long orderId);
+
 }

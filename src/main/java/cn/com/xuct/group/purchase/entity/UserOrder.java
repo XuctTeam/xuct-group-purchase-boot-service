@@ -79,6 +79,12 @@ public class UserOrder extends SuperEntity<UserOrder> {
     @Schema(description = "完成时间")
     private Date successTime;
 
+    @Schema(description = "是否删除")
+    private boolean deleted = false;
+
+    @Schema(description = "是否催单")
+    private boolean rush = false;
+
     @TableField(exist = false)
     private List<UserOrderItem> items;
 

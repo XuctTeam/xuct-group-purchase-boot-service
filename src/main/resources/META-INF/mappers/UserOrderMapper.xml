@@ -13,25 +13,28 @@
         <result column="good_num" property="goodNum"/>
         <result column="remarks" property="remarks"/>
         <result column="integral" property="integral"/>
+        <result column="rush" property="rush"/>
         <result column="address_id" property="addressId"/>
         <collection property="items" column="{orderId=id}"
                     select="cn.com.xuct.group.purchase.mapper.UserOrderItemMapper.getOrderItemByOrderId"/>
     </resultMap>
 
     <select id="list" resultMap="BaseResultMap">
-        select id , create_time , deliver_time , serve_time , status , good_num
+        select id , create_time , deliver_time , serve_time , status , good_num , rush
         from bu_user_order
         where 1 =1
         and user_id = #{userId}
+          and deleted = false
         <if test="status != null">
             and status = #{status}
         </if>
     </select>
 
     <select id="getOrderDetail" resultMap="BaseResultMap">
-        select id, create_time, deliver_time, serve_time, status, good_num , address_id ,integral
+        select id, create_time, deliver_time, serve_time, status, good_num , address_id ,integral , rush
         from bu_user_order
         where 1 = 1
+          and deleted = false
           and user_id = #{userId}
           and id = #{orderId}
     </select>

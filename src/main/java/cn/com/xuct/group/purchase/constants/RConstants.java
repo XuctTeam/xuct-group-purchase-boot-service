@@ -37,11 +37,35 @@ public interface RConstants {
      */
     String DEFAULT_FAILURE_MESSAGE = "操作失败";
 
-    /* 购物车为空 */
-    public static final String CART_EMPTY = "-1000";
-    public static final String NOT_ENOUGH  = "-2000";
-    public static final String ORDER_SCENE_ERROR = "-3000";
-    public static final String ERROR   = "-4000";
+    /**
+     * 购物车为空
+     */
+    String CART_EMPTY = "-1000";
+
+    /**
+     * 库存不足
+     */
+    String NOT_ENOUGH = "-2000";
+
+    /**
+     * 保存订单失败
+     */
+    String ORDER_SCENE_ERROR = "-3000";
+
+    /**
+     * 其他异常
+     */
+    String ERROR = "-4000";
+
+    /**
+     * 订单不存在
+     */
+    String ORDER_NOT_EXIST = "-5000";
+
+    /**
+     * 商品已下架
+     */
+    String ORDER_GOOD_EXPIRE = "-6000";
 
 
 }

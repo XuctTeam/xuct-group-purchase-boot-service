@@ -85,4 +85,16 @@ public class UserOrderController {
     public R<OrderResult> getDetail(@RequestParam("orderId") String orderId) {
         return R.data(userOrderService.getDetail(StpUtil.getLoginIdAsLong(), Long.valueOf(orderId)));
     }
+
+    @Operation(summary = "【订单】取消订单", description = "取消订单")
+    @DeleteMapping("/cancel")
+    public R<String> cancelOrder(@RequestParam("orderId") String orderId) {
+        String result = userOrderService.cancelOrder(StpUtil.getLoginIdAsLong(), Long.valueOf(orderId));
+        return switch (result) {
+            case RConstants.ORDER_NOT_EXIST -> R.fail("订单不存在！");
+            case RConstants.ORDER_GOOD_EXPIRE -> R.fail("商品过期不能退单！");
+            case RConstants.ERROR -> R.fail("取消失败！");
+            default -> R.data(result);
+        };
+    }
 }

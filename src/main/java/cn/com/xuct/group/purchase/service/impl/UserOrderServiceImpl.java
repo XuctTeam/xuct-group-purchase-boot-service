@@ -11,6 +11,7 @@
 package cn.com.xuct.group.purchase.service.impl;
 
 import cn.com.xuct.group.purchase.base.service.BaseServiceImpl;
+import cn.com.xuct.group.purchase.base.vo.Column;
 import cn.com.xuct.group.purchase.constants.RConstants;
 import cn.com.xuct.group.purchase.constants.RedisCacheConstants;
 import cn.com.xuct.group.purchase.entity.Good;
@@ -22,6 +23,7 @@ import cn.com.xuct.group.purchase.service.*;
 import cn.com.xuct.group.purchase.utils.JsonUtils;
 import cn.com.xuct.group.purchase.vo.result.CartResult;
 import cn.com.xuct.group.purchase.vo.result.OrderResult;
+import cn.hutool.core.date.DateUtil;
 import com.baomidou.mybatisplus.core.metadata.IPage;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.google.common.collect.Maps;
@@ -34,6 +36,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.util.CollectionUtils;
 
+import java.util.Date;
 import java.util.List;
 import java.util.Map;
 import java.util.stream.Collectors;
@@ -54,7 +57,6 @@ public class UserOrderServiceImpl extends BaseServiceImpl<UserOrderMapper, UserO
     private final UserOrderItemService userOrderItemService;
     private final GoodService goodService;
     private final UserService userService;
-
     private final UserAddressService userAddressService;
     private final StringRedisTemplate redisTemplate;
 
@@ -107,6 +109,38 @@ public class UserOrderServiceImpl extends BaseServiceImpl<UserOrderMapper, UserO
         UserAddress address = userAddressService.getById(order.getAddressId());
         result.setAddress(address);
         return result;
+    }
+
+    @Override
+    @Transactional
+    public String cancelOrder(Long userId, Long orderId) {
+        UserOrder userOrder = this.getById(orderId);
+        if (userOrder == null) {
+            return RConstants.ORDER_NOT_EXIST;
+        }
+        List<UserOrderItem> userOrderItems = userOrderItemService.find(Column.of("order_id", orderId));
+        if (CollectionUtils.isEmpty(userOrderItems)) {
+            return RConstants.ERROR;
+        }
+        List<Good> goodList = goodService.find(Column.in("id", userOrderItems.stream().map(UserOrderItem::getGoodId).collect(Collectors.toList())));
+        Date date = DateUtil.date().toJdkDate();
+        boolean goodExpire = goodList.stream().anyMatch(x -> x.getEndTime().getTime() <= date.getTime());
+        if (goodExpire) {
+            return RConstants.ORDER_GOOD_EXPIRE;
+        }
+        Map<Long, Integer> inventoryMap = userOrderItems.stream().collect(Collectors.toMap(UserOrderItem::getUserId, UserOrderItem::getNum));
+        /* 1.更新商品库存 */
+        for (Long gid : inventoryMap.keySet()) {
+            redisTemplate.opsForValue().increment(RedisCacheConstants.GOOD_INVENTORY_REDIS_KEY.concat(String.valueOf(gid)), inventoryMap.get(gid));
+        }
+        goodList.forEach(g -> {
+            g.setInventory(g.getInventory() + inventoryMap.get(g.getId()));
+        });
+        goodService.updateBatchById(goodList);
+        /* 2.更新订单状态 */
+        userOrder.setDeleted(true);
+        this.updateById(userOrder);
+        return String.valueOf(RConstants.SUCCESS);
     }
 
     /**
