@@ -112,6 +112,21 @@ public class UserOrderServiceImpl extends BaseServiceImpl<UserOrderMapper, UserO
     }
 
     @Override
+    public String refundOrder(Long userId, Long orderId, String reason) {
+        UserOrder userOrder = this.getById(orderId);
+        if (userOrder == null) {
+            return RConstants.ORDER_NOT_EXIST;
+        }
+        if (userOrder.getRefundStatus() == 1) {
+            return RConstants.ORDER_ALREADY_REREFUND;
+        }
+        userOrder.setRefundStatus(1);
+        userOrder.setRefundReason(reason);
+        this.updateById(userOrder);
+        return String.valueOf(RConstants.SUCCESS);
+    }
+
+    @Override
     @Transactional
     public String cancelOrder(Long userId, Long orderId) {
         UserOrder userOrder = this.getById(orderId);
@@ -141,6 +156,28 @@ public class UserOrderServiceImpl extends BaseServiceImpl<UserOrderMapper, UserO
         userOrder.setDeleted(true);
         this.updateById(userOrder);
         return String.valueOf(RConstants.SUCCESS);
+    }
+
+    @Override
+    public void rushOrder(Long userId, Long orderId) {
+        UserOrder userOrder = this.getById(orderId);
+        if (userOrder == null || String.valueOf(orderId).equals(String.valueOf(userOrder.getUserId()))) {
+            log.error("UserOrderServiceImpl:: rush order error , order id = {}", orderId);
+            return;
+        }
+        userOrder.setRush(true);
+        this.updateById(userOrder);
+    }
+
+    @Override
+    public void receiveOrder(Long userId, Long orderId) {
+        UserOrder userOrder = this.getById(orderId);
+        if (userOrder == null || String.valueOf(orderId).equals(String.valueOf(userOrder.getUserId()))) {
+            log.error("UserOrderServiceImpl:: receiver order error , order id = {}", orderId);
+            return;
+        }
+        userOrder.setStatus(4);
+        this.updateById(userOrder);
     }
 
     /**

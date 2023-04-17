@@ -79,13 +79,19 @@ public class UserOrder extends SuperEntity<UserOrder> {
     @Schema(description = "完成时间")
     private Date successTime;
 
+    @Schema(description = "退款状态 0未退款 1已退款")
+    private Integer refundStatus;
+
+    @Schema(description = "退款原因")
+    private String refundReason;
+
     @Schema(description = "是否删除")
     private boolean deleted = false;
 
     @Schema(description = "是否催单")
     private boolean rush = false;
 
+
     @TableField(exist = false)
     private List<UserOrderItem> items;
-
 }

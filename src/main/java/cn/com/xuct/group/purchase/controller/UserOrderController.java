@@ -16,6 +16,7 @@ import cn.com.xuct.group.purchase.constants.RConstants;
 import cn.com.xuct.group.purchase.entity.UserOrder;
 import cn.com.xuct.group.purchase.service.UserOrderService;
 import cn.com.xuct.group.purchase.vo.param.CartManyGoodParam;
+import cn.com.xuct.group.purchase.vo.param.OrderIdParam;
 import cn.com.xuct.group.purchase.vo.param.OrderParam;
 import cn.com.xuct.group.purchase.vo.result.CartResult;
 import cn.com.xuct.group.purchase.vo.result.OrderResult;
@@ -86,15 +87,29 @@ public class UserOrderController {
         return R.data(userOrderService.getDetail(StpUtil.getLoginIdAsLong(), Long.valueOf(orderId)));
     }
 
-    @Operation(summary = "【订单】取消订单", description = "取消订单")
-    @DeleteMapping("/cancel")
-    public R<String> cancelOrder(@RequestParam("orderId") String orderId) {
-        String result = userOrderService.cancelOrder(StpUtil.getLoginIdAsLong(), Long.valueOf(orderId));
+    @Operation(summary = "【订单】申请取消订单", description = "申请取消订单")
+    @PostMapping("/refund")
+    public R<String> refundOrder(@RequestBody @Validated OrderIdParam param) {
+        String result = userOrderService.refundOrder(StpUtil.getLoginIdAsLong(), Long.valueOf(param.getOrderId()), param.getReason());
         return switch (result) {
             case RConstants.ORDER_NOT_EXIST -> R.fail("订单不存在！");
-            case RConstants.ORDER_GOOD_EXPIRE -> R.fail("商品过期不能退单！");
-            case RConstants.ERROR -> R.fail("取消失败！");
+            case RConstants.ORDER_ALREADY_REREFUND -> R.fail("订单已经申请退款！");
+            case RConstants.ERROR -> R.fail("申请失败！");
             default -> R.data(result);
         };
+    }
+
+    @Operation(summary = "【订单】催单", description = "催单")
+    @PostMapping("/rush")
+    public R<String> rushOrder(@RequestBody @Validated OrderIdParam param) {
+        userOrderService.rushOrder(StpUtil.getLoginIdAsLong(), Long.valueOf(param.getOrderId()));
+        return R.status(true);
+    }
+
+    @Operation(summary = "【订单】收货", description = "收货")
+    @PostMapping("/receive")
+    public R<String> receiveOrder(@RequestBody @Validated OrderIdParam param) {
+        userOrderService.receiveOrder(StpUtil.getLoginIdAsLong(), Long.valueOf(param.getOrderId()));
+        return R.status(true);
     }
 }

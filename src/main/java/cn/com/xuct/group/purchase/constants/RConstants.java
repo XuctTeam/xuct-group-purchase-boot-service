@@ -67,5 +67,10 @@ public interface RConstants {
      */
     String ORDER_GOOD_EXPIRE = "-6000";
 
+    /**
+     *
+     */
+    String ORDER_ALREADY_REREFUND = "-7000";
+
 
 }

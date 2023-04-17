@@ -25,6 +25,7 @@
         where 1 =1
         and user_id = #{userId}
           and deleted = false
+          and refund_status = 0
         <if test="status != null">
             and status = #{status}
         </if>
@@ -35,6 +36,7 @@
         from bu_user_order
         where 1 = 1
           and deleted = false
+          and refund_status = 0
           and user_id = #{userId}
           and id = #{orderId}
     </select>
