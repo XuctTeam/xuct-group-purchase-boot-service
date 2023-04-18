@@ -12,6 +12,8 @@ package cn.com.xuct.group.purchase.controller;
 
 import cn.com.xuct.group.purchase.base.res.R;
 import cn.com.xuct.group.purchase.base.vo.PageData;
+import cn.com.xuct.group.purchase.client.cos.client.CosClient;
+import cn.com.xuct.group.purchase.constants.FileFolderConstants;
 import cn.com.xuct.group.purchase.constants.RConstants;
 import cn.com.xuct.group.purchase.entity.UserOrder;
 import cn.com.xuct.group.purchase.service.UserOrderService;
@@ -29,8 +31,13 @@ import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.multipart.MultipartFile;
 
+import java.io.File;
+import java.io.IOException;
+import java.net.URL;
 import java.util.List;
+import java.util.Objects;
 
 /**
  * 〈一句话功能简述〉<br>
@@ -111,5 +118,17 @@ public class UserOrderController {
     public R<String> receiveOrder(@RequestBody @Validated OrderIdParam param) {
         userOrderService.receiveOrder(StpUtil.getLoginIdAsLong(), Long.valueOf(param.getOrderId()));
         return R.status(true);
+    }
+
+    @Operation(summary = "【订单】退单上传图片", description = "退单上传图片")
+    @PostMapping("/refund/upload")
+    public R<String> uploadRefundImage(MultipartFile file) {
+        try {
+            URL url = CosClient.uploadFile(file, FileFolderConstants.REFUND.concat(Objects.requireNonNull(file.getOriginalFilename())));
+            return R.data(url.toString());
+        } catch (IOException e) {
+            log.error("UserOrderController:: upload error");
+            return R.fail("上传失败");
+        }
     }
 }

@@ -11,8 +11,8 @@
 package cn.com.xuct.group.purchase.controller;
 
 import cn.com.xuct.group.purchase.base.res.R;
-import cn.com.xuct.group.purchase.client.imgurl.ImgUrlClient;
-import cn.com.xuct.group.purchase.client.imgurl.ImgUrlData;
+import cn.com.xuct.group.purchase.client.cos.client.CosClient;
+import cn.com.xuct.group.purchase.constants.FileFolderConstants;
 import cn.com.xuct.group.purchase.entity.User;
 import cn.com.xuct.group.purchase.service.UserService;
 import cn.com.xuct.group.purchase.utils.JsonUtils;
@@ -26,6 +26,10 @@ import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 import org.wildfly.common.Assert;
+
+import java.io.IOException;
+import java.net.URL;
+import java.util.Objects;
 
 /**
  * 〈一句话功能简述〉<br>
@@ -45,8 +49,6 @@ public class UserController {
 
     private final UserService userService;
 
-    private final ImgUrlClient imgUrlClient;
-
     @Operation(summary = "修改用户信息")
     @PutMapping
     public R<String> modify(@Validated @RequestBody UserParam param) {
@@ -60,14 +62,17 @@ public class UserController {
     @Operation(summary = "上传头像")
     @PostMapping("/avatar/upload")
     public R<String> uploadAvatar(MultipartFile file) {
-        ImgUrlData data = imgUrlClient.upload(file);
-        if (data == null) {
+        URL url = null;
+        try {
+            url = CosClient.uploadFile(file, FileFolderConstants.AVATAR.concat(Objects.requireNonNull(file.getOriginalFilename())));
+        } catch (IOException e) {
+            log.error("UserController:: update avatar error");
             return R.fail("上传失败");
         }
         Long userId = StpUtil.getLoginIdAsLong();
         User user = userService.findById(userId);
-        User updateUser = userService.updateUserInfo(user, null, null, data.getUrl());
+        User updateUser = userService.updateUserInfo(user, null, null, url.toString());
         log.info("UserController:: user = {}", JsonUtils.obj2json(updateUser));
-        return R.data(data.getUrl());
+        return R.data(url.toString());
     }
 }
