@@ -83,7 +83,7 @@ public interface UserOrderService extends IBaseService<UserOrderMapper, UserOrde
      * @param reason
      * @return
      */
-    String refundOrder(final Long userId, final Long orderId, final String reason);
+    String refundOrder(final Long userId, final Long orderId, final String type, final String reason, final List<String> images);
 
     /**
      * 取消订单

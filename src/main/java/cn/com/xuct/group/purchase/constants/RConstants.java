@@ -70,7 +70,7 @@ public interface RConstants {
     /**
      *
      */
-    String ORDER_ALREADY_REREFUND = "-7000";
+    String ORDER_ALREADY_REFUND = "-7000";
 
 
 }

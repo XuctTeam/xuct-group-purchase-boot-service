@@ -9,7 +9,7 @@ spring:
     driver-class-name: com.mysql.cj.jdbc.Driver
     url: jdbc:mysql://119.96.193.174:3306/group_purchase?useSSL=false&useUnicode=true&characterEncoding=utf-8&serverTimezone=GMT%2B8
     username: root
-    password: ENC(UN+JxSOD6zt45ZdIMeqs8f9lTm0bHIQ6pIu9hvM9liXSELHEoq9Ex3g4Y/Gug312)
+    password: ENC(TS8pO2QiQDmLOI9m569voPYV7iWS6gNsLaCFQbGIUgCT8MRsc3pTMOEYTfhfj8B3)
     hikari:
       minimum-idle: 3
       maximum-pool-size: 10
@@ -20,7 +20,7 @@ spring:
     redis:
       database: 0
       host: 119.96.193.174
-      password: ENC(UKZxR/QnjQ9efGcsK5GpybMf8Uz+WI2x016a+o6RktGzGqxItMNyg/8GsDPN3Acu)
+      password: ENC(JCZLsa4nak7hGEjCWDvrcSe1dDirXu04s5L9sv0blvgTGt3T9pzo3Qe12ubN1B/A)
       port: 6379
       # 连接超时时间
       timeout: 30s
@@ -69,10 +69,10 @@ wx:
   minimap:
     configs:
       - appid: wxd1cee317f1b0df7c
-        secret: ENC(sSGkzeqOqCbuAG8kBL2x4jYn71iKMVzD7tJO6LroLoRTXPhWuA/SWtFm0dNu1Fr9sBK/0ZU7gMtClzdn+uz1oat5lvSsrw6SM6CMRYBCX8Y=)
+        secret: ENC(vCxECXlYDJRYs9Xzhn6VBqeZdjRGeRt6PsJfAxWT0oTpEvhp8tbM6+OEWsLmyU3GSmmrT2Sj/Vv3U/iWhIFDeB7MYT7520qdTUCl4wp5q90=)
 
 cos:
   secret-id: AKIDTntnTu66pJZaNwKUP6YlkqiLjtpWyBAu
-  secret-key: ENC(VHOWnbcAz6T4pur6WbMR9ZYoe7KfRkawCLD3TGJpqeutsnRCBDwmBRibcYyqicNd)
+  secret-key: ENC(YQyNRHFTti9waIIS+gEUun/e5oKmuqrGx8+u6599kXAFBWDj1OL2RG9QA9S861uiMTJ+e+1qPJNgvACX94szaiJWNw4LqKUhorGptP0pF/w=)
   bucket-name: group-purchase-1308769147
   region: ap-beijing

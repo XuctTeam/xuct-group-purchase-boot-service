@@ -20,6 +20,7 @@ import cn.com.xuct.group.purchase.service.UserOrderService;
 import cn.com.xuct.group.purchase.vo.param.CartManyGoodParam;
 import cn.com.xuct.group.purchase.vo.param.OrderIdParam;
 import cn.com.xuct.group.purchase.vo.param.OrderParam;
+import cn.com.xuct.group.purchase.vo.param.RefundOrderParam;
 import cn.com.xuct.group.purchase.vo.result.CartResult;
 import cn.com.xuct.group.purchase.vo.result.OrderResult;
 import cn.dev33.satoken.stp.StpUtil;
@@ -94,13 +95,13 @@ public class UserOrderController {
         return R.data(userOrderService.getDetail(StpUtil.getLoginIdAsLong(), Long.valueOf(orderId)));
     }
 
-    @Operation(summary = "【订单】申请取消订单", description = "申请取消订单")
+    @Operation(summary = "【订单】申请退单", description = "申请退单")
     @PostMapping("/refund")
-    public R<String> refundOrder(@RequestBody @Validated OrderIdParam param) {
-        String result = userOrderService.refundOrder(StpUtil.getLoginIdAsLong(), Long.valueOf(param.getOrderId()), param.getReason());
+    public R<String> refundOrder(@RequestBody @Validated RefundOrderParam param) {
+        String result = userOrderService.refundOrder(StpUtil.getLoginIdAsLong(), Long.valueOf(param.getOrderId()), param.getRefundType(), param.getRefundReason(), param.getRefundImages());
         return switch (result) {
             case RConstants.ORDER_NOT_EXIST -> R.fail("订单不存在！");
-            case RConstants.ORDER_ALREADY_REREFUND -> R.fail("订单已经申请退款！");
+            case RConstants.ORDER_ALREADY_REFUND -> R.fail("订单已经申请退款！");
             case RConstants.ERROR -> R.fail("申请失败！");
             default -> R.data(result);
         };

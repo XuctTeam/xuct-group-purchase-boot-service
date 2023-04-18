@@ -26,7 +26,7 @@ import org.springframework.context.annotation.Configuration;
  * @since 1.0.0
  */
 @Slf4j
-@Setter
+@Data
 @Configuration
 @ConfigurationProperties(prefix = "cos")
 public class CosProperties implements InitializingBean {

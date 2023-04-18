@@ -112,16 +112,20 @@ public class UserOrderServiceImpl extends BaseServiceImpl<UserOrderMapper, UserO
     }
 
     @Override
-    public String refundOrder(Long userId, Long orderId, String reason) {
+    public String refundOrder(final Long userId, final Long orderId, final String type, final String reason, final List<String> images) {
         UserOrder userOrder = this.getById(orderId);
         if (userOrder == null) {
             return RConstants.ORDER_NOT_EXIST;
         }
-        if (userOrder.getRefundStatus() == 1) {
-            return RConstants.ORDER_ALREADY_REREFUND;
+        if (userOrder.getRefundStatus() != 0) {
+            return RConstants.ORDER_ALREADY_REFUND;
         }
         userOrder.setRefundStatus(1);
+        userOrder.setRefundType(type);
         userOrder.setRefundReason(reason);
+        if (!CollectionUtils.isEmpty(images)) {
+            userOrder.setRefundImages(String.join(",", images.toArray(new String[images.size()])));
+        }
         this.updateById(userOrder);
         return String.valueOf(RConstants.SUCCESS);
     }
