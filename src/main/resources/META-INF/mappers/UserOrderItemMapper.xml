@@ -16,10 +16,21 @@
 
     <!--根据userID查询地址信息-->
     <select id="getOrderItemByOrderId" resultMap="BaseResultMap">
-        select oi.id, g.id as good_id, g.name as good_name, g.first_drawing as good_first_drawing, g.unit as good_unit, oi.num, oi.price
+        select oi.id, g.id as good_id, g.name as good_name, g.first_drawing as good_first_drawing, g.unit as good_unit, oi.num, oi.price , oi.evaluation
         from bu_user_order_item oi
                  inner join bu_good g on oi.good_id = g.id
         where oi.order_id = #{orderId}
+    </select>
+
+
+    <select id="countEvaluation" resultType="java.lang.Integer">
+        select count(1)
+        from bu_user_order_item oi
+                 inner join bu_user_order o on oi.order_id = o.id
+        where 1 = 1
+          and o.status = 4
+          and oi.evaluation = false
+          and oi.user_id = #{userId}
     </select>
 
 </mapper>

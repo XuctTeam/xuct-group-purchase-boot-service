@@ -26,10 +26,7 @@ import lombok.RequiredArgsConstructor;
 import me.chanjar.weixin.common.error.WxErrorException;
 import org.springframework.util.StringUtils;
 import org.springframework.validation.annotation.Validated;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 /**
  * 〈一句话功能简述〉<br>
@@ -50,7 +47,7 @@ public class LoginController {
     private final UserService userService;
 
     @SaIgnore
-    @Operation(summary = "获取微信Session", description = "根据code获取小程序SessionInfo")
+    @Operation(summary = "【登录】获取微信Session", description = "根据code获取小程序SessionInfo")
     @PostMapping
     public R<LoginResult> login(@Validated @RequestBody WxCodeParam wxCodeParam) throws WxErrorException {
         WxMaJscode2SessionResult session = wxMaConfiguration.getMaService().jsCode2SessionInfo(wxCodeParam.getCode());
@@ -64,5 +61,12 @@ public class LoginController {
         SaTokenInfo tokenInfo = StpUtil.getTokenInfo();
         user.cleanData();
         return R.data(LoginResult.builder().user(user).tokenName(tokenInfo.getTokenName()).tokenValue(tokenInfo.getTokenValue()).build());
+    }
+
+    @Operation(summary = "【登录】退出", description = "退出")
+    @DeleteMapping
+    public R<String> logout() {
+        StpUtil.logout(StpUtil.getLoginIdAsLong());
+        return R.status(true);
     }
 }

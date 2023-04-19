@@ -27,4 +27,8 @@ import org.springframework.stereotype.Service;
 @Service
 public class UserOrderItemServiceImpl extends BaseServiceImpl<UserOrderItemMapper , UserOrderItem> implements UserOrderItemService {
 
+    @Override
+    public int countEvaluation(Long userId) {
+        return ((UserOrderItemMapper)super.getBaseMapper()).countEvaluation(userId);
+    }
 }

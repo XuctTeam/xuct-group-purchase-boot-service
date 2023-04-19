@@ -40,13 +40,13 @@ public class UserAddressController {
     private final UserAddressService userAddressService;
 
     @GetMapping("/list")
-    @Operation(summary = "获取用户地址", description = "获取用户地址")
+    @Operation(summary = "【用户】获取用户地址", description = "获取用户地址")
     public R<List<UserAddress>> list(@RequestParam(value = "searchValue", required = false) String searchValue) {
         return R.data(userAddressService.findList(StpUtil.getLoginIdAsLong(), searchValue));
     }
 
     @PostMapping
-    @Operation(summary = "保存地址", description = "保存地址")
+    @Operation(summary = "【用户】保存地址", description = "保存地址")
     public R<String> save(@RequestBody UserAddress address) {
         if (address.getId() == null) {
             address.setUserId(StpUtil.getLoginIdAsLong());
@@ -56,20 +56,20 @@ public class UserAddressController {
     }
 
     @GetMapping()
-    @Operation(summary = "查询地址", description = "查询地址")
+    @Operation(summary = "【用户】查询地址", description = "查询地址")
     public R<UserAddress> get(@RequestParam("id") String id) {
         return R.data(userAddressService.getById(Long.valueOf(id)));
     }
 
     @DeleteMapping
-    @Operation(summary = "删除地址", description = "删除地址")
+    @Operation(summary = "【用户】删除地址", description = "删除地址")
     public R<String> delete(@RequestParam("id") String id) {
         userAddressService.delete(StpUtil.getLoginIdAsLong(), Long.valueOf(id));
         return R.status(true);
     }
 
     @GetMapping("/default")
-    @Operation(summary = "获取默认地址", description = "获取默认地址")
+    @Operation(summary = "【用户】获取默认地址", description = "获取默认地址")
     public R<UserAddress> getDefault() {
         return R.data(userAddressService.getDefault(StpUtil.getLoginIdAsLong()));
     }

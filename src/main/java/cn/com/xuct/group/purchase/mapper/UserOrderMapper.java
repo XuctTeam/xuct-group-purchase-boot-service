@@ -11,6 +11,7 @@
 package cn.com.xuct.group.purchase.mapper;
 
 import cn.com.xuct.group.purchase.entity.UserOrder;
+import cn.com.xuct.group.purchase.vo.result.OrderSumResult;
 import com.baomidou.mybatisplus.core.mapper.BaseMapper;
 import com.baomidou.mybatisplus.core.metadata.IPage;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
@@ -26,6 +27,9 @@ import org.springframework.web.bind.annotation.RequestParam;
  * @since 1.0.0
  */
 public interface UserOrderMapper extends BaseMapper<UserOrder> {
+
+
+    OrderSumResult sumCount(@Param("userId")Long userId);
 
     /**
      * 分页查哈讯

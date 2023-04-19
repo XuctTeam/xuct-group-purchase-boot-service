@@ -24,4 +24,11 @@ import cn.com.xuct.group.purchase.mapper.UserOrderItemMapper;
  */
 public interface UserOrderItemService extends IBaseService<UserOrderItemMapper, UserOrderItem> {
 
+    /**
+     * 待评价商品总数
+     *
+     * @param userId
+     * @return
+     */
+    int countEvaluation(final Long userId);
 }

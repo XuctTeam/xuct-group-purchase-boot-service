@@ -23,6 +23,7 @@ import cn.com.xuct.group.purchase.vo.param.OrderParam;
 import cn.com.xuct.group.purchase.vo.param.RefundOrderParam;
 import cn.com.xuct.group.purchase.vo.result.CartResult;
 import cn.com.xuct.group.purchase.vo.result.OrderResult;
+import cn.com.xuct.group.purchase.vo.result.OrderSumResult;
 import cn.dev33.satoken.stp.StpUtil;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.Parameter;
@@ -55,6 +56,12 @@ import java.util.Objects;
 @RequiredArgsConstructor
 public class UserOrderController {
     private final UserOrderService userOrderService;
+
+    @Operation(summary = "【订单】统计总数", description = "统计总数")
+    @GetMapping("/sum")
+    public R<OrderSumResult> sumCount() {
+        return R.data(userOrderService.sumCount(StpUtil.getLoginIdAsLong()));
+    }
 
     @Operation(summary = "【订单】确认订单详情", description = "确认订单详情")
     @PostMapping("/confirm/detail")
@@ -95,6 +102,18 @@ public class UserOrderController {
         return R.data(userOrderService.getDetail(StpUtil.getLoginIdAsLong(), Long.valueOf(orderId)));
     }
 
+    @Operation(summary = "【订单】退单上传图片", description = "退单上传图片")
+    @PostMapping("/refund/upload")
+    public R<String> uploadRefundImage(MultipartFile file) {
+        try {
+            URL url = CosClient.uploadFile(file, FileFolderConstants.REFUND.concat(Objects.requireNonNull(file.getOriginalFilename())));
+            return R.data(url.toString());
+        } catch (IOException e) {
+            log.error("UserOrderController:: upload error");
+            return R.fail("上传失败");
+        }
+    }
+
     @Operation(summary = "【订单】申请退单", description = "申请退单")
     @PostMapping("/refund")
     public R<String> refundOrder(@RequestBody @Validated RefundOrderParam param) {
@@ -121,15 +140,10 @@ public class UserOrderController {
         return R.status(true);
     }
 
-    @Operation(summary = "【订单】退单上传图片", description = "退单上传图片")
-    @PostMapping("/refund/upload")
-    public R<String> uploadRefundImage(MultipartFile file) {
-        try {
-            URL url = CosClient.uploadFile(file, FileFolderConstants.REFUND.concat(Objects.requireNonNull(file.getOriginalFilename())));
-            return R.data(url.toString());
-        } catch (IOException e) {
-            log.error("UserOrderController:: upload error");
-            return R.fail("上传失败");
-        }
+    @Operation(summary = "【订单】删除订单", description = "删除订单")
+    @DeleteMapping
+    public R<String> deleteOrder(@RequestBody @Validated OrderIdParam param) {
+        userOrderService.deleteOrder(StpUtil.getLoginIdAsLong(), Long.valueOf(param.getOrderId()));
+        return R.status(true);
     }
 }

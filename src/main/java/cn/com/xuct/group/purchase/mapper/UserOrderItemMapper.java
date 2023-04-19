@@ -17,7 +17,7 @@ import org.apache.ibatis.annotations.Param;
 import java.util.List;
 
 /**
- * 〈一句话功能简述〉<br> 
+ * 〈一句话功能简述〉<br>
  * 〈〉
  *
  * @author Derek Xu
@@ -26,5 +26,14 @@ import java.util.List;
  */
 public interface UserOrderItemMapper extends BaseMapper<UserOrderItem> {
 
-    List<UserOrderItem> getOrderItemByOrderId(@Param("orderId")Long orderId);
+    List<UserOrderItem> getOrderItemByOrderId(@Param("orderId") Long orderId);
+
+
+    /**
+     * 统计待评价商品总数
+     *
+     * @param userId
+     * @return
+     */
+    int countEvaluation(@Param("userId") Long userId);
 }

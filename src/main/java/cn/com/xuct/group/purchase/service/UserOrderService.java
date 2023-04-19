@@ -15,6 +15,7 @@ import cn.com.xuct.group.purchase.entity.UserOrder;
 import cn.com.xuct.group.purchase.mapper.UserOrderMapper;
 import cn.com.xuct.group.purchase.vo.result.CartResult;
 import cn.com.xuct.group.purchase.vo.result.OrderResult;
+import cn.com.xuct.group.purchase.vo.result.OrderSumResult;
 import com.baomidou.mybatisplus.core.metadata.IPage;
 
 import java.util.List;
@@ -32,6 +33,14 @@ public interface UserOrderService extends IBaseService<UserOrderMapper, UserOrde
     final String FROM_CART = "cart";
 
     final String FROM_GOOD = "good";
+
+    /**
+     * 订单总数统计
+     *
+     * @param userId
+     * @return
+     */
+    OrderSumResult sumCount(final Long userId);
 
     /**
      * 获取确认订单详情
@@ -108,5 +117,13 @@ public interface UserOrderService extends IBaseService<UserOrderMapper, UserOrde
      * @param orderId
      */
     void receiveOrder(final Long userId, final Long orderId);
+
+    /**
+     * 删除订单
+     *
+     * @param userId
+     * @param orderId
+     */
+    void deleteOrder(final Long userId, final Long orderId);
 
 }

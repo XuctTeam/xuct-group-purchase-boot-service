@@ -50,6 +50,9 @@ public class UserOrderItem extends SuperEntity<UserOrderItem> {
     @Schema(description = "金额")
     private Long price;
 
+    @Schema(description = "是否评价")
+    private boolean evaluation = false;
+
     @Schema(description = "商品名称")
     @TableField(exist = false)
     private String goodName;
@@ -61,5 +64,7 @@ public class UserOrderItem extends SuperEntity<UserOrderItem> {
     @Schema(description = "商品单位")
     @TableField(exist = false)
     private String goodUnit;
+
+
 
 }

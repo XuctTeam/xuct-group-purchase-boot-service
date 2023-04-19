@@ -94,6 +94,9 @@ public class UserOrder extends SuperEntity<UserOrder> {
     @Schema(description = "是否删除")
     private boolean deleted = false;
 
+    @Schema(description = "删除时间")
+    private Date deletedTime;
+
     @Schema(description = "是否催单")
     private boolean rush = false;
 

@@ -23,6 +23,7 @@ import cn.com.xuct.group.purchase.service.*;
 import cn.com.xuct.group.purchase.utils.JsonUtils;
 import cn.com.xuct.group.purchase.vo.result.CartResult;
 import cn.com.xuct.group.purchase.vo.result.OrderResult;
+import cn.com.xuct.group.purchase.vo.result.OrderSumResult;
 import cn.hutool.core.date.DateUtil;
 import com.baomidou.mybatisplus.core.metadata.IPage;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
@@ -59,6 +60,13 @@ public class UserOrderServiceImpl extends BaseServiceImpl<UserOrderMapper, UserO
     private final UserService userService;
     private final UserAddressService userAddressService;
     private final StringRedisTemplate redisTemplate;
+
+    @Override
+    public OrderSumResult sumCount(Long userId) {
+        OrderSumResult result = ((UserOrderMapper) this.getBaseMapper()).sumCount(userId);
+        result.setToBeEvaluationCount(userOrderItemService.countEvaluation(userId));
+        return result;
+    }
 
     @Override
     public List<CartResult> getConfirmOrderDetail(Long userId, String scene, List<Long> gids) {
@@ -181,6 +189,18 @@ public class UserOrderServiceImpl extends BaseServiceImpl<UserOrderMapper, UserO
             return;
         }
         userOrder.setStatus(4);
+        this.updateById(userOrder);
+    }
+
+    @Override
+    public void deleteOrder(Long userId, Long orderId) {
+        UserOrder userOrder = this.getById(orderId);
+        if (userOrder == null || String.valueOf(orderId).equals(String.valueOf(userOrder.getUserId()))) {
+            log.error("UserOrderServiceImpl:: delete order error , order id = {}", orderId);
+            return;
+        }
+        userOrder.setDeleted(true);
+        userOrder.setDeletedTime(new Date());
         this.updateById(userOrder);
     }
 
