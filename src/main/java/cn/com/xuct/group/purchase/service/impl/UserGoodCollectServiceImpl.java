@@ -12,12 +12,15 @@ package cn.com.xuct.group.purchase.service.impl;
 
 import cn.com.xuct.group.purchase.base.service.BaseServiceImpl;
 import cn.com.xuct.group.purchase.base.vo.Column;
+import cn.com.xuct.group.purchase.entity.Good;
 import cn.com.xuct.group.purchase.entity.UserGoodCollect;
 import cn.com.xuct.group.purchase.mapper.UserGoodCollectMapper;
 import cn.com.xuct.group.purchase.service.UserGoodCollectService;
 import cn.dev33.satoken.stp.StpUtil;
 import com.google.common.collect.Lists;
 import org.springframework.stereotype.Service;
+
+import java.util.List;
 
 /**
  * 〈一句话功能简述〉<br>
@@ -32,9 +35,8 @@ public class UserGoodCollectServiceImpl extends BaseServiceImpl<UserGoodCollectM
 
     @Override
     public void collect(Long userId, Long goodId) {
-        UserGoodCollect userGoodCollect = this.get(Lists.newArrayList(Column.of("user_id", StpUtil.getLoginIdAsLong()),
-                Column.of("good_id", goodId)));
-        if(userGoodCollect == null){
+        UserGoodCollect userGoodCollect = this.get(Lists.newArrayList(Column.of("user_id", StpUtil.getLoginIdAsLong()), Column.of("good_id", goodId)));
+        if (userGoodCollect == null) {
             userGoodCollect = new UserGoodCollect();
             userGoodCollect.setUserId(userId);
             userGoodCollect.setGoodId(goodId);
@@ -42,5 +44,10 @@ public class UserGoodCollectServiceImpl extends BaseServiceImpl<UserGoodCollectM
             return;
         }
         this.removeById(userGoodCollect.getId());
+    }
+
+    @Override
+    public List<Good> list(Long userId) {
+        return ((UserGoodCollectMapper) super.getBaseMapper()).queryGoodByUserId(userId);
     }
 }

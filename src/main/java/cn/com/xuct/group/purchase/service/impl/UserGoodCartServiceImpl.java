@@ -35,7 +35,6 @@ import java.util.List;
 @Service
 public class UserGoodCartServiceImpl extends BaseServiceImpl<UserGoodCartMapper, UserGoodCart> implements UserGoodCartService {
 
-
     @Override
     public void addCart(Long gid, Long uid) {
         ((UserGoodCartMapper) super.getBaseMapper()).addGoodCart(gid, uid);

@@ -116,4 +116,10 @@ public class GoodController {
         userGoodCartService.delete(Column.of("user_id", StpUtil.getLoginIdAsLong()));
         return R.status(true);
     }
+
+    @Operation(summary = "【用户】我的收藏", description = "我的收藏")
+    @GetMapping("/user/collect")
+    public R<List<Good>> collect() {
+        return R.data(userGoodCollectService.list(StpUtil.getLoginIdAsLong()));
+    }
 }

@@ -15,6 +15,7 @@ import cn.com.xuct.group.purchase.base.res.R;
 import cn.com.xuct.group.purchase.client.cos.client.CosClient;
 import cn.com.xuct.group.purchase.config.WxMaConfiguration;
 import cn.com.xuct.group.purchase.constants.FileFolderConstants;
+import cn.com.xuct.group.purchase.entity.Good;
 import cn.com.xuct.group.purchase.entity.User;
 import cn.com.xuct.group.purchase.service.UserService;
 import cn.com.xuct.group.purchase.utils.JsonUtils;
@@ -35,6 +36,7 @@ import org.wildfly.common.Assert;
 
 import java.io.IOException;
 import java.net.URL;
+import java.util.List;
 import java.util.Objects;
 
 /**

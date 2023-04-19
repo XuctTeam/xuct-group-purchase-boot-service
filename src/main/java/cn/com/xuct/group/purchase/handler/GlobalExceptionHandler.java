@@ -55,7 +55,7 @@ public class GlobalExceptionHandler {
     @ExceptionHandler(value = NotLoginException.class)
     public R<String> notLoginException(NotLoginException e) {
         log.error("未登录！原因是：{}", e.getMessage());
-        return R.fail(e.getCode(), e.getMessage());
+        return R.success("未登录");
     }
 
     @ResponseStatus(HttpStatus.INTERNAL_SERVER_ERROR)

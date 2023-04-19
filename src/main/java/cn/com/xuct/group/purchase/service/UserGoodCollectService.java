@@ -11,8 +11,11 @@
 package cn.com.xuct.group.purchase.service;
 
 import cn.com.xuct.group.purchase.base.service.IBaseService;
+import cn.com.xuct.group.purchase.entity.Good;
 import cn.com.xuct.group.purchase.entity.UserGoodCollect;
 import cn.com.xuct.group.purchase.mapper.UserGoodCollectMapper;
+
+import java.util.List;
 
 /**
  * 〈一句话功能简述〉<br>
@@ -31,4 +34,12 @@ public interface UserGoodCollectService extends IBaseService<UserGoodCollectMapp
      * @param goodId
      */
     void collect(final Long userId, final Long goodId);
+
+    /**
+     * 用户收藏列表
+     *
+     * @param userId
+     * @return
+     */
+    List<Good> list(final Long userId);
 }

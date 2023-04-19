@@ -63,6 +63,17 @@ public class LoginController {
         return R.data(LoginResult.builder().user(user).tokenName(tokenInfo.getTokenName()).tokenValue(tokenInfo.getTokenValue()).build());
     }
 
+    @SaIgnore
+    @Operation(summary = "【登录】检查Token有效期", description = "检查Token有效期")
+    @PostMapping("/token/check")
+    public R<Boolean> checkToken() {
+        SaTokenInfo saResult = StpUtil.getTokenInfo();
+        if (!saResult.getIsLogin()) {
+            return R.data(false);
+        }
+        return R.data(true);
+    }
+
     @Operation(summary = "【登录】退出", description = "退出")
     @DeleteMapping
     public R<String> logout() {

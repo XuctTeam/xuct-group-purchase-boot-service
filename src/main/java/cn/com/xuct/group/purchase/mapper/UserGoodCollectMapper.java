@@ -10,11 +10,15 @@
  */
 package cn.com.xuct.group.purchase.mapper;
 
+import cn.com.xuct.group.purchase.entity.Good;
 import cn.com.xuct.group.purchase.entity.UserGoodCollect;
 import com.baomidou.mybatisplus.core.mapper.BaseMapper;
+import org.apache.ibatis.annotations.Param;
+
+import java.util.List;
 
 /**
- * 〈一句话功能简述〉<br> 
+ * 〈一句话功能简述〉<br>
  * 〈〉
  *
  * @author Derek Xu
@@ -23,4 +27,5 @@ import com.baomidou.mybatisplus.core.mapper.BaseMapper;
  */
 public interface UserGoodCollectMapper extends BaseMapper<UserGoodCollect> {
 
+    List<Good> queryGoodByUserId(@Param("userId") Long userId);
 }
