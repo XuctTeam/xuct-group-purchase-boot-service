@@ -72,7 +72,6 @@ public class User extends SuperEntity<User> {
     public void cleanData(){
         super.setCreateTime(null);
         super.setUpdateTime(null);
-        this.setId(null);
         this.status = null;
     }
 
