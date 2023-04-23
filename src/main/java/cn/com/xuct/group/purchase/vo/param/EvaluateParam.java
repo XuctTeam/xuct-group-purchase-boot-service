@@ -13,6 +13,7 @@ package cn.com.xuct.group.purchase.vo.param;
 import io.swagger.v3.oas.annotations.media.Schema;
 import lombok.Data;
 
+import javax.validation.constraints.NotNull;
 import java.io.Serializable;
 import java.util.List;
 
@@ -28,13 +29,15 @@ import java.util.List;
 public class EvaluateParam implements Serializable {
 
     @Schema(description = "订单明细ID")
-    private String orderItemId;
+    @NotNull
+    private Long orderItemId;
 
     @Schema(description = "打分")
+    @NotNull
     private String rate;
 
     @Schema(description = "上传图片")
-    private List<String> evaluateImages;
+    private String evaluateImages;
 
     @Schema(description = "描述")
     private String remarks;

@@ -14,10 +14,7 @@ import cn.com.xuct.group.purchase.base.service.BaseServiceImpl;
 import cn.com.xuct.group.purchase.base.vo.Column;
 import cn.com.xuct.group.purchase.constants.RConstants;
 import cn.com.xuct.group.purchase.constants.RedisCacheConstants;
-import cn.com.xuct.group.purchase.entity.Good;
-import cn.com.xuct.group.purchase.entity.UserAddress;
-import cn.com.xuct.group.purchase.entity.UserOrder;
-import cn.com.xuct.group.purchase.entity.UserOrderItem;
+import cn.com.xuct.group.purchase.entity.*;
 import cn.com.xuct.group.purchase.mapper.UserOrderMapper;
 import cn.com.xuct.group.purchase.service.*;
 import cn.com.xuct.group.purchase.utils.JsonUtils;
@@ -36,6 +33,7 @@ import org.springframework.data.redis.core.StringRedisTemplate;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.util.CollectionUtils;
+import org.springframework.util.StringUtils;
 
 import java.util.Date;
 import java.util.List;
@@ -59,6 +57,8 @@ public class UserOrderServiceImpl extends BaseServiceImpl<UserOrderMapper, UserO
     private final GoodService goodService;
     private final UserService userService;
     private final UserAddressService userAddressService;
+
+    private final UserGoodEvaluateService userGoodEvaluateService;
     private final StringRedisTemplate redisTemplate;
 
     @Override
@@ -207,6 +207,30 @@ public class UserOrderServiceImpl extends BaseServiceImpl<UserOrderMapper, UserO
     @Override
     public List<UserOrderItem> evaluateList(Long userId) {
         return userOrderItemService.queryEvaluateByUserId(userId);
+    }
+
+    @Override
+    @Transactional
+    public void evaluateGood(Long userId, Long orderItemId, String rate, String evaluateImages, String remarks) {
+        UserOrderItem item = userOrderItemService.getById(orderItemId);
+        if (item == null) {
+            log.error("UserOrderServiceImpl:: save evaluate error , order item id = {}", orderItemId);
+            return;
+        }
+        UserGoodEvaluate evaluate = new UserGoodEvaluate();
+        evaluate.setUserId(userId);
+        evaluate.setOrderItemId(orderItemId);
+        evaluate.setGoodId(item.getGoodId());
+        evaluate.setRate(rate);
+        if (StringUtils.hasLength(evaluateImages)) {
+            evaluate.setEvaluateImages(evaluateImages);
+        }
+        if (StringUtils.hasLength(remarks)) {
+            evaluate.setRemarks(remarks);
+        }
+        userGoodEvaluateService.save(evaluate);
+        item.setEvaluation(true);
+        userOrderItemService.updateById(item);
     }
 
     /**

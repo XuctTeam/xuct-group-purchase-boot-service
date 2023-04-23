@@ -135,4 +135,15 @@ public interface UserOrderService extends IBaseService<UserOrderMapper, UserOrde
      */
     List<UserOrderItem> evaluateList(final Long userId);
 
+    /**
+     * 保存评价
+     *
+     * @param userId
+     * @param orderItemId
+     * @param rate
+     * @param evaluateImages
+     * @param remarks
+     */
+    void evaluateGood(final Long userId, final Long orderItemId, final String rate, final String evaluateImages, final String remarks);
+
 }

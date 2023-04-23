@@ -24,9 +24,8 @@ public interface FileFolderConstants {
 
 
     String AVATAR = "avatar".concat(OBLIQUE_LINE);
+    String REFUND = "refund".concat(OBLIQUE_LINE);
 
-
-    String REFUND = "refund/".concat(OBLIQUE_LINE);
-
+    String EVALUATE = "evaluate".concat(OBLIQUE_LINE);
 
 }

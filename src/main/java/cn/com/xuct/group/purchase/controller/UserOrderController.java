@@ -150,9 +150,22 @@ public class UserOrderController {
         return R.data(userOrderService.evaluateList(StpUtil.getLoginIdAsLong()));
     }
 
+    @Operation(summary = "【订单】评价商品上传图片", description = "评价商品上传图片")
+    @PostMapping("/evaluate/upload")
+    public R<String> uploadEvaluateImage(MultipartFile file) {
+        try {
+            URL url = CosClient.uploadFile(file, FileFolderConstants.EVALUATE.concat(Objects.requireNonNull(file.getOriginalFilename())));
+            return R.data(url.toString());
+        } catch (IOException e) {
+            log.error("UserOrderController:: upload error");
+            return R.fail("上传失败");
+        }
+    }
+
     @Operation(summary = "【订单】评价商品", description = "评价商品")
     @PostMapping("/evaluate")
     public R<String> evaluate(@RequestBody @Validated EvaluateParam param) {
+        userOrderService.evaluateGood(StpUtil.getLoginIdAsLong(), param.getOrderItemId() , param.getRate() , param.getEvaluateImages(), param.getRemarks());
         return R.status(true);
     }
 }
