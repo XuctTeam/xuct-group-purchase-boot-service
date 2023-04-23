@@ -16,11 +16,9 @@ import cn.com.xuct.group.purchase.client.cos.client.CosClient;
 import cn.com.xuct.group.purchase.constants.FileFolderConstants;
 import cn.com.xuct.group.purchase.constants.RConstants;
 import cn.com.xuct.group.purchase.entity.UserOrder;
+import cn.com.xuct.group.purchase.entity.UserOrderItem;
 import cn.com.xuct.group.purchase.service.UserOrderService;
-import cn.com.xuct.group.purchase.vo.param.CartManyGoodParam;
-import cn.com.xuct.group.purchase.vo.param.OrderIdParam;
-import cn.com.xuct.group.purchase.vo.param.OrderParam;
-import cn.com.xuct.group.purchase.vo.param.RefundOrderParam;
+import cn.com.xuct.group.purchase.vo.param.*;
 import cn.com.xuct.group.purchase.vo.result.CartResult;
 import cn.com.xuct.group.purchase.vo.result.OrderResult;
 import cn.com.xuct.group.purchase.vo.result.OrderSumResult;
@@ -35,7 +33,6 @@ import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 
-import java.io.File;
 import java.io.IOException;
 import java.net.URL;
 import java.util.List;
@@ -144,6 +141,18 @@ public class UserOrderController {
     @DeleteMapping
     public R<String> deleteOrder(@RequestBody @Validated OrderIdParam param) {
         userOrderService.deleteOrder(StpUtil.getLoginIdAsLong(), Long.valueOf(param.getOrderId()));
+        return R.status(true);
+    }
+
+    @Operation(summary = "【订单】待评价商品", description = "待评价商品")
+    @GetMapping("/evaluate/list")
+    public R<List<UserOrderItem>> evaluateList() {
+        return R.data(userOrderService.evaluateList(StpUtil.getLoginIdAsLong()));
+    }
+
+    @Operation(summary = "【订单】评价商品", description = "评价商品")
+    @PostMapping("/evaluate")
+    public R<String> evaluate(@RequestBody @Validated EvaluateParam param) {
         return R.status(true);
     }
 }

@@ -36,4 +36,11 @@ public interface UserOrderItemMapper extends BaseMapper<UserOrderItem> {
      * @return
      */
     int countEvaluation(@Param("userId") Long userId);
+
+    /**
+     *
+     * @param userId
+     * @return
+     */
+    List<UserOrderItem> queryEvaluateByUserId(@Param("userId")Long userId);
 }

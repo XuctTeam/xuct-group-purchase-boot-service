@@ -12,6 +12,7 @@ package cn.com.xuct.group.purchase.service;
 
 import cn.com.xuct.group.purchase.base.service.IBaseService;
 import cn.com.xuct.group.purchase.entity.UserOrder;
+import cn.com.xuct.group.purchase.entity.UserOrderItem;
 import cn.com.xuct.group.purchase.mapper.UserOrderMapper;
 import cn.com.xuct.group.purchase.vo.result.CartResult;
 import cn.com.xuct.group.purchase.vo.result.OrderResult;
@@ -125,5 +126,13 @@ public interface UserOrderService extends IBaseService<UserOrderMapper, UserOrde
      * @param orderId
      */
     void deleteOrder(final Long userId, final Long orderId);
+
+    /**
+     * 待评价商品
+     *
+     * @param userId
+     * @return
+     */
+    List<UserOrderItem> evaluateList(final Long userId);
 
 }

@@ -33,4 +33,16 @@
           and oi.user_id = #{userId}
     </select>
 
+
+    <select id="queryEvaluateByUserId" resultType="cn.com.xuct.group.purchase.entity.UserOrderItem">
+        select oi.id, g.id as good_id, g.name as good_name, g.first_drawing as good_first_drawing, g.unit as good_unit, oi.order_id , oi.num, oi.price , oi.evaluation ,oi.create_time
+        from bu_user_order_item oi
+                 inner join bu_good g on oi.good_id = g.id
+                 inner join bu_user_order o on oi.order_id = o.id
+        where 1=1
+          and oi.user_id = #{userId}
+          and o.status = 4
+          and evaluation = false
+    </select>
+
 </mapper>

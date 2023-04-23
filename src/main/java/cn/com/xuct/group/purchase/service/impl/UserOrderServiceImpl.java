@@ -204,6 +204,11 @@ public class UserOrderServiceImpl extends BaseServiceImpl<UserOrderMapper, UserO
         this.updateById(userOrder);
     }
 
+    @Override
+    public List<UserOrderItem> evaluateList(Long userId) {
+        return userOrderItemService.queryEvaluateByUserId(userId);
+    }
+
     /**
      * 功能描述: <br>
      * 〈保存购物车订单〉

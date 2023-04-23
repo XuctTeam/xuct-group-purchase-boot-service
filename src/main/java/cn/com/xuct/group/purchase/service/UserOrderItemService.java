@@ -14,6 +14,8 @@ import cn.com.xuct.group.purchase.base.service.IBaseService;
 import cn.com.xuct.group.purchase.entity.UserOrderItem;
 import cn.com.xuct.group.purchase.mapper.UserOrderItemMapper;
 
+import java.util.List;
+
 /**
  * 〈一句话功能简述〉<br>
  * 〈〉
@@ -31,4 +33,12 @@ public interface UserOrderItemService extends IBaseService<UserOrderItemMapper, 
      * @return
      */
     int countEvaluation(final Long userId);
+
+    /**
+     * 通过ID查询待评价列表
+     *
+     * @param userId
+     * @return
+     */
+    List<UserOrderItem> queryEvaluateByUserId(final Long userId);
 }

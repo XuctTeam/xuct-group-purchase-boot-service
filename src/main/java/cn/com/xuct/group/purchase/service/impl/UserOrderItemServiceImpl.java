@@ -16,8 +16,10 @@ import cn.com.xuct.group.purchase.mapper.UserOrderItemMapper;
 import cn.com.xuct.group.purchase.service.UserOrderItemService;
 import org.springframework.stereotype.Service;
 
+import java.util.List;
+
 /**
- * 〈一句话功能简述〉<br> 
+ * 〈一句话功能简述〉<br>
  * 〈〉
  *
  * @author Derek Xu
@@ -25,10 +27,15 @@ import org.springframework.stereotype.Service;
  * @since 1.0.0
  */
 @Service
-public class UserOrderItemServiceImpl extends BaseServiceImpl<UserOrderItemMapper , UserOrderItem> implements UserOrderItemService {
+public class UserOrderItemServiceImpl extends BaseServiceImpl<UserOrderItemMapper, UserOrderItem> implements UserOrderItemService {
 
     @Override
     public int countEvaluation(Long userId) {
-        return ((UserOrderItemMapper)super.getBaseMapper()).countEvaluation(userId);
+        return ((UserOrderItemMapper) super.getBaseMapper()).countEvaluation(userId);
+    }
+
+    @Override
+    public List<UserOrderItem> queryEvaluateByUserId(Long userId) {
+        return ((UserOrderItemMapper) super.getBaseMapper()).queryEvaluateByUserId(userId);
     }
 }
