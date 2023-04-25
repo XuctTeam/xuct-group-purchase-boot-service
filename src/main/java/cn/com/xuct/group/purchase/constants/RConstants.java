@@ -68,9 +68,14 @@ public interface RConstants {
     String ORDER_GOOD_EXPIRE = "-6000";
 
     /**
-     *
+     *  订单已申请退单
      */
     String ORDER_ALREADY_REFUND = "-7000";
+
+    /**
+     * 订单未退单
+     */
+    String ORDER_NOT_REFUND = "-8000";
 
 
 }

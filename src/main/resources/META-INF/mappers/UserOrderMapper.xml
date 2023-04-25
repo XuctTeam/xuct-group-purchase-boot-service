@@ -15,6 +15,11 @@
         <result column="integral" property="integral"/>
         <result column="rush" property="rush"/>
         <result column="refund_status" property="refundStatus"/>
+        <result column="refund_type" property="refundType"/>
+        <result column="refund_reason" property="refundReason"/>
+        <result column="refund_images" property="refundImages"/>
+        <result column="refund_time" property="refundTime"/>
+
         <result column="address_id" property="addressId"/>
         <collection property="items" column="{orderId=id}"
                     select="cn.com.xuct.group.purchase.mapper.UserOrderItemMapper.getOrderItemByOrderId"/>
@@ -26,10 +31,19 @@
         where 1 =1
         and user_id = #{userId}
         and deleted = false
-        and refund_status = 0
+
         <if test="status != null">
             and status = #{status}
         </if>
+        <choose>
+            <when test="refundStatus !=null">
+                and refund_status = #{refundStatus}
+            </when>
+            <otherwise>
+                and refund_status in (0 , 3)
+            </otherwise>
+        </choose>
+        order by create_time desc
     </select>
 
     <select id="getOrderDetail" resultMap="BaseResultMap">
@@ -42,11 +56,13 @@
                address_id,
                integral,
                rush,
-               refund_status
+               refund_status,
+               refund_type,
+               refund_reason,
+               refund_images,
+               refund_time
         from bu_user_order
         where 1 = 1
-          and deleted = false
-          and refund_status = 0
           and user_id = #{userId}
           and id = #{orderId}
     </select>

@@ -101,8 +101,8 @@ public class UserOrderServiceImpl extends BaseServiceImpl<UserOrderMapper, UserO
     }
 
     @Override
-    public IPage<UserOrder> list(Long userId, Integer status, int pageNo, int pageSize) {
-        return ((UserOrderMapper) this.getBaseMapper()).list(userId, status, Page.of(pageNo, pageSize));
+    public IPage<UserOrder> list(Long userId, Integer status, int pageNo, int pageSize, final Integer refundStatus) {
+        return ((UserOrderMapper) this.getBaseMapper()).list(userId, status, Page.of(pageNo, pageSize), refundStatus);
     }
 
     @Override
@@ -131,9 +131,24 @@ public class UserOrderServiceImpl extends BaseServiceImpl<UserOrderMapper, UserO
         userOrder.setRefundStatus(1);
         userOrder.setRefundType(type);
         userOrder.setRefundReason(reason);
+        userOrder.setRefundTime(new Date());
         if (!CollectionUtils.isEmpty(images)) {
-            userOrder.setRefundImages(String.join(",", images.toArray(new String[images.size()])));
+            userOrder.setRefundImages(String.join(",", images.toArray(new String[0])));
         }
+        this.updateById(userOrder);
+        return String.valueOf(RConstants.SUCCESS);
+    }
+
+    @Override
+    public String cancelRefundOrder(Long userId, Long orderId) {
+        UserOrder userOrder = this.getById(orderId);
+        if (userOrder == null) {
+            return RConstants.ORDER_NOT_EXIST;
+        }
+        if(userOrder.getRefundStatus() != 1){
+            return RConstants.ORDER_NOT_REFUND;
+        }
+        userOrder.setRefundStatus(3);
         this.updateById(userOrder);
         return String.valueOf(RConstants.SUCCESS);
     }

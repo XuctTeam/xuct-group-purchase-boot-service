@@ -29,7 +29,7 @@ import org.springframework.web.bind.annotation.RequestParam;
 public interface UserOrderMapper extends BaseMapper<UserOrder> {
 
 
-    OrderSumResult sumCount(@Param("userId")Long userId);
+    OrderSumResult sumCount(@Param("userId") Long userId);
 
     /**
      * 分页查哈讯
@@ -37,9 +37,10 @@ public interface UserOrderMapper extends BaseMapper<UserOrder> {
      * @param userId
      * @param status
      * @param page
+     * @param refundStatus 退课状态
      * @return
      */
-    IPage<UserOrder> list(@Param("userId") Long userId, @Param("status") Integer status, Page<UserOrder> page);
+    IPage<UserOrder> list(@Param("userId") Long userId, @Param("status") Integer status, Page<UserOrder> page, @Param("refundStatus") Integer refundStatus);
 
     /**
      * 获取订单详情

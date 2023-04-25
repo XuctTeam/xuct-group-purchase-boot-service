@@ -84,10 +84,18 @@ public class UserOrderController {
     @Parameters(value = {
             @Parameter(name = "status", description = "状态"),
             @Parameter(name = "pageNo", description = "页码", required = true),
-            @Parameter(name = "pageSize", description = "每页条数", required = true)
+            @Parameter(name = "pageSize", description = "每页条数", required = true),
+            @Parameter(name = "refundStatus", description = "退单状态")
     })
-    public R<PageData<UserOrder>> list(@RequestParam("status") Integer status, @RequestParam("pageNo") Integer pageNo, @RequestParam("pageSize") Integer pageSize) {
-        return R.data(userOrderService.convert(userOrderService.list(StpUtil.getLoginIdAsLong(), status == 0 ? null : status, pageNo, pageSize)));
+    public R<PageData<UserOrder>> list(@RequestParam("status") Integer status, @RequestParam("pageNo") Integer pageNo, @RequestParam("pageSize") Integer pageSize,
+                                       @RequestParam(required = false, name = "refundStatus") Integer refundStatus) {
+        if (status == 0) {
+            status = null;
+        }
+        if (refundStatus != null && refundStatus == 0) {
+            refundStatus = null;
+        }
+        return R.data(userOrderService.convert(userOrderService.list(StpUtil.getLoginIdAsLong(), status, pageNo, pageSize, refundStatus)));
     }
 
     @Operation(summary = "【订单】订单详情", description = "订单详情")
@@ -119,6 +127,17 @@ public class UserOrderController {
             case RConstants.ORDER_NOT_EXIST -> R.fail("订单不存在！");
             case RConstants.ORDER_ALREADY_REFUND -> R.fail("订单已经申请退款！");
             case RConstants.ERROR -> R.fail("申请失败！");
+            default -> R.data(result);
+        };
+    }
+
+    @Operation(summary = "【订单】退单取消", description = "退单取消")
+    @PostMapping("/refund/cancel")
+    public R<String> cancelRefundOrder(@RequestBody @Validated OrderIdParam param) {
+        String result = userOrderService.cancelRefundOrder(StpUtil.getLoginIdAsLong(), Long.valueOf(param.getOrderId()));
+        return switch (result) {
+            case RConstants.ORDER_NOT_EXIST -> R.fail("订单不存在！");
+            case RConstants.ORDER_NOT_REFUND -> R.fail("订单未退单！");
             default -> R.data(result);
         };
     }
@@ -165,7 +184,7 @@ public class UserOrderController {
     @Operation(summary = "【订单】评价商品", description = "评价商品")
     @PostMapping("/evaluate")
     public R<String> evaluate(@RequestBody @Validated EvaluateParam param) {
-        userOrderService.evaluateGood(StpUtil.getLoginIdAsLong(), param.getOrderItemId() , param.getRate() , param.getEvaluateImages(), param.getRemarks());
+        userOrderService.evaluateGood(StpUtil.getLoginIdAsLong(), param.getOrderItemId(), param.getRate(), param.getEvaluateImages(), param.getRemarks());
         return R.status(true);
     }
 }

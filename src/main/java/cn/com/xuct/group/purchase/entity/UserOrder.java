@@ -79,7 +79,7 @@ public class UserOrder extends SuperEntity<UserOrder> {
     @Schema(description = "完成时间")
     private Date successTime;
 
-    @Schema(description = "退单状态 0未退单 1退单中 2已退款")
+    @Schema(description = "退单状态 0未退单 1退单中 2已退单 3 取消退单")
     private Integer refundStatus;
 
     @Schema(description = "退单图片")
@@ -90,6 +90,9 @@ public class UserOrder extends SuperEntity<UserOrder> {
 
     @Schema(description = "退单类型")
     private String refundType;
+
+    @Schema(description = "退单时间")
+    private Date refundTime;
 
     @Schema(description = "是否删除")
     private boolean deleted = false;

@@ -72,9 +72,10 @@ public interface UserOrderService extends IBaseService<UserOrderMapper, UserOrde
      * @param status   状态
      * @param pageNo
      * @param pageSize
+     * @param refundStatus
      * @return
      */
-    IPage<UserOrder> list(final Long userId, final Integer status, int pageNo, int pageSize);
+    IPage<UserOrder> list(final Long userId, final Integer status, int pageNo, int pageSize , final Integer refundStatus);
 
     /**
      * 获取订单详情
@@ -94,6 +95,14 @@ public interface UserOrderService extends IBaseService<UserOrderMapper, UserOrde
      * @return
      */
     String refundOrder(final Long userId, final Long orderId, final String type, final String reason, final List<String> images);
+
+
+    /**
+     * 取消申请退单
+     * @param userId
+     * @param orderId
+     */
+    String cancelRefundOrder(final Long userId , final Long orderId);
 
     /**
      * 取消订单

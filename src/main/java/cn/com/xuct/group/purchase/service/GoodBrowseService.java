@@ -30,5 +30,5 @@ public interface GoodBrowseService extends IBaseService<GoodBrowseMapper, GoodBr
      * @param userId
      * @param goodId
      */
-    void browse(final Long goodId);
+    void browse(final Long userId ,  final Long goodId);
 }

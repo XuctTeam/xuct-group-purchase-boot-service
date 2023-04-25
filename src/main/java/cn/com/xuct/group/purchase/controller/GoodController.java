@@ -13,10 +13,7 @@ package cn.com.xuct.group.purchase.controller;
 import cn.com.xuct.group.purchase.base.res.R;
 import cn.com.xuct.group.purchase.base.vo.Column;
 import cn.com.xuct.group.purchase.entity.Good;
-import cn.com.xuct.group.purchase.service.GoodBrowseService;
-import cn.com.xuct.group.purchase.service.GoodService;
-import cn.com.xuct.group.purchase.service.UserGoodCartService;
-import cn.com.xuct.group.purchase.service.UserGoodCollectService;
+import cn.com.xuct.group.purchase.service.*;
 import cn.com.xuct.group.purchase.vo.param.AddCartParam;
 import cn.com.xuct.group.purchase.vo.param.CartManyGoodParam;
 import cn.com.xuct.group.purchase.vo.param.GoodParam;
@@ -53,6 +50,7 @@ public class GoodController {
     private final UserGoodCollectService userGoodCollectService;
     private final UserGoodCartService userGoodCartService;
     private final GoodBrowseService goodBrowseService;
+    private final UserBrowseService userBrowseService;
 
     @SaIgnore
     @GetMapping("/list")
@@ -72,7 +70,7 @@ public class GoodController {
     @PostMapping("/browse")
     @Operation(summary = "【商品】观看次数", description = "自增商品观看次数")
     public R<String> addGoodBrowse(@RequestBody @Validated GoodParam param) {
-        goodBrowseService.browse(param.getGid());
+        goodBrowseService.browse(StpUtil.isLogin() ? StpUtil.getLoginIdAsLong() : null, param.getGid());
         return R.status(true);
     }
 
@@ -119,7 +117,20 @@ public class GoodController {
 
     @Operation(summary = "【用户】我的收藏", description = "我的收藏")
     @GetMapping("/user/collect")
-    public R<List<Good>> collect() {
+    public R<List<Good>> findUserCollect() {
         return R.data(userGoodCollectService.list(StpUtil.getLoginIdAsLong()));
+    }
+
+    @Operation(summary = "【用户】我的浏览", description = "我的浏览")
+    @GetMapping("/user/browse")
+    public R<List<Good>> findUserBrowse() {
+        return R.data(userBrowseService.list(StpUtil.getLoginIdAsLong()));
+    }
+
+    @Operation(summary = "【用户】删除浏览记录", description = "删除浏览记录")
+    @DeleteMapping("/user/browse")
+    public R<String> deleteUserBrowse(@RequestParam("gid") String gid) {
+        userBrowseService.delete(StpUtil.getLoginIdAsLong(), Long.valueOf(gid));
+        return R.status(true);
     }
 }
