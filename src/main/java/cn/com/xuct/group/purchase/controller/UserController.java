@@ -15,14 +15,13 @@ import cn.com.xuct.group.purchase.base.res.R;
 import cn.com.xuct.group.purchase.client.cos.client.CosClient;
 import cn.com.xuct.group.purchase.config.WxMaConfiguration;
 import cn.com.xuct.group.purchase.constants.FileFolderConstants;
-import cn.com.xuct.group.purchase.entity.Good;
 import cn.com.xuct.group.purchase.entity.User;
 import cn.com.xuct.group.purchase.service.UserService;
 import cn.com.xuct.group.purchase.utils.JsonUtils;
 import cn.com.xuct.group.purchase.vo.param.BindPhoneParam;
 import cn.com.xuct.group.purchase.vo.param.UserParam;
+import cn.com.xuct.group.purchase.vo.result.UserSumResult;
 import cn.dev33.satoken.stp.StpUtil;
-import io.netty.util.internal.StringUtil;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import lombok.RequiredArgsConstructor;
@@ -36,7 +35,6 @@ import org.wildfly.common.Assert;
 
 import java.io.IOException;
 import java.net.URL;
-import java.util.List;
 import java.util.Objects;
 
 /**
@@ -53,10 +51,7 @@ import java.util.Objects;
 @Slf4j
 @RequiredArgsConstructor
 public class UserController {
-
-
     private final UserService userService;
-
     private final WxMaConfiguration wxMaConfiguration;
 
     @Operation(summary = "【用户】修改昵称手机号", description = "修改昵称手机号")
@@ -102,5 +97,11 @@ public class UserController {
         User updateUser = userService.updateUserInfo(user, null, null, url.toString());
         log.info("UserController:: user = {}", JsonUtils.obj2json(updateUser));
         return R.data(url.toString());
+    }
+
+    @Operation(summary = "【用户】统计用户相关数据", description = "统计用户相关数据")
+    @GetMapping("/sum")
+    public R<UserSumResult> userSum() {
+        return R.data(userService.userSum(StpUtil.getLoginIdAsLong()));
     }
 }

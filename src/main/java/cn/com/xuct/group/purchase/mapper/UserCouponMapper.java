@@ -1,8 +1,8 @@
 /**
  * Copyright (C), 2015-2023, 楚恬商场
- * FileName: UserMapper
+ * FileName: UserCouponMapper
  * Author:   Derek Xu
- * Date:     2023/3/16 20:59
+ * Date:     2023/4/26 19:36
  * Description:
  * History:
  * <author>          <time>          <version>          <desc>
@@ -10,20 +10,17 @@
  */
 package cn.com.xuct.group.purchase.mapper;
 
-import cn.com.xuct.group.purchase.entity.User;
-import cn.com.xuct.group.purchase.vo.result.UserSumResult;
+import cn.com.xuct.group.purchase.entity.UserCoupon;
 import com.baomidou.mybatisplus.core.mapper.BaseMapper;
-import org.apache.ibatis.annotations.Param;
 
 /**
  * 〈一句话功能简述〉<br> 
  * 〈〉
  *
  * @author Derek Xu
- * @create 2023/3/16
+ * @create 2023/4/26
  * @since 1.0.0
  */
-public interface UserMapper extends BaseMapper<User> {
+public interface UserCouponMapper extends BaseMapper<UserCoupon> {
 
-    UserSumResult userSum(@Param("userId")Long userId);
 }

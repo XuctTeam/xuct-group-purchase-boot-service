@@ -19,6 +19,7 @@ import cn.com.xuct.group.purchase.entity.User;
 import cn.com.xuct.group.purchase.mapper.UserMapper;
 import cn.com.xuct.group.purchase.service.RoleService;
 import cn.com.xuct.group.purchase.service.UserService;
+import cn.com.xuct.group.purchase.vo.result.UserSumResult;
 import com.github.yulichang.wrapper.MPJLambdaWrapper;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -39,9 +40,7 @@ import org.springframework.util.StringUtils;
 @Service
 @RequiredArgsConstructor
 public class UserServiceImpl extends BaseServiceImpl<UserMapper, User> implements UserService {
-
     private final RoleService roleService;
-
 
     @Override
     public User findByOpenId(String openId) {
@@ -62,8 +61,8 @@ public class UserServiceImpl extends BaseServiceImpl<UserMapper, User> implement
     public User findById(Long id) {
 
         MPJLambdaWrapper<User> wrapper = new MPJLambdaWrapper<User>()
-                .selectAll(User.class)//查询user表全部字段
-                .select(Role::getCode)//查询user_address tel 字段
+                .selectAll(User.class)
+                .select(Role::getCode)
                 .selectAs(Role::getCode, User::getRoleCode)//别名 t.address AS userAddress
                 .leftJoin(Role.class, Role::getId, User::getRoleId)
                 .eq(User::getId, id);
@@ -96,5 +95,10 @@ public class UserServiceImpl extends BaseServiceImpl<UserMapper, User> implement
         user.setIntegral(user.getIntegral() + integral);
         this.updateById(user);
         return user;
+    }
+
+    @Override
+    public UserSumResult userSum(final Long userId) {
+        return ((UserMapper) this.getBaseMapper()).userSum(userId);
     }
 }

@@ -13,6 +13,7 @@ package cn.com.xuct.group.purchase.service;
 import cn.com.xuct.group.purchase.base.service.IBaseService;
 import cn.com.xuct.group.purchase.entity.User;
 import cn.com.xuct.group.purchase.mapper.UserMapper;
+import cn.com.xuct.group.purchase.vo.result.UserSumResult;
 
 /**
  * 〈一句话功能简述〉<br>
@@ -58,6 +59,14 @@ public interface UserService extends IBaseService<UserMapper, User> {
      * @return
      */
     User updateUserIntegral(final Long userId, final Integer integral);
+
+    /**
+     * 用户数统计
+     *
+     * @param userId
+     * @return
+     */
+    UserSumResult userSum(final Long userId);
 
 
 }
