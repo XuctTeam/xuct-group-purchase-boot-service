@@ -19,14 +19,14 @@
         <result column="refund_reason" property="refundReason"/>
         <result column="refund_images" property="refundImages"/>
         <result column="refund_time" property="refundTime"/>
-
+        <result column="coupon_id" property="couponId"/>
         <result column="address_id" property="addressId"/>
         <collection property="items" column="{orderId=id}"
                     select="cn.com.xuct.group.purchase.mapper.UserOrderItemMapper.getOrderItemByOrderId"/>
     </resultMap>
 
     <select id="list" resultMap="BaseResultMap">
-        select id , create_time , deliver_time , serve_time , status , good_num , rush , refund_status
+        select id , create_time , deliver_time , serve_time , status , good_num , rush , refund_status , coupon_id
         from bu_user_order
         where 1 =1
         and user_id = #{userId}

@@ -37,6 +37,13 @@ public interface RConstants {
      */
     String DEFAULT_FAILURE_MESSAGE = "操作失败";
 
+    String USER_NOT_EXIST = "-2000";
+
+    /**
+     * 其他异常
+     */
+    String ERROR = "-500";
+
     /**
      * 购物车为空
      */
@@ -45,37 +52,42 @@ public interface RConstants {
     /**
      * 库存不足
      */
-    String NOT_ENOUGH = "-2000";
+    String NOT_ENOUGH = "-1001";
 
     /**
      * 保存订单失败
      */
-    String ORDER_SCENE_ERROR = "-3000";
-
-    /**
-     * 其他异常
-     */
-    String ERROR = "-4000";
+    String ORDER_SCENE_ERROR = "-1002";
 
     /**
      * 订单不存在
      */
-    String ORDER_NOT_EXIST = "-5000";
+    String ORDER_NOT_EXIST = "-1003";
 
     /**
      * 商品已下架
      */
-    String ORDER_GOOD_EXPIRE = "-6000";
+    String ORDER_GOOD_EXPIRE = "-1004";
 
     /**
-     *  订单已申请退单
+     * 订单已申请退单
      */
-    String ORDER_ALREADY_REFUND = "-7000";
+    String ORDER_ALREADY_REFUND = "-1005";
 
     /**
      * 订单未退单
      */
-    String ORDER_NOT_REFUND = "-8000";
+    String ORDER_NOT_REFUND = "-1006";
+
+    /**
+     * 积分不足
+     */
+    String USER_INTEGRAL_NOT_ENOUGH = "-1007";
+
+    /**
+     * 优惠券不存在
+     */
+    String COUPON_NOT_EXIST = "-1008";
 
 
 }

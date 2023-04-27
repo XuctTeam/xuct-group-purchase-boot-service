@@ -33,8 +33,11 @@ public class OrderParam implements Serializable {
     private String scene;
 
     @NotNull
-    @Schema(description = "收货地址")
+    @Schema(description = "收货地址ID")
     private Long addressId;
+
+    @Schema(description = "优惠券ID")
+    private Long couponId;
 
     @NotNull
     @Schema(description = "使用积分")

@@ -59,23 +59,24 @@ public interface UserOrderService extends IBaseService<UserOrderMapper, UserOrde
      * @param userId
      * @param scene     cart 购物车 good立即购买
      * @param addressId 配置地址
+     * @param couponId  优惠券ID
      * @param integral
      * @param remarks
      * @param goodIds
      */
-    String saveOrder(final Long userId, final String scene, final Long addressId, final Integer integral, final String remarks, List<Long> goodIds);
+    String saveOrder(final Long userId, final String scene, final Long addressId, Long couponId, Integer integral, final String remarks, List<Long> goodIds);
 
     /**
      * 订单分页查询
      *
      * @param userId
-     * @param status   状态
+     * @param status       状态
      * @param pageNo
      * @param pageSize
      * @param refundStatus
      * @return
      */
-    IPage<UserOrder> list(final Long userId, final Integer status, int pageNo, int pageSize , final Integer refundStatus);
+    IPage<UserOrder> list(final Long userId, final Integer status, int pageNo, int pageSize, final Integer refundStatus);
 
     /**
      * 获取订单详情
@@ -99,10 +100,11 @@ public interface UserOrderService extends IBaseService<UserOrderMapper, UserOrde
 
     /**
      * 取消申请退单
+     *
      * @param userId
      * @param orderId
      */
-    String cancelRefundOrder(final Long userId , final Long orderId);
+    String cancelRefundOrder(final Long userId, final Long orderId);
 
     /**
      * 取消订单

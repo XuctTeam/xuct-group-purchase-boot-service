@@ -49,6 +49,9 @@ public class UserOrder extends SuperEntity<UserOrder> {
     @Schema(description = "收货地址ID")
     private Long addressId;
 
+    @Schema(description = "优惠券ID")
+    private Long couponId;
+
     @Schema(description = "使用积分")
     private Integer integral;
 

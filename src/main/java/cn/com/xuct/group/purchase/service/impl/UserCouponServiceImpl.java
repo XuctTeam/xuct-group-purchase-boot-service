@@ -15,9 +15,11 @@ import cn.com.xuct.group.purchase.entity.Coupon;
 import cn.com.xuct.group.purchase.entity.UserCoupon;
 import cn.com.xuct.group.purchase.mapper.UserCouponMapper;
 import cn.com.xuct.group.purchase.service.UserCouponService;
+import cn.hutool.core.date.DateUtil;
 import com.github.yulichang.wrapper.MPJLambdaWrapper;
 import org.springframework.stereotype.Service;
 
+import java.util.Date;
 import java.util.List;
 
 /**
@@ -33,15 +35,38 @@ public class UserCouponServiceImpl extends BaseServiceImpl<UserCouponMapper, Use
 
     @Override
     public List<UserCoupon> list(Long userId) {
-        MPJLambdaWrapper<UserCoupon> wrapper = new MPJLambdaWrapper<UserCoupon>()
+
+        return super.getBaseMapper().selectList(this.buildQuery(userId).orderByDesc(UserCoupon::isUsed));
+    }
+
+    @Override
+    public List<UserCoupon> canUsed(Long userId) {
+        Date now = DateUtil.parseDate(DateUtil.now());
+        MPJLambdaWrapper<UserCoupon> wrapper = this.buildQuery(userId).le(UserCoupon::getBeginTime, now).ge(UserCoupon::getEndTime, now).orderByDesc(Coupon::getPrice);
+        return super.getBaseMapper().selectList(wrapper);
+    }
+
+    @Override
+    public void updateUserCouponUsed(Long couponId) {
+        UserCoupon userCoupon = new UserCoupon();
+        userCoupon.setId(couponId);
+        userCoupon.setUsed(true);
+        this.updateById(userCoupon);
+    }
+
+    @Override
+    public UserCoupon getUserCoupon(final Long userId, Long id) {
+        return super.getBaseMapper().selectOne(this.buildQuery(userId).eq(UserCoupon::getId, id));
+    }
+
+    private MPJLambdaWrapper<UserCoupon> buildQuery(final Long userId) {
+        return new MPJLambdaWrapper<UserCoupon>()
                 .selectAll(UserCoupon.class)//查询user表全部字段
                 .selectAs(Coupon::getPrice, UserCoupon::getCouponPrice)
                 .selectAs(Coupon::getFullPrice, UserCoupon::getCouponFullPrice)
                 .selectAs(Coupon::getName, UserCoupon::getCouponName)
                 .innerJoin(Coupon.class, Coupon::getId, UserCoupon::getCouponId)
                 .eq(UserCoupon::getUserId, userId)
-                .eq(Coupon::isUsed, false)
-                .orderByDesc(UserCoupon::isUsed);
-        return super.getBaseMapper().selectList(wrapper);
+                .eq(Coupon::isUsed, false);
     }
 }

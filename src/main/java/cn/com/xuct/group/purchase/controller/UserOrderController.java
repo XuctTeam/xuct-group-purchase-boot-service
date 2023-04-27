@@ -38,6 +38,8 @@ import java.net.URL;
 import java.util.List;
 import java.util.Objects;
 
+import static cn.com.xuct.group.purchase.constants.RConstants.*;
+
 /**
  * 〈一句话功能简述〉<br>
  * 〈〉
@@ -69,12 +71,15 @@ public class UserOrderController {
     @Operation(summary = "【订单】下订单", description = "下订单")
     @PostMapping
     public R<String> place(@Validated @RequestBody OrderParam param) {
-        String result = userOrderService.saveOrder(StpUtil.getLoginIdAsLong(), param.getScene(), param.getAddressId(), param.getIntegral(), param.getRemarks(), param.getGoodIds());
+        String result = userOrderService.saveOrder(StpUtil.getLoginIdAsLong(), param.getScene(), param.getAddressId(), param.getCouponId(), param.getIntegral(), param.getRemarks(), param.getGoodIds());
         return switch (result) {
-            case RConstants.CART_EMPTY -> R.fail("购买商品错误！");
-            case RConstants.NOT_ENOUGH -> R.fail("库存不足！");
-            case RConstants.ORDER_SCENE_ERROR -> R.fail("订单方式不支持！");
-            case RConstants.ERROR -> R.fail("下单异常！");
+            case USER_NOT_EXIST -> R.fail("用户不存在");
+            case CART_EMPTY -> R.fail("购买商品错误！");
+            case NOT_ENOUGH -> R.fail("库存不足！");
+            case USER_INTEGRAL_NOT_ENOUGH -> R.fail("积分不足");
+            case COUPON_NOT_EXIST -> R.fail("优惠券不存在");
+            case ORDER_SCENE_ERROR -> R.fail("订单方式不支持！");
+            case ERROR -> R.fail("下单异常！");
             default -> R.data(result);
         };
     }

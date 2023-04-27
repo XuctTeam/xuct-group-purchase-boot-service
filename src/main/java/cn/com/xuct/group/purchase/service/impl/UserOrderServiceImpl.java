@@ -12,7 +12,6 @@ package cn.com.xuct.group.purchase.service.impl;
 
 import cn.com.xuct.group.purchase.base.service.BaseServiceImpl;
 import cn.com.xuct.group.purchase.base.vo.Column;
-import cn.com.xuct.group.purchase.constants.RConstants;
 import cn.com.xuct.group.purchase.constants.RedisCacheConstants;
 import cn.com.xuct.group.purchase.entity.*;
 import cn.com.xuct.group.purchase.mapper.UserOrderMapper;
@@ -40,6 +39,8 @@ import java.util.List;
 import java.util.Map;
 import java.util.stream.Collectors;
 
+import static cn.com.xuct.group.purchase.constants.RConstants.*;
+
 /**
  * 〈一句话功能简述〉<br>
  * 〈〉
@@ -57,8 +58,9 @@ public class UserOrderServiceImpl extends BaseServiceImpl<UserOrderMapper, UserO
     private final GoodService goodService;
     private final UserService userService;
     private final UserAddressService userAddressService;
-
     private final UserGoodEvaluateService userGoodEvaluateService;
+    private final UserCouponService userCouponService;
+
     private final StringRedisTemplate redisTemplate;
 
     @Override
@@ -86,16 +88,31 @@ public class UserOrderServiceImpl extends BaseServiceImpl<UserOrderMapper, UserO
 
     @Override
     @Transactional(rollbackFor = Exception.class)
-    public String saveOrder(final Long userId, final String scene, final Long addressId, final Integer integral, final String remarks, List<Long> goodIds) {
+    public String saveOrder(final Long userId, final String scene, final Long addressId, Long couponId, Integer integral, final String remarks, List<Long> goodIds) {
+        log.info("UserOrderServiceImpl:: save order , user id = {} , address id = {} , couponId id = {} , integral = {} , goodIds = {}", userId, addressId, couponId, integral, JsonUtils.obj2json(goodIds));
+        //全部积分
+        integral = this.checkIntegral(integral, userId);
+        switch (integral) {
+            case -1 -> {
+                return USER_NOT_EXIST;
+            }
+            case -2 -> {
+                return USER_INTEGRAL_NOT_ENOUGH;
+            }
+        }
+        couponId = this.checkCoupon(couponId, userId);
+        if (couponId != null && (couponId == -1L || couponId == -2L)) {
+            return COUPON_NOT_EXIST;
+        }
         switch (scene) {
             case FROM_CART -> {
-                return this.saveCartGoodOrder(userId, addressId, integral, remarks, goodIds);
+                return this.saveCartGoodOrder(userId, addressId, couponId, integral, remarks, goodIds);
             }
             case FROM_GOOD -> {
-                return this.saveBuyingOutrightOrder(userId, addressId, integral, remarks, goodIds.get(0));
+                return this.saveBuyingOutrightOrder(userId, addressId, couponId, integral, remarks, goodIds.get(0));
             }
             default -> {
-                return RConstants.ORDER_SCENE_ERROR;
+                return ORDER_SCENE_ERROR;
             }
         }
     }
@@ -114,8 +131,10 @@ public class UserOrderServiceImpl extends BaseServiceImpl<UserOrderMapper, UserO
         OrderResult result = new OrderResult();
         BeanUtils.copyProperties(order, result);
         order.setItems(order.getItems());
-        UserAddress address = userAddressService.getById(order.getAddressId());
-        result.setAddress(address);
+        result.setAddress(userAddressService.getById(order.getAddressId()));
+        if (order.getCouponId() != null) {
+            result.setCoupon(userCouponService.getUserCoupon(userId, order.getCouponId()));
+        }
         return result;
     }
 
@@ -123,10 +142,10 @@ public class UserOrderServiceImpl extends BaseServiceImpl<UserOrderMapper, UserO
     public String refundOrder(final Long userId, final Long orderId, final String type, final String reason, final List<String> images) {
         UserOrder userOrder = this.getById(orderId);
         if (userOrder == null) {
-            return RConstants.ORDER_NOT_EXIST;
+            return ORDER_NOT_EXIST;
         }
         if (userOrder.getRefundStatus() != 0) {
-            return RConstants.ORDER_ALREADY_REFUND;
+            return ORDER_ALREADY_REFUND;
         }
         userOrder.setRefundStatus(1);
         userOrder.setRefundType(type);
@@ -136,21 +155,21 @@ public class UserOrderServiceImpl extends BaseServiceImpl<UserOrderMapper, UserO
             userOrder.setRefundImages(String.join(",", images.toArray(new String[0])));
         }
         this.updateById(userOrder);
-        return String.valueOf(RConstants.SUCCESS);
+        return String.valueOf(SUCCESS);
     }
 
     @Override
     public String cancelRefundOrder(Long userId, Long orderId) {
         UserOrder userOrder = this.getById(orderId);
         if (userOrder == null) {
-            return RConstants.ORDER_NOT_EXIST;
+            return ORDER_NOT_EXIST;
         }
-        if(userOrder.getRefundStatus() != 1){
-            return RConstants.ORDER_NOT_REFUND;
+        if (userOrder.getRefundStatus() != 1) {
+            return ORDER_NOT_REFUND;
         }
         userOrder.setRefundStatus(3);
         this.updateById(userOrder);
-        return String.valueOf(RConstants.SUCCESS);
+        return String.valueOf(SUCCESS);
     }
 
     @Override
@@ -158,17 +177,17 @@ public class UserOrderServiceImpl extends BaseServiceImpl<UserOrderMapper, UserO
     public String cancelOrder(Long userId, Long orderId) {
         UserOrder userOrder = this.getById(orderId);
         if (userOrder == null) {
-            return RConstants.ORDER_NOT_EXIST;
+            return ORDER_NOT_EXIST;
         }
         List<UserOrderItem> userOrderItems = userOrderItemService.find(Column.of("order_id", orderId));
         if (CollectionUtils.isEmpty(userOrderItems)) {
-            return RConstants.ERROR;
+            return ERROR;
         }
         List<Good> goodList = goodService.find(Column.in("id", userOrderItems.stream().map(UserOrderItem::getGoodId).collect(Collectors.toList())));
         Date date = DateUtil.date().toJdkDate();
         boolean goodExpire = goodList.stream().anyMatch(x -> x.getEndTime().getTime() <= date.getTime());
         if (goodExpire) {
-            return RConstants.ORDER_GOOD_EXPIRE;
+            return ORDER_GOOD_EXPIRE;
         }
         Map<Long, Integer> inventoryMap = userOrderItems.stream().collect(Collectors.toMap(UserOrderItem::getUserId, UserOrderItem::getNum));
         /* 1.更新商品库存 */
@@ -182,7 +201,7 @@ public class UserOrderServiceImpl extends BaseServiceImpl<UserOrderMapper, UserO
         /* 2.更新订单状态 */
         userOrder.setDeleted(true);
         this.updateById(userOrder);
-        return String.valueOf(RConstants.SUCCESS);
+        return String.valueOf(SUCCESS);
     }
 
     @Override
@@ -248,12 +267,45 @@ public class UserOrderServiceImpl extends BaseServiceImpl<UserOrderMapper, UserO
         userOrderItemService.updateById(item);
     }
 
+    private Integer checkIntegral(Integer integral, final Long userId) {
+        if (integral == 0) {
+            return integral;
+        }
+        User user = userService.getById(userId);
+        if (user == null) {
+            return -1;
+        }
+        if (integral != -999 && integral > user.getIntegral()) {
+            return -2;
+        }
+        if (integral == -999) {
+            return user.getIntegral().intValue();
+        }
+        return integral;
+    }
+
+
+    private Long checkCoupon(Long couponId, final Long userId) {
+        if (couponId == null) {
+            return null;
+        }
+        UserCoupon userCoupon = userCouponService.getById(couponId);
+        if (userCoupon == null || !userCoupon.getUserId().toString().equals(userId.toString())) {
+            return -1L;
+        }
+        if (userCoupon.isUsed()) {
+            return -2L;
+        }
+        return couponId;
+    }
+
     /**
      * 功能描述: <br>
      * 〈保存购物车订单〉
      *
      * @param userId
-     * @param addressId
+     * @param addressId 收货地址ID
+     * @param couponId  优惠券ID
      * @param integral
      * @param remarks
      * @param goodIds
@@ -262,11 +314,11 @@ public class UserOrderServiceImpl extends BaseServiceImpl<UserOrderMapper, UserO
      * @Author:
      * @Date: 2023/4/16 15:58
      */
-    private String saveCartGoodOrder(final Long userId, final Long addressId, final Integer integral, final String remarks, List<Long> goodIds) {
+    private String saveCartGoodOrder(final Long userId, final Long addressId, final Long couponId, final Integer integral, final String remarks, List<Long> goodIds) {
         List<CartResult> cartResult = userGoodCartService.cartList(userId, goodIds);
         if (CollectionUtils.isEmpty(cartResult)) {
             log.error("UserOrderServiceImpl:: user id = {} , cart ids empty , good ids = {}", userId, cartResult);
-            return RConstants.CART_EMPTY;
+            return CART_EMPTY;
         }
         Map<Long, Integer> inventoryMap = Maps.newHashMap();
         boolean canCreate = true;
@@ -283,17 +335,17 @@ public class UserOrderServiceImpl extends BaseServiceImpl<UserOrderMapper, UserO
             for (Long goodId : inventoryMap.keySet()) {
                 redisTemplate.opsForValue().increment(RedisCacheConstants.GOOD_INVENTORY_REDIS_KEY.concat(String.valueOf(goodId)), inventoryMap.get(goodId));
             }
-            return RConstants.NOT_ENOUGH;
+            return NOT_ENOUGH;
         }
         Long orderId = null;
         try {
-            orderId = this.save(userId, FROM_CART, addressId, integral, remarks, cartResult);
+            orderId = this.save(userId, FROM_CART, addressId, couponId, integral, remarks, cartResult);
         } catch (Exception ee) {
             log.error("UserOrderServiceImpl:: save order error , msg = {}", ee.getMessage());
             for (Long goodId : inventoryMap.keySet()) {
                 redisTemplate.opsForValue().increment(RedisCacheConstants.GOOD_INVENTORY_REDIS_KEY.concat(String.valueOf(goodId)), inventoryMap.get(goodId));
             }
-            return RConstants.ERROR;
+            return ERROR;
         }
         return String.valueOf(orderId);
     }
@@ -304,6 +356,7 @@ public class UserOrderServiceImpl extends BaseServiceImpl<UserOrderMapper, UserO
      *
      * @param userId
      * @param addressId
+     * @param couponId  优惠券ID
      * @param integral
      * @param remarks
      * @param goodId
@@ -312,22 +365,22 @@ public class UserOrderServiceImpl extends BaseServiceImpl<UserOrderMapper, UserO
      * @Author:
      * @Date: 2023/4/16 15:47
      */
-    private String saveBuyingOutrightOrder(final Long userId, final Long addressId, Integer integral, final String remarks, final Long goodId) {
+    private String saveBuyingOutrightOrder(final Long userId, final Long addressId, final Long couponId, Integer integral, final String remarks, final Long goodId) {
         Long inventory = redisTemplate.opsForValue().increment(RedisCacheConstants.GOOD_INVENTORY_REDIS_KEY.concat(String.valueOf(goodId)), -1);
         if (inventory == null || inventory <= 0) {
             redisTemplate.opsForValue().increment(RedisCacheConstants.GOOD_INVENTORY_REDIS_KEY.concat(String.valueOf(goodId)), 1);
-            return RConstants.NOT_ENOUGH;
+            return NOT_ENOUGH;
         }
         CartResult cartResult = new CartResult();
         cartResult.setNum(1);
         cartResult.setGoodId(goodId);
         Long orderId = null;
         try {
-            orderId = this.save(userId, FROM_GOOD, addressId, integral, remarks, Lists.newArrayList(cartResult));
+            orderId = this.save(userId, FROM_GOOD, addressId, couponId, integral, remarks, Lists.newArrayList(cartResult));
         } catch (Exception ee) {
             log.error("UserOrderServiceImpl:: save buying out order error , user id = {}", userId);
             redisTemplate.opsForValue().increment(RedisCacheConstants.GOOD_INVENTORY_REDIS_KEY.concat(String.valueOf(goodId)), 1);
-            return RConstants.ERROR;
+            return ERROR;
         }
         return String.valueOf(orderId);
     }
@@ -347,7 +400,7 @@ public class UserOrderServiceImpl extends BaseServiceImpl<UserOrderMapper, UserO
      * @Author:
      * @Date: 2023/4/16 15:59
      */
-    private Long save(final Long userId, final String scene, Long addressId, Integer integral, String remarks, List<CartResult> cartResult) {
+    private Long save(final Long userId, final String scene, Long addressId, final Long couponId, Integer integral, String remarks, List<CartResult> cartResult) {
         UserOrder userOrder = new UserOrder();
         userOrder.setUserId(userId);
         userOrder.setAddressId(addressId);
@@ -356,9 +409,9 @@ public class UserOrderServiceImpl extends BaseServiceImpl<UserOrderMapper, UserO
         userOrder.setGoodNum(cartResult.stream().map(CartResult::getNum).mapToInt(x -> x).sum());
         userOrder.setTotalPrice(0L);
         userOrder.setStatus(2);
-        //1.保存订单
+        userOrder.setCouponId(couponId);
+        /*1. 保存订单*/
         this.save(userOrder);
-
         List<UserOrderItem> userOrderItems = Lists.newArrayList();
         Map<Long, Integer> inventoryMap = Maps.newHashMap();
         cartResult.forEach(cart -> {
@@ -371,15 +424,19 @@ public class UserOrderServiceImpl extends BaseServiceImpl<UserOrderMapper, UserO
             inventoryMap.put(cart.getGoodId(), cart.getNum());
             userOrderItems.add(userOrderItem);
         });
-        //2. 保存订单项
+        /*2. 保存订单项*/
         userOrderItemService.saveBatch(userOrderItems);
-        //3. 减少库存
+        /*3. 减少库存*/
         goodService.updateGoodInventory(inventoryMap);
-        //4. 删除购物车商品
+        /*4. 删除购物车商品*/
         if (scene.equals(FROM_CART)) {
             userGoodCartService.deleteCartGood(cartResult.stream().map(CartResult::getGoodId).collect(Collectors.toList()), userId);
         }
-        //5. 更新用户积分
+        /*5. 更新优惠券 */
+        if (couponId != null) {
+            userCouponService.updateUserCouponUsed(couponId);
+        }
+        /*6. 更新用户积分*/
         if (integral > 0) {
             userService.updateUserIntegral(userId, -integral);
         }

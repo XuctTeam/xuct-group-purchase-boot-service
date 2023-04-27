@@ -46,4 +46,11 @@ public class UserCouponController {
     public R<List<UserCoupon>> list() {
         return R.data(userCouponService.list(StpUtil.getLoginIdAsLong()));
     }
+
+
+    @GetMapping("/can/used")
+    @Operation(summary = "【优惠券】可使用的优惠券列表", description = "可使用的优惠券列表")
+    public R<List<UserCoupon>> canUsed() {
+        return R.data(userCouponService.canUsed(StpUtil.getLoginIdAsLong()));
+    }
 }
