@@ -15,6 +15,8 @@ import cn.com.xuct.group.purchase.entity.UserAddress;
 import cn.com.xuct.group.purchase.service.UserAddressService;
 import cn.dev33.satoken.stp.StpUtil;
 import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.Parameter;
+import io.swagger.v3.oas.annotations.Parameters;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -63,6 +65,9 @@ public class UserAddressController {
 
     @DeleteMapping
     @Operation(summary = "【用户】删除地址", description = "删除地址")
+    @Parameters(value = {
+            @Parameter(name = "id", description = "地址ID"),
+    })
     public R<String> delete(@RequestParam("id") String id) {
         userAddressService.delete(StpUtil.getLoginIdAsLong(), Long.valueOf(id));
         return R.status(true);

@@ -13,10 +13,13 @@ package cn.com.xuct.group.purchase.service.impl;
 import cn.com.xuct.group.purchase.base.service.BaseServiceImpl;
 import cn.com.xuct.group.purchase.base.vo.Column;
 import cn.com.xuct.group.purchase.entity.Good;
+import cn.com.xuct.group.purchase.entity.UserCoupon;
 import cn.com.xuct.group.purchase.entity.UserGoodCollect;
 import cn.com.xuct.group.purchase.mapper.UserGoodCollectMapper;
 import cn.com.xuct.group.purchase.service.UserGoodCollectService;
+import cn.com.xuct.group.purchase.vo.result.UserGoodResult;
 import cn.dev33.satoken.stp.StpUtil;
+import com.github.yulichang.wrapper.MPJLambdaWrapper;
 import com.google.common.collect.Lists;
 import org.springframework.stereotype.Service;
 
@@ -47,7 +50,7 @@ public class UserGoodCollectServiceImpl extends BaseServiceImpl<UserGoodCollectM
     }
 
     @Override
-    public List<Good> list(Long userId) {
+    public List<UserGoodResult> list(Long userId) {
         return ((UserGoodCollectMapper) super.getBaseMapper()).queryGoodByUserId(userId);
     }
 }

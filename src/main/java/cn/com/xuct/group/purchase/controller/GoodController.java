@@ -19,9 +19,12 @@ import cn.com.xuct.group.purchase.vo.param.CartManyGoodParam;
 import cn.com.xuct.group.purchase.vo.param.GoodParam;
 import cn.com.xuct.group.purchase.vo.param.UpdateCartNumParam;
 import cn.com.xuct.group.purchase.vo.result.CartResult;
+import cn.com.xuct.group.purchase.vo.result.UserGoodResult;
 import cn.dev33.satoken.annotation.SaIgnore;
 import cn.dev33.satoken.stp.StpUtil;
 import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.Parameter;
+import io.swagger.v3.oas.annotations.Parameters;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -62,6 +65,9 @@ public class GoodController {
     @SaIgnore
     @GetMapping
     @Operation(summary = "【商品】详情", description = "查询商品详情")
+    @Parameters(value = {
+            @Parameter(name = "id", description = "商品ID"),
+    })
     public R<Good> get(@RequestParam("id") Long id) {
         return R.data(goodService.getGood(id, StpUtil.isLogin() ? StpUtil.getLoginIdAsLong() : null));
     }
@@ -117,7 +123,7 @@ public class GoodController {
 
     @Operation(summary = "【用户】我的收藏", description = "我的收藏")
     @GetMapping("/user/collect")
-    public R<List<Good>> findUserCollect() {
+    public R<List<UserGoodResult>> findUserCollect() {
         return R.data(userGoodCollectService.list(StpUtil.getLoginIdAsLong()));
     }
 
@@ -128,6 +134,9 @@ public class GoodController {
     }
 
     @Operation(summary = "【用户】删除浏览记录", description = "删除浏览记录")
+    @Parameters(value = {
+            @Parameter(name = "gid", description = "商品ID"),
+    })
     @DeleteMapping("/user/browse")
     public R<String> deleteUserBrowse(@RequestParam("gid") String gid) {
         userBrowseService.delete(StpUtil.getLoginIdAsLong(), Long.valueOf(gid));

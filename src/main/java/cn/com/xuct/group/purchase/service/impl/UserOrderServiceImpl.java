@@ -57,7 +57,6 @@ public class UserOrderServiceImpl extends BaseServiceImpl<UserOrderMapper, UserO
     private final UserOrderItemService userOrderItemService;
     private final GoodService goodService;
     private final UserService userService;
-    private final UserAddressService userAddressService;
     private final UserGoodEvaluateService userGoodEvaluateService;
     private final UserCouponService userCouponService;
 
@@ -124,18 +123,15 @@ public class UserOrderServiceImpl extends BaseServiceImpl<UserOrderMapper, UserO
 
     @Override
     public OrderResult getDetail(Long userId, Long orderId) {
-        UserOrder order = ((UserOrderMapper) this.getBaseMapper()).getOrderDetail(userId, orderId);
+        OrderResult order = ((UserOrderMapper) this.getBaseMapper()).getOrderDetail(orderId);
         if (order == null) {
             return null;
         }
-        OrderResult result = new OrderResult();
-        BeanUtils.copyProperties(order, result);
-        order.setItems(order.getItems());
-        result.setAddress(userAddressService.getById(order.getAddressId()));
-        if (order.getCouponId() != null) {
-            result.setCoupon(userCouponService.getUserCoupon(userId, order.getCouponId()));
+        if (order.getUserCouponId() == null) {
+            return order;
         }
-        return result;
+        order.setCoupon(userCouponService.getUserCoupon(userId, order.getUserCouponId()));
+        return order;
     }
 
     @Override
@@ -409,7 +405,7 @@ public class UserOrderServiceImpl extends BaseServiceImpl<UserOrderMapper, UserO
         userOrder.setGoodNum(cartResult.stream().map(CartResult::getNum).mapToInt(x -> x).sum());
         userOrder.setTotalPrice(0L);
         userOrder.setStatus(2);
-        userOrder.setCouponId(couponId);
+        userOrder.setUserCouponId(couponId);
         /*1. 保存订单*/
         this.save(userOrder);
         List<UserOrderItem> userOrderItems = Lists.newArrayList();

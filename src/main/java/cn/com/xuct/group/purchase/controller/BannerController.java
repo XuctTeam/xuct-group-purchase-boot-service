@@ -15,6 +15,8 @@ import cn.com.xuct.group.purchase.entity.Banner;
 import cn.com.xuct.group.purchase.service.BannerService;
 import cn.dev33.satoken.annotation.SaIgnore;
 import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.Parameter;
+import io.swagger.v3.oas.annotations.Parameters;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -28,7 +30,7 @@ import java.util.List;
 import java.util.stream.Collectors;
 
 /**
- * 〈一句话功能简述〉<br> 
+ * 〈一句话功能简述〉<br>
  * 〈〉
  *
  * @author Derek Xu
@@ -47,13 +49,16 @@ public class BannerController {
 
     @GetMapping("/list")
     @Operation(summary = "获取轮播图", description = "获取轮播图")
-    public R<List<Banner>> list(){
+    public R<List<Banner>> list() {
         return R.data(bannerService.list().stream().sorted(Comparator.comparing(Banner::getSort).reversed()).collect(Collectors.toList()));
     }
 
     @GetMapping
     @Operation(summary = "获取轮播详情", description = "获取轮播详情")
-    public R<Banner> get(@RequestParam("id")Long id){
+    @Parameters(value = {
+            @Parameter(name = "id", description = "轮播图ID"),
+    })
+    public R<Banner> get(@RequestParam("id") Long id) {
         return R.data(bannerService.getById(id));
     }
 }

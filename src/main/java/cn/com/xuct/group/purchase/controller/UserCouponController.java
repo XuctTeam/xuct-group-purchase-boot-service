@@ -15,11 +15,14 @@ import cn.com.xuct.group.purchase.entity.UserCoupon;
 import cn.com.xuct.group.purchase.service.UserCouponService;
 import cn.dev33.satoken.stp.StpUtil;
 import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.Parameter;
+import io.swagger.v3.oas.annotations.Parameters;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
 import java.util.List;
@@ -43,8 +46,11 @@ public class UserCouponController {
 
     @GetMapping("/list")
     @Operation(summary = "【优惠券】优惠券列表", description = "优惠券列表")
-    public R<List<UserCoupon>> list() {
-        return R.data(userCouponService.list(StpUtil.getLoginIdAsLong()));
+    @Parameters(value = {
+            @Parameter(name = "status", description = "使用状态 0未使用 1使用 2已过期"),
+    })
+    public R<List<UserCoupon>> list(@RequestParam("status") Integer status) {
+        return R.data(userCouponService.list(StpUtil.getLoginIdAsLong(), status));
     }
 
 

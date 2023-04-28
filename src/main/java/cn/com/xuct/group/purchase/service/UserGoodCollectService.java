@@ -14,6 +14,7 @@ import cn.com.xuct.group.purchase.base.service.IBaseService;
 import cn.com.xuct.group.purchase.entity.Good;
 import cn.com.xuct.group.purchase.entity.UserGoodCollect;
 import cn.com.xuct.group.purchase.mapper.UserGoodCollectMapper;
+import cn.com.xuct.group.purchase.vo.result.UserGoodResult;
 
 import java.util.List;
 
@@ -41,5 +42,5 @@ public interface UserGoodCollectService extends IBaseService<UserGoodCollectMapp
      * @param userId
      * @return
      */
-    List<Good> list(final Long userId);
+    List<UserGoodResult> list(final Long userId);
 }

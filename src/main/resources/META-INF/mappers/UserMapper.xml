@@ -17,7 +17,7 @@
                            on s.id = c.user_id
                  left join (select user_id, count(good_id) as browseCount from bu_user_browse group by user_id) b
                            on s.id = b.user_id
-                 left join (select user_id, count(coupon_id) as couponCount from bu_user_coupon group by user_id) co
+                 left join (select user_id, count(coupon_id) as couponCount from bu_user_coupon where used = 0 group by user_id) co
                            on s.id = co.user_id
             where s.id = #{userId}
         group by s.id

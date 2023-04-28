@@ -16,6 +16,8 @@ import cn.com.xuct.group.purchase.entity.AppConfig;
 import cn.com.xuct.group.purchase.service.AppConfigService;
 import cn.dev33.satoken.annotation.SaIgnore;
 import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.Parameter;
+import io.swagger.v3.oas.annotations.Parameters;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -44,6 +46,9 @@ public class AppConfigController {
 
     @GetMapping
     @Operation(summary = "查询基础配置")
+    @Parameters(value = {
+            @Parameter(name = "type", description = "0 隐私协议 1用户协议 2 版本号"),
+    })
     public R<AppConfig> get(@RequestParam("type")Integer type){
          return R.data(appConfigService.get(Column.of("type" , type)));
     }

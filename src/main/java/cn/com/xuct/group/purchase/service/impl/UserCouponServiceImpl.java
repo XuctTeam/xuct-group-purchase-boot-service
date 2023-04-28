@@ -34,15 +34,21 @@ import java.util.List;
 public class UserCouponServiceImpl extends BaseServiceImpl<UserCouponMapper, UserCoupon> implements UserCouponService {
 
     @Override
-    public List<UserCoupon> list(Long userId) {
-
-        return super.getBaseMapper().selectList(this.buildQuery(userId).orderByDesc(UserCoupon::isUsed));
+    public List<UserCoupon> list(Long userId, final Integer status) {
+        Date now = DateUtil.parseDate(DateUtil.now());
+        MPJLambdaWrapper<UserCoupon> wrapper = this.buildQuery(userId);
+        switch (status) {
+            case 1, 2 ->
+                    wrapper.le(UserCoupon::getBeginTime, now).ge(UserCoupon::getEndTime, now).eq(UserCoupon::isUsed, status == 2);
+            default -> wrapper.lt(UserCoupon::getEndTime, now);
+        }
+        return super.getBaseMapper().selectList(wrapper.orderByAsc(Coupon::getPrice));
     }
 
     @Override
     public List<UserCoupon> canUsed(Long userId) {
         Date now = DateUtil.parseDate(DateUtil.now());
-        MPJLambdaWrapper<UserCoupon> wrapper = this.buildQuery(userId).le(UserCoupon::getBeginTime, now).ge(UserCoupon::getEndTime, now).orderByDesc(Coupon::getPrice);
+        MPJLambdaWrapper<UserCoupon> wrapper = this.buildQuery(userId).le(UserCoupon::getBeginTime, now).ge(UserCoupon::getEndTime, now).orderByAsc(UserCoupon::isUsed).orderByAsc(Coupon::getPrice);
         return super.getBaseMapper().selectList(wrapper);
     }
 

@@ -11,6 +11,7 @@
 package cn.com.xuct.group.purchase.mapper;
 
 import cn.com.xuct.group.purchase.entity.UserOrder;
+import cn.com.xuct.group.purchase.vo.result.OrderResult;
 import cn.com.xuct.group.purchase.vo.result.OrderSumResult;
 import com.baomidou.mybatisplus.core.mapper.BaseMapper;
 import com.baomidou.mybatisplus.core.metadata.IPage;
@@ -49,5 +50,5 @@ public interface UserOrderMapper extends BaseMapper<UserOrder> {
      * @param orderId
      * @return
      */
-    UserOrder getOrderDetail(@Param("userId") Long userId, @RequestParam("orderId") Long orderId);
+    OrderResult getOrderDetail(@RequestParam("orderId") Long orderId);
 }

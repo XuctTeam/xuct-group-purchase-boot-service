@@ -26,7 +26,7 @@ import lombok.EqualsAndHashCode;
  */
 @EqualsAndHashCode(callSuper = true)
 @Data
-@TableName("bu_app_config")
+@TableName("sys_app_config")
 public class AppConfig extends SuperEntity<AppConfig> {
 
     @Schema(description = "类型 0 隐私协议 1用户协议 2 版本号" )

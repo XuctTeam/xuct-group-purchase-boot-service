@@ -15,6 +15,7 @@ import com.baomidou.mybatisplus.annotation.TableField;
 import com.baomidou.mybatisplus.annotation.TableName;
 import io.swagger.v3.oas.annotations.media.Schema;
 import lombok.Data;
+import lombok.EqualsAndHashCode;
 
 import java.util.Date;
 
@@ -26,6 +27,7 @@ import java.util.Date;
  * @create 2023/4/26
  * @since 1.0.0
  */
+@EqualsAndHashCode(callSuper = true)
 @Data
 @TableName("bu_user_coupon")
 public class UserCoupon extends SuperEntity<UserCoupon> {

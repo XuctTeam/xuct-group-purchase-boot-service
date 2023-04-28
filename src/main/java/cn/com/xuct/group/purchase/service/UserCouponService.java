@@ -32,7 +32,7 @@ public interface UserCouponService extends IBaseService<UserCouponMapper, UserCo
      * @param userId
      * @return
      */
-    List<UserCoupon> list(final Long userId);
+    List<UserCoupon> list(final Long userId , final Integer status);
 
     /**
      * 可用的优惠券列表
