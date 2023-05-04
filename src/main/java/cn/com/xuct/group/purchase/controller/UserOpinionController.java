@@ -11,17 +11,25 @@
 package cn.com.xuct.group.purchase.controller;
 
 import cn.com.xuct.group.purchase.base.res.R;
+import cn.com.xuct.group.purchase.client.cos.client.CosClient;
+import cn.com.xuct.group.purchase.constants.FileFolderConstants;
 import cn.com.xuct.group.purchase.entity.UserOpinion;
 import cn.com.xuct.group.purchase.service.UserOpinionService;
+import cn.dev33.satoken.stp.StpUtil;
 import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.Parameter;
+import io.swagger.v3.oas.annotations.Parameters;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.validation.annotation.Validated;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
+import org.springframework.web.multipart.MultipartFile;
+
+import java.io.IOException;
+import java.net.URL;
+import java.util.List;
+import java.util.Objects;
 
 /**
  * 〈一句话功能简述〉<br>
@@ -43,11 +51,37 @@ public class UserOpinionController {
     @Operation(summary = "【意见反馈】新增意见反馈", description = "新增意见反馈")
     @PostMapping()
     public R<String> add(@RequestBody @Validated UserOpinion opinion) {
+        opinion.setUserId(StpUtil.getLoginIdAsLong());
+        opinion.setStatus(false);
         userOpinionService.save(opinion);
         return R.status(true);
     }
 
+    @Operation(summary = "【意见反馈】反馈列表", description = "反馈列表")
+    @GetMapping("/list")
+    public R<List<UserOpinion>> list() {
+        return R.data(userOpinionService.list(StpUtil.getLoginIdAsLong()));
+    }
 
+    @Operation(summary = "【意见反馈】上传反馈图片", description = "上传反馈图片")
+    @PostMapping("/upload")
+    public R<String> uploadAvatar(MultipartFile file) {
+        URL url = null;
+        try {
+            url = CosClient.uploadFile(file, FileFolderConstants.OPINION.concat(Objects.requireNonNull(file.getOriginalFilename())));
+        } catch (IOException e) {
+            log.error("UserController:: update avatar error");
+            return R.fail("上传失败");
+        }
+        return R.data(url.toString());
+    }
 
-
+    @Operation(summary = "【意见反馈】获取详情", description = "获取详情")
+    @GetMapping("")
+    @Parameters(value = {
+            @Parameter(name = "id", description = "详情ID"),
+    })
+    public R<UserOpinion> get(@RequestParam("id") String id) {
+        return R.data(userOpinionService.getById(Long.valueOf(id)));
+    }
 }

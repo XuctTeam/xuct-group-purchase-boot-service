@@ -47,7 +47,7 @@ public class UserOpinion extends SuperEntity<UserOpinion> {
     private String remarks;
 
     @Schema(description = "反馈状态 0未反馈 1已反馈")
-    private boolean feedbackStatus;
+    private boolean status;
 
     @Schema(description = "反馈时间")
     private String feedbackTime;

@@ -14,14 +14,23 @@ import cn.com.xuct.group.purchase.base.service.IBaseService;
 import cn.com.xuct.group.purchase.entity.UserOpinion;
 import cn.com.xuct.group.purchase.mapper.UserOpinionMapper;
 
+import java.util.List;
+
 /**
- * 〈一句话功能简述〉<br> 
+ * 〈一句话功能简述〉<br>
  * 〈〉
  *
  * @author Derek Xu
  * @create 2023/4/28
  * @since 1.0.0
  */
-public interface UserOpinionService extends IBaseService<UserOpinionMapper , UserOpinion> {
+public interface UserOpinionService extends IBaseService<UserOpinionMapper, UserOpinion> {
 
+    /**
+     * 反馈列表
+     *
+     * @param userId
+     * @return
+     */
+    List<UserOpinion> list(final Long userId);
 }

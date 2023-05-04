@@ -10,14 +10,20 @@
  */
 package cn.com.xuct.group.purchase.service.impl;
 
+import cn.com.xuct.group.purchase.base.enums.SortEnum;
 import cn.com.xuct.group.purchase.base.service.BaseServiceImpl;
+import cn.com.xuct.group.purchase.base.vo.Column;
+import cn.com.xuct.group.purchase.base.vo.Sort;
 import cn.com.xuct.group.purchase.entity.UserOpinion;
 import cn.com.xuct.group.purchase.mapper.UserOpinionMapper;
 import cn.com.xuct.group.purchase.service.UserOpinionService;
+import com.google.common.collect.Lists;
 import org.springframework.stereotype.Service;
 
+import java.util.List;
+
 /**
- * 〈一句话功能简述〉<br> 
+ * 〈一句话功能简述〉<br>
  * 〈〉
  *
  * @author Derek Xu
@@ -25,6 +31,10 @@ import org.springframework.stereotype.Service;
  * @since 1.0.0
  */
 @Service
-public class UserOpinionServiceImpl extends BaseServiceImpl<UserOpinionMapper , UserOpinion> implements UserOpinionService {
+public class UserOpinionServiceImpl extends BaseServiceImpl<UserOpinionMapper, UserOpinion> implements UserOpinionService {
 
+    @Override
+    public List<UserOpinion> list(Long userId) {
+        return this.find(Lists.newArrayList(Column.of("user_id", userId)), Sort.of("status", SortEnum.desc));
+    }
 }
