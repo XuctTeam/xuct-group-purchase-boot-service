@@ -54,6 +54,7 @@ import static cn.com.xuct.group.purchase.constants.RConstants.*;
 @Slf4j
 @RequiredArgsConstructor
 public class UserOrderController {
+
     private final UserOrderService userOrderService;
 
     @Operation(summary = "【订单】统计总数", description = "统计总数")
@@ -116,7 +117,6 @@ public class UserOrderController {
     public R<PageData<UserOrder>> search(@RequestParam("pageNo") Integer pageNo, @RequestParam("pageSize") Integer pageSize, @RequestParam("refund") Integer refund, @RequestParam("word") String word) {
         return R.data(userOrderService.convert(userOrderService.search(StpUtil.getLoginIdAsLong(), pageNo, pageSize, refund, word)));
     }
-
 
     @Operation(summary = "【订单】订单详情", description = "订单详情")
     @GetMapping("/")
@@ -206,5 +206,11 @@ public class UserOrderController {
     public R<String> evaluate(@RequestBody @Validated EvaluateParam param) {
         userOrderService.evaluateGood(StpUtil.getLoginIdAsLong(), param.getOrderItemId(), param.getRate(), param.getEvaluateImages(), param.getRemarks());
         return R.status(true);
+    }
+
+    @Operation(summary = "【订单】删除订单列表", description = "删除订单列表")
+    @GetMapping("/deleted/list")
+    public R<List<UserOrder>> deleteList() {
+        return R.data(userOrderService.deleteList(StpUtil.getLoginIdAsLong()));
     }
 }

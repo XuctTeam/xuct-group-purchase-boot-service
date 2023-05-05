@@ -19,6 +19,8 @@ import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import org.apache.ibatis.annotations.Param;
 import org.springframework.web.bind.annotation.RequestParam;
 
+import java.util.List;
+
 /**
  * 〈一句话功能简述〉<br>
  * 〈〉
@@ -52,7 +54,7 @@ public interface UserOrderMapper extends BaseMapper<UserOrder> {
      * @param userId
      * @param status
      * @param page
-     * @param refund        是否是售后搜索
+     * @param refund       是否是售后搜索
      * @param wordOrderId
      * @param wordGoodName
      * @return
@@ -68,4 +70,12 @@ public interface UserOrderMapper extends BaseMapper<UserOrder> {
      * @return
      */
     OrderResult getOrderDetail(@RequestParam("orderId") Long orderId);
+
+    /**
+     * 删除订单列表
+     *
+     * @param userId
+     * @return
+     */
+    List<UserOrder> deleteList(@Param("userId") Long userId);
 }

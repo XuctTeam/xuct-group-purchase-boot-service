@@ -181,7 +181,7 @@ public class UserOrderServiceImpl extends BaseServiceImpl<UserOrderMapper, UserO
     }
 
     @Override
-    @Transactional
+    @Transactional(rollbackFor = Exception.class)
     public String cancelOrder(Long userId, Long orderId) {
         UserOrder userOrder = this.getById(orderId);
         if (userOrder == null) {
@@ -252,7 +252,7 @@ public class UserOrderServiceImpl extends BaseServiceImpl<UserOrderMapper, UserO
     }
 
     @Override
-    @Transactional
+    @Transactional(rollbackFor = Exception.class)
     public void evaluateGood(Long userId, Long orderItemId, String rate, String evaluateImages, String remarks) {
         UserOrderItem item = userOrderItemService.getById(orderItemId);
         if (item == null) {
@@ -273,6 +273,11 @@ public class UserOrderServiceImpl extends BaseServiceImpl<UserOrderMapper, UserO
         userGoodEvaluateService.save(evaluate);
         item.setEvaluation(true);
         userOrderItemService.updateById(item);
+    }
+
+    @Override
+    public List<UserOrder> deleteList(Long userId) {
+        return ((UserOrderMapper) this.getBaseMapper()).deleteList(userId);
     }
 
     private Integer checkIntegral(Integer integral, final Long userId) {

@@ -86,7 +86,7 @@ public interface UserOrderService extends IBaseService<UserOrderMapper, UserOrde
      * @param userId
      * @param pageNo
      * @param pageSize
-     * @param refund        是否是售后搜索  0 不是 1是
+     * @param refund   是否是售后搜索  0 不是 1是
      * @param word
      * @return
      */
@@ -171,5 +171,13 @@ public interface UserOrderService extends IBaseService<UserOrderMapper, UserOrde
      * @param remarks
      */
     void evaluateGood(final Long userId, final Long orderItemId, final String rate, final String evaluateImages, final String remarks);
+
+    /**
+     * 查询删除列表
+     *
+     * @param userId
+     * @return
+     */
+    List<UserOrder> deleteList(final Long userId);
 
 }
