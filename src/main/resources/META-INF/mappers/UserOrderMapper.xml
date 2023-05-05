@@ -57,6 +57,37 @@
         order by create_time desc
     </select>
 
+
+    <select id="search" resultMap="BaseResultMap">
+        select id , create_time , deliver_time , serve_time , status , good_num , rush , refund_status
+        from bu_user_order
+        where 1 =1
+        and user_id = #{userId}
+        and deleted = false
+        <choose>
+            <when test="refund == 1">
+                and refund_status in (1 , 2)
+            </when>
+            <otherwise>
+                and refund_status in (0 , 3)
+            </otherwise>
+        </choose>
+        <choose>
+            <when test="wordOrderId !=null">
+                and id like concat('%',#{wordOrderId,jdbcType=VARCHAR},'%')
+            </when>
+            <otherwise>
+                and id in (
+                select o.order_id from bu_user_order_item o
+                inner join bu_good g on o.good_id = g.id
+                where g.name like concat('%',#{wordGoodName,jdbcType=VARCHAR},'%')
+                and o.user_id = #{userId}
+                )
+            </otherwise>
+        </choose>
+        order by create_time desc
+    </select>
+
     <select id="getOrderDetail" resultMap="detailMap">
         select o.id,
                o.create_time,
@@ -73,15 +104,15 @@
                o.refund_images,
                o.refund_time,
                o.user_coupon_id,
-               o.address_id as address_a_id,
+               o.address_id    as address_a_id,
                a.province_name as address_province_name,
-               a.city_name as address_city_name,
-               a.county_name as address_county_name,
-               a.tel_number as address_tel_number,
-               a.detail_info as address_detail_info,
-               a.user_name as address_user_name
+               a.city_name     as address_city_name,
+               a.county_name   as address_county_name,
+               a.tel_number    as address_tel_number,
+               a.detail_info   as address_detail_info,
+               a.user_name     as address_user_name
         from bu_user_order o
-          left join sys_user_address a on o.address_id = a.id
+                 left join sys_user_address a on o.address_id = a.id
         where 1 = 1
           and o.id = #{orderId}
     </select>

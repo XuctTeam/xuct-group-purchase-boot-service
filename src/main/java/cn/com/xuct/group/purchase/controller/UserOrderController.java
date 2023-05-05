@@ -90,7 +90,8 @@ public class UserOrderController {
             @Parameter(name = "status", description = "状态"),
             @Parameter(name = "pageNo", description = "页码", required = true),
             @Parameter(name = "pageSize", description = "每页条数", required = true),
-            @Parameter(name = "refundStatus", description = "退单状态")
+            @Parameter(name = "refundStatus", description = "退单状态"),
+            @Parameter(name = "word", description = "关键词")
     })
     public R<PageData<UserOrder>> list(@RequestParam("status") Integer status, @RequestParam("pageNo") Integer pageNo, @RequestParam("pageSize") Integer pageSize,
                                        @RequestParam(required = false, name = "refundStatus") Integer refundStatus) {
@@ -102,6 +103,20 @@ public class UserOrderController {
         }
         return R.data(userOrderService.convert(userOrderService.list(StpUtil.getLoginIdAsLong(), status, pageNo, pageSize, refundStatus)));
     }
+
+    @Operation(summary = "【订单】搜索列表", description = "搜索列表")
+    @GetMapping("/search")
+    @Parameters(value = {
+            @Parameter(name = "word", description = "关键词"),
+            @Parameter(name = "pageNo", description = "页码", required = true),
+            @Parameter(name = "pageSize", description = "每页条数", required = true),
+            @Parameter(name = "refund", description = "是否为售后", example = "0不是 1是", required = true),
+            @Parameter(name = "word", description = "关键词")
+    })
+    public R<PageData<UserOrder>> search(@RequestParam("pageNo") Integer pageNo, @RequestParam("pageSize") Integer pageSize, @RequestParam("refund") Integer refund, @RequestParam("word") String word) {
+        return R.data(userOrderService.convert(userOrderService.search(StpUtil.getLoginIdAsLong(), pageNo, pageSize, refund, word)));
+    }
+
 
     @Operation(summary = "【订单】订单详情", description = "订单详情")
     @GetMapping("/")

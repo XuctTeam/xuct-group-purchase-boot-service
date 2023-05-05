@@ -21,6 +21,7 @@ import cn.com.xuct.group.purchase.vo.result.CartResult;
 import cn.com.xuct.group.purchase.vo.result.OrderResult;
 import cn.com.xuct.group.purchase.vo.result.OrderSumResult;
 import cn.hutool.core.date.DateUtil;
+import cn.hutool.core.lang.Validator;
 import com.baomidou.mybatisplus.core.metadata.IPage;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.google.common.collect.Maps;
@@ -114,6 +115,17 @@ public class UserOrderServiceImpl extends BaseServiceImpl<UserOrderMapper, UserO
                 return ORDER_SCENE_ERROR;
             }
         }
+    }
+
+    @Override
+    public IPage<UserOrder> search(final Long userId, int pageNo, int pageSize, final int refund, final String word) {
+        String wordId = word;
+        String wordGoodName = null;
+        if (Validator.hasChinese(word) || Validator.isWord(word)) {
+            wordGoodName = word;
+            wordId = null;
+        }
+        return ((UserOrderMapper) this.getBaseMapper()).search(userId, Page.of(pageNo, pageSize), refund, wordId, wordGoodName);
     }
 
     @Override

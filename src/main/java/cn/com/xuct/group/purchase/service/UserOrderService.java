@@ -74,9 +74,24 @@ public interface UserOrderService extends IBaseService<UserOrderMapper, UserOrde
      * @param pageNo
      * @param pageSize
      * @param refundStatus
+     * @param word         搜索关键词
      * @return
      */
     IPage<UserOrder> list(final Long userId, final Integer status, int pageNo, int pageSize, final Integer refundStatus);
+
+
+    /**
+     * 根据关键词搜索订单
+     *
+     * @param userId
+     * @param pageNo
+     * @param pageSize
+     * @param refund        是否是售后搜索  0 不是 1是
+     * @param word
+     * @return
+     */
+    IPage<UserOrder> search(final Long userId, int pageNo, int pageSize, final int refund, final String word);
+
 
     /**
      * 获取订单详情

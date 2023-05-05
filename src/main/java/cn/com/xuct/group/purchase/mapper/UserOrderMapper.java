@@ -39,9 +39,26 @@ public interface UserOrderMapper extends BaseMapper<UserOrder> {
      * @param status
      * @param page
      * @param refundStatus 退课状态
+     * @param wordOrderId  like 订单id
+     * @param wordGoodName like 商品名称
      * @return
      */
     IPage<UserOrder> list(@Param("userId") Long userId, @Param("status") Integer status, Page<UserOrder> page, @Param("refundStatus") Integer refundStatus);
+
+
+    /**
+     * 通过关键词查询
+     *
+     * @param userId
+     * @param status
+     * @param page
+     * @param refund        是否是售后搜索
+     * @param wordOrderId
+     * @param wordGoodName
+     * @return
+     */
+    IPage<UserOrder> search(@Param("userId") Long userId, Page<UserOrder> page, @Param("refund") int refund, @Param("wordOrderId") String wordOrderId, @Param("wordGoodName") String wordGoodName);
+
 
     /**
      * 获取订单详情
