@@ -40,7 +40,7 @@ public class UserCouponServiceImpl extends BaseServiceImpl<UserCouponMapper, Use
         switch (status) {
             case 1, 2 ->
                     wrapper.le(UserCoupon::getBeginTime, now).ge(UserCoupon::getEndTime, now).eq(UserCoupon::isUsed, status == 2);
-            default -> wrapper.lt(UserCoupon::getEndTime, now);
+            default -> wrapper.lt(UserCoupon::getEndTime, now).eq(UserCoupon::isUsed, false);
         }
         return super.getBaseMapper().selectList(wrapper.orderByAsc(Coupon::getPrice));
     }

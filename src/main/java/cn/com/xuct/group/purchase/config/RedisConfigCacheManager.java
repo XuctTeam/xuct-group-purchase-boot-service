@@ -53,12 +53,9 @@ public class RedisConfigCacheManager extends RedisCacheManager {
             cacheConfig = cacheConfig.computePrefixWith(DEFAULT_CACHE_KEY_PREFIX).serializeValuesWith(DEFAULT_PAIR);
             final String cacheName = StringUtils.substring(name, 0, lastIndexOf);
             return super.createRedisCache(cacheName, cacheConfig);
-        } else {
-            //修改缓存key和value值的序列化方式
-            cacheConfig = cacheConfig.computePrefixWith(DEFAULT_CACHE_KEY_PREFIX).serializeValuesWith(DEFAULT_PAIR);
-            return super.createRedisCache(name, cacheConfig);
         }
+        //修改缓存key和value值的序列化方式
+        cacheConfig = cacheConfig.computePrefixWith(DEFAULT_CACHE_KEY_PREFIX).serializeValuesWith(DEFAULT_PAIR);
+        return super.createRedisCache(name, cacheConfig);
     }
-
-
 }

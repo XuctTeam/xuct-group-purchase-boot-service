@@ -35,4 +35,7 @@ public class GoodResult extends Good {
     @Schema(description = "浏览量")
     private Integer browse;
 
+    @Schema(description = "成交量")
+    private Integer sell;
+
 }
