@@ -8,10 +8,9 @@
  * <author>          <time>          <version>          <desc>
  * 作者姓名           修改时间           版本号              描述
  */
-package cn.com.xuct.group.purchase.controller;
+package cn.com.xuct.group.purchase.controller.app;
 
 import cn.com.xuct.group.purchase.base.res.R;
-import cn.com.xuct.group.purchase.base.vo.Column;
 import cn.com.xuct.group.purchase.entity.AppConfig;
 import cn.com.xuct.group.purchase.service.AppConfigService;
 import cn.dev33.satoken.annotation.SaIgnore;
@@ -27,7 +26,7 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
 /**
- * 〈一句话功能简述〉<br> 
+ * 〈一句话功能简述〉<br>
  * 〈〉
  *
  * @author Derek Xu
@@ -47,9 +46,9 @@ public class AppConfigController {
     @GetMapping
     @Operation(summary = "查询基础配置")
     @Parameters(value = {
-            @Parameter(name = "type", description = "0 隐私协议 1用户协议 2 版本号"),
+            @Parameter(name = "type", description = "0 隐私协议 1用户协议 2 版本号 3.店主手机号"),
     })
-    public R<AppConfig> get(@RequestParam("type")Integer type){
-         return R.data(appConfigService.get(Column.of("type" , type)));
+    public R<AppConfig> get(@RequestParam("type") Integer type) {
+        return R.data(appConfigService.get(type));
     }
 }

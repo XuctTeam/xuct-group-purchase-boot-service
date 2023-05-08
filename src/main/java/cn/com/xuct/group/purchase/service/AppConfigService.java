@@ -24,4 +24,6 @@ import cn.com.xuct.group.purchase.mapper.AppConfigMapper;
  */
 public interface AppConfigService extends IBaseService<AppConfigMapper , AppConfig> {
 
+
+    AppConfig get(final Integer type);
 }

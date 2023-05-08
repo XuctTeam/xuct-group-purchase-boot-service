@@ -14,7 +14,9 @@ import cn.com.xuct.group.purchase.base.dao.SuperEntity;
 import cn.com.xuct.group.purchase.constants.RoleCodeEnum;
 import com.baomidou.mybatisplus.annotation.TableField;
 import com.baomidou.mybatisplus.annotation.TableName;
+import io.swagger.v3.oas.annotations.media.Schema;
 import lombok.Data;
+import lombok.EqualsAndHashCode;
 
 /**
  * 〈一句话功能简述〉<br>
@@ -25,8 +27,15 @@ import lombok.Data;
  * @since 1.0.0
  */
 @Data
+@EqualsAndHashCode(callSuper = true)
 @TableName("sys_user")
 public class User extends SuperEntity<User> {
+
+    @Schema(description = "用户名")
+    private String userName;
+
+    @Schema(description = "密码")
+    private String password;
 
     /**
      * OpenId
@@ -69,9 +78,10 @@ public class User extends SuperEntity<User> {
     private RoleCodeEnum roleCode;
 
 
-    public void cleanData(){
+    public void cleanData() {
         super.setCreateTime(null);
         super.setUpdateTime(null);
+        this.password = null;
         this.status = null;
     }
 

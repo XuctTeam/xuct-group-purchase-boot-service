@@ -38,8 +38,9 @@ public class UserCouponServiceImpl extends BaseServiceImpl<UserCouponMapper, Use
         Date now = DateUtil.parseDate(DateUtil.now());
         MPJLambdaWrapper<UserCoupon> wrapper = this.buildQuery(userId);
         switch (status) {
-            case 1, 2 ->
-                    wrapper.le(UserCoupon::getBeginTime, now).ge(UserCoupon::getEndTime, now).eq(UserCoupon::isUsed, status == 2);
+            case 1 ->
+                    wrapper.le(UserCoupon::getBeginTime, now).ge(UserCoupon::getEndTime, now).eq(UserCoupon::isUsed, false);
+            case 2 -> wrapper.eq(UserCoupon::isUsed, false);
             default -> wrapper.lt(UserCoupon::getEndTime, now).eq(UserCoupon::isUsed, false);
         }
         return super.getBaseMapper().selectList(wrapper.orderByAsc(Coupon::getPrice));

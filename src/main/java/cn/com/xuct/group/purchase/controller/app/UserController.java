@@ -8,7 +8,7 @@
  * <author>          <time>          <version>          <desc>
  * Derek Xu         修改时间           版本号              描述
  */
-package cn.com.xuct.group.purchase.controller;
+package cn.com.xuct.group.purchase.controller.app;
 
 import cn.binarywang.wx.miniapp.bean.WxMaPhoneNumberInfo;
 import cn.com.xuct.group.purchase.base.res.R;

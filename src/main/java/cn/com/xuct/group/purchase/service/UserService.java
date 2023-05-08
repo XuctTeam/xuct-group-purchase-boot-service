@@ -42,6 +42,14 @@ public interface UserService extends IBaseService<UserMapper, User> {
     User findById(final Long id);
 
     /**
+     * 通过账号查询
+     *
+     * @param username
+     * @return
+     */
+    User findByUsername(final String username);
+
+    /**
      * 修改用户信息
      *
      * @param user

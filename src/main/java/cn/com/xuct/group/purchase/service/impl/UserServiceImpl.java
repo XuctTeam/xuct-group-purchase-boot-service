@@ -70,6 +70,17 @@ public class UserServiceImpl extends BaseServiceImpl<UserMapper, User> implement
     }
 
     @Override
+    public User findByUsername(String username) {
+        MPJLambdaWrapper<User> wrapper = new MPJLambdaWrapper<User>()
+                .selectAll(User.class)
+                .select(Role::getCode)
+                .selectAs(Role::getCode, User::getRoleCode)//别名 t.address AS userAddress
+                .leftJoin(Role.class, Role::getId, User::getRoleId)
+                .eq(User::getUserName, username);
+        return super.getBaseMapper().selectOne(wrapper);
+    }
+
+    @Override
     @CachePut(cacheNames = RedisCacheConstants.USER_CACHE_ABLE_CACHE_NAME, key = "#user.id", unless = "#result == null")
     public User updateUserInfo(User user, String phone, String nickname, String avatar) {
         if (StringUtils.hasLength(phone)) {

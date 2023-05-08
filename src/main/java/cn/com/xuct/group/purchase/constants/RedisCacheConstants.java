@@ -11,7 +11,7 @@
 package cn.com.xuct.group.purchase.constants;
 
 /**
- * 〈一句话功能简述〉<br> 
+ * 〈一句话功能简述〉<br>
  * 〈〉
  *
  * @author Derek Xu
@@ -27,4 +27,7 @@ public interface RedisCacheConstants {
      * 商品
      */
     String GOOD_INVENTORY_REDIS_KEY = "group::purchase::good::inventory:";
+
+
+    String APP_CACHE_CONFIG_NAME = "group::purchase::app::config";
 }
