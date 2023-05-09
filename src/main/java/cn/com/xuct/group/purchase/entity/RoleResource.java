@@ -1,17 +1,16 @@
 /**
- * Copyright (C), 2015-2023, XXX有限公司
- * FileName: Role
+ * Copyright (C), 2015-2023, 263企业通信
+ * FileName: RoleResource
  * Author:   Derek Xu
- * Date:     2023/3/16 14:14
+ * Date:     2023/5/9 9:45
  * Description:
  * History:
  * <author>          <time>          <version>          <desc>
- * Derek Xu         修改时间           版本号              描述
+ * 作者姓名           修改时间           版本号              描述
  */
 package cn.com.xuct.group.purchase.entity;
 
 import cn.com.xuct.group.purchase.base.dao.SuperEntity;
-import cn.com.xuct.group.purchase.constants.RoleCodeEnum;
 import com.baomidou.mybatisplus.annotation.TableName;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
@@ -21,21 +20,16 @@ import lombok.EqualsAndHashCode;
  * 〈〉
  *
  * @author Derek Xu
- * @create 2023/3/16
+ * @create 2023/5/9
  * @since 1.0.0
  */
 @EqualsAndHashCode(callSuper = true)
 @Data
-@TableName("sys_role")
-public class Role extends SuperEntity<Role> {
+@TableName("sys_role_resource")
+public class RoleResource extends SuperEntity<RoleResource> {
 
-    /**
-     * 名称
-     */
-    private String name;
 
-    /**
-     * 编码
-     */
-    private RoleCodeEnum code;
+    private Long roleId;
+
+    private Long resourceId;
 }

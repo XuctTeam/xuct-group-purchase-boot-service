@@ -22,5 +22,7 @@ public enum RoleCodeEnum {
 
     member,
 
-    admin
+    admin,
+
+    super_admin
 }

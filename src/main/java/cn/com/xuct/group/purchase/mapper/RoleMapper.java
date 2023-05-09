@@ -10,8 +10,12 @@
  */
 package cn.com.xuct.group.purchase.mapper;
 
+import cn.com.xuct.group.purchase.entity.Resource;
 import cn.com.xuct.group.purchase.entity.Role;
 import com.baomidou.mybatisplus.core.mapper.BaseMapper;
+import org.apache.ibatis.annotations.Param;
+
+import java.util.List;
 
 /**
  * 〈一句话功能简述〉<br> 
@@ -23,4 +27,5 @@ import com.baomidou.mybatisplus.core.mapper.BaseMapper;
  */
 public interface RoleMapper extends BaseMapper<Role> {
 
+    List<Resource> getMenuList(@Param("id")Long id);
 }

@@ -13,6 +13,9 @@ package cn.com.xuct.group.purchase.service;
 import cn.com.xuct.group.purchase.base.service.IBaseService;
 import cn.com.xuct.group.purchase.entity.Role;
 import cn.com.xuct.group.purchase.mapper.RoleMapper;
+import cn.com.xuct.group.purchase.vo.result.AdminMenuResult;
+
+import java.util.List;
 
 /**
  * 〈一句话功能简述〉<br> 
@@ -24,4 +27,13 @@ import cn.com.xuct.group.purchase.mapper.RoleMapper;
  */
 public interface RoleService extends IBaseService<RoleMapper , Role> {
 
+
+    Role findById(final Long id);
+
+    /**
+     * 菜单
+     * @param userId
+     * @return
+     */
+    List<AdminMenuResult> menuList(final Long userId);
 }

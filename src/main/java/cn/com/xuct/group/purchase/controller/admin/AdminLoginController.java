@@ -19,6 +19,8 @@ import cn.com.xuct.group.purchase.vo.result.LoginResult;
 import cn.dev33.satoken.annotation.SaIgnore;
 import cn.dev33.satoken.stp.SaTokenInfo;
 import cn.dev33.satoken.stp.StpUtil;
+import cn.hutool.crypto.digest.DigestUtil;
+import cn.hutool.crypto.digest.MD5;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import lombok.RequiredArgsConstructor;
@@ -50,7 +52,10 @@ public class AdminLoginController {
     public R<LoginResult> login(@RequestBody @Validated AdminLoginParam param) {
         User user = userService.findByUsername(param.getUsername());
         if (user == null || user.getRoleCode().equals(RoleCodeEnum.member)) {
-            return R.fail("用户不存在!");
+            return R.fail("用户不存在！");
+        }
+        if (!user.getPassword().equals(param.getPassword())) {
+            return R.fail("用户名或密码错误！");
         }
         // 第1步，先登录上
         StpUtil.login(user.getId());
@@ -59,4 +64,7 @@ public class AdminLoginController {
         user.cleanData();
         return R.data(LoginResult.builder().user(user).tokenName(tokenInfo.getTokenName()).tokenValue(tokenInfo.getTokenValue()).build());
     }
+
+
+
 }

@@ -109,6 +109,18 @@ public class UserServiceImpl extends BaseServiceImpl<UserMapper, User> implement
     }
 
     @Override
+    @CachePut(cacheNames = RedisCacheConstants.USER_CACHE_ABLE_CACHE_NAME, key = "#userId", unless = "#result == null")
+    public User updatePassword(Long userId, String pass) {
+        User user = this.getById(userId);
+        if (user == null) {
+            return null;
+        }
+        user.setPassword(pass);
+        this.updateById(user);
+        return user;
+    }
+
+    @Override
     public UserSumResult userSum(final Long userId) {
         return ((UserMapper) this.getBaseMapper()).userSum(userId);
     }

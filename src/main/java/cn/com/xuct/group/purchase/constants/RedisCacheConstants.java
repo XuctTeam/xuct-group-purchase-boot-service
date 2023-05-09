@@ -23,6 +23,8 @@ public interface RedisCacheConstants {
     String USER_CACHE_ABLE_CACHE_NAME = "group::purchase::user::cache#3600";
 
 
+    String USER_CACHE_ROLE_NAME = "group::purchase::role::cache#3600";
+
     /**
      * 商品
      */

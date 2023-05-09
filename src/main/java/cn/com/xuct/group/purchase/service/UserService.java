@@ -69,6 +69,15 @@ public interface UserService extends IBaseService<UserMapper, User> {
     User updateUserIntegral(final Long userId, final Integer integral);
 
     /**
+     * 修改密码
+     *
+     * @param userId
+     * @param pass
+     * @return
+     */
+    User updatePassword(final Long userId, final String pass);
+
+    /**
      * 用户数统计
      *
      * @param userId

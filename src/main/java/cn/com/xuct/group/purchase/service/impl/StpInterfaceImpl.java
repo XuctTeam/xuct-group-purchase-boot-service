@@ -46,12 +46,12 @@ public class StpInterfaceImpl implements StpInterface {
 
     @Override
     public List<String> getRoleList(Object loginId, String loginType) {
-        User user = userService.getById(Long.valueOf(String.valueOf(loginId)));
+        User user = userService.findById(Long.valueOf(String.valueOf(loginId)));
         if (user == null) {
             return Lists.newArrayList();
         }
-        Role role = roleService.getById(user.getRoleId());
-        if(role == null){
+        Role role = roleService.findById(user.getRoleId());
+        if (role == null) {
             return Lists.newArrayList();
         }
         return Lists.newArrayList(role.getCode().name());
