@@ -11,11 +11,11 @@
 package cn.com.xuct.group.purchase.controller.admin;
 
 import cn.com.xuct.group.purchase.base.res.R;
-import cn.com.xuct.group.purchase.entity.User;
 import cn.com.xuct.group.purchase.service.RoleService;
 import cn.com.xuct.group.purchase.service.UserService;
 import cn.com.xuct.group.purchase.vo.param.AdminModifyPasswordParam;
-import cn.com.xuct.group.purchase.vo.result.AdminMenuResult;
+import cn.com.xuct.group.purchase.vo.result.admin.AdminMenuResult;
+import cn.com.xuct.group.purchase.vo.result.admin.AdminMenuTreeResult;
 import cn.dev33.satoken.annotation.SaCheckRole;
 import cn.dev33.satoken.annotation.SaMode;
 import cn.dev33.satoken.stp.StpUtil;
@@ -46,10 +46,10 @@ public class AdminUserController {
 
     private final UserService userService;
 
-    @Operation(summary = "【菜单】菜单列表", description = "菜单列表")
+    @Operation(summary = "【用户】菜单列表", description = "菜单列表")
     @GetMapping("/menu")
-    public R<List<AdminMenuResult>> menuList() {
-        return R.data(roleService.menuList(StpUtil.getLoginIdAsLong()));
+    public R<List<AdminMenuResult>> getUserMenuList() {
+        return R.data(roleService.getUserMenuList(StpUtil.getLoginIdAsLong()));
     }
 
     @Operation(summary = "【用户】修改密码", description = "修改密码")

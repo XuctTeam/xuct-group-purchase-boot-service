@@ -8,7 +8,7 @@
  * <author>          <time>          <version>          <desc>
  * 作者姓名           修改时间           版本号              描述
  */
-package cn.com.xuct.group.purchase.vo.result;
+package cn.com.xuct.group.purchase.vo.result.admin;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
 import io.swagger.v3.oas.annotations.media.Schema;
@@ -29,6 +29,9 @@ import java.util.List;
 @Data
 public class AdminMenuResult {
 
+    @Schema(description = "数据ID")
+    private String id;
+
     @Schema(description = "路由访问路径")
     private String path;
 
@@ -37,11 +40,17 @@ public class AdminMenuResult {
 
     private String redirect;
 
+    @Schema(description = "分类")
+    private String classification;
+
     @Schema(description = "视图文件路径")
     private String component;
 
     @Schema(description = "路由元信息")
     private Meta meta;
+
+    @Schema(description = "排序")
+    private Integer sort;
 
     @Schema(description = "子路由")
     private List<AdminMenuResult> children;

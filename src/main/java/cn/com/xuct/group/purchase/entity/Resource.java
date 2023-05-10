@@ -37,9 +37,9 @@ public class Resource extends SuperEntity<Resource> {
     private int level;
 
     /**
-     * 类型  0菜单  1 按钮
+     * 类型  1 目录 2 菜单 3 按钮 4 外链
      */
-    private int type;
+    private String classification;
 
     /**
      * 标题
@@ -95,4 +95,9 @@ public class Resource extends SuperEntity<Resource> {
      * 是否缓存
      */
     private boolean keepAlive;
+
+    /**
+     * 排序
+     */
+    private Integer sort;
 }

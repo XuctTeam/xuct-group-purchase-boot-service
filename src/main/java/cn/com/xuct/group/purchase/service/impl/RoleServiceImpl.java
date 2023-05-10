@@ -11,7 +11,6 @@
 package cn.com.xuct.group.purchase.service.impl;
 
 import cn.com.xuct.group.purchase.base.service.BaseServiceImpl;
-import cn.com.xuct.group.purchase.base.vo.Column;
 import cn.com.xuct.group.purchase.constants.RedisCacheConstants;
 import cn.com.xuct.group.purchase.entity.Resource;
 import cn.com.xuct.group.purchase.entity.Role;
@@ -19,8 +18,8 @@ import cn.com.xuct.group.purchase.entity.User;
 import cn.com.xuct.group.purchase.mapper.RoleMapper;
 import cn.com.xuct.group.purchase.mapper.UserMapper;
 import cn.com.xuct.group.purchase.service.RoleService;
-import cn.com.xuct.group.purchase.service.UserService;
-import cn.com.xuct.group.purchase.vo.result.AdminMenuResult;
+import cn.com.xuct.group.purchase.vo.result.admin.AdminMenuResult;
+import cn.com.xuct.group.purchase.vo.result.admin.AdminMenuTreeResult;
 import com.google.common.collect.Lists;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -28,10 +27,8 @@ import org.springframework.beans.BeanUtils;
 import org.springframework.cache.annotation.Cacheable;
 import org.springframework.stereotype.Service;
 
+import java.util.Comparator;
 import java.util.List;
-import java.util.Map;
-import java.util.function.Function;
-import java.util.stream.Collectors;
 
 /**
  * 〈一句话功能简述〉<br>
@@ -57,27 +54,30 @@ public class RoleServiceImpl extends BaseServiceImpl<RoleMapper, Role> implement
     }
 
     @Override
-    public List<AdminMenuResult> menuList(Long userId) {
+    public List<AdminMenuResult> getUserMenuList(Long userId) {
         User user = userMapper.selectById(userId);
         if (user == null) {
             return null;
         }
-        List<Resource> resources = roleMapper.getMenuList(user.getRoleId());
+        List<Resource> resources = roleMapper.getUserMenuList(user.getRoleId());
         return this.packageResource(resources);
+    }
+
+    @Override
+    public List<AdminMenuTreeResult> menuTreeList() {
+        return null;
     }
 
 
     private List<AdminMenuResult> packageResource(List<Resource> resources) {
-        Map<Long, Resource> idResourceMap = resources.stream().collect(Collectors.toMap(Resource::getId, Function.identity()));
-        List<AdminMenuResult> rootMenu = Lists.newArrayList();
-        resources.stream().filter(item -> item.getParentId() == -1).toList().forEach(item -> {
+        List<AdminMenuResult> rootMenus = Lists.newArrayList();
+        resources.stream().filter(item -> item.getParentId() == -1).sorted(Comparator.comparing(Resource::getSort)).toList().forEach(item -> {
             AdminMenuResult result = getMenuResult(item);
             result.setChildren(this.recursionResource(item.getId(), resources));
-            rootMenu.add(result);
+            rootMenus.add(result);
         });
-        return rootMenu;
+        return rootMenus;
     }
-
 
     private List<AdminMenuResult> recursionResource(Long pid, List<Resource> allResources) {
         //子菜单
@@ -96,6 +96,7 @@ public class RoleServiceImpl extends BaseServiceImpl<RoleMapper, Role> implement
             result.setChildren(recursionResource(nav.getId(), allResources));
             childMenuList.add(result);
         }
+        childMenuList.sort(Comparator.comparing(AdminMenuResult::getSort));
         //如果节点下没有子节点，返回一个空List（递归退出）
         if (childMenuList.size() == 0) {
             return Lists.newArrayList();
@@ -107,6 +108,7 @@ public class RoleServiceImpl extends BaseServiceImpl<RoleMapper, Role> implement
     private AdminMenuResult getMenuResult(Resource item) {
         AdminMenuResult result = new AdminMenuResult();
         BeanUtils.copyProperties(item, result);
+        result.setId(String.valueOf(item.getId()));
         result.setName(item.getPathName());
         AdminMenuResult.Meta meta = new AdminMenuResult.Meta();
         meta.setIcon(item.getIcon());

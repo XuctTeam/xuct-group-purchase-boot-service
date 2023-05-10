@@ -6,7 +6,7 @@
 <mapper namespace="cn.com.xuct.group.purchase.mapper.RoleMapper">
 
 
-    <select id="getMenuList" resultType="cn.com.xuct.group.purchase.entity.Resource">
+    <select id="getUserMenuList" resultType="cn.com.xuct.group.purchase.entity.Resource">
         select r.*
         from sys_role_resource rr
 

@@ -27,5 +27,5 @@ import java.util.List;
  */
 public interface RoleMapper extends BaseMapper<Role> {
 
-    List<Resource> getMenuList(@Param("id")Long id);
+    List<Resource> getUserMenuList(@Param("id")Long id);
 }
