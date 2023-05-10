@@ -11,20 +11,22 @@
 package cn.com.xuct.group.purchase.controller.admin;
 
 import cn.com.xuct.group.purchase.base.res.R;
+import cn.com.xuct.group.purchase.entity.Resource;
+import cn.com.xuct.group.purchase.service.ResourceService;
+import cn.com.xuct.group.purchase.service.RoleService;
+import cn.com.xuct.group.purchase.vo.result.admin.AdminMenuResult;
 import cn.com.xuct.group.purchase.vo.result.admin.AdminMenuTreeResult;
 import cn.dev33.satoken.annotation.SaCheckRole;
 import cn.dev33.satoken.annotation.SaMode;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import lombok.RequiredArgsConstructor;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
 
 /**
- * 〈一句话功能简述〉<br> 
+ * 〈一句话功能简述〉<br>
  * 〈〉
  *
  * @author Derek Xu
@@ -38,10 +40,36 @@ import java.util.List;
 @SaCheckRole(value = {"super_admin", "admin"}, mode = SaMode.OR)
 public class AdminMenuController {
 
+    private final ResourceService resourceService;
 
     @Operation(summary = "【菜单】菜单树", description = "菜单树")
-    @GetMapping("/menu")
+    @GetMapping("/tree")
     public R<List<AdminMenuTreeResult>> menuTreeList() {
-        return null;
+        return R.data(resourceService.menuTreeList());
+    }
+
+
+    @Operation(summary = "【菜单】菜单列表", description = "菜单列表")
+    @GetMapping("")
+    public R<List<AdminMenuResult>> list() {
+        return R.data(resourceService.menuList());
+    }
+
+    @Operation(summary = "【菜单】添加菜单", description = "添加菜单")
+    @PostMapping
+    public R<String> addMenu(@RequestBody Resource resource) {
+        return R.status(resourceService.addOrUpdateResource(resource));
+    }
+
+    @Operation(summary = "【菜单】修改菜单", description = "修改菜单")
+    @PutMapping
+    public R<String> editMenu(@RequestBody Resource resource) {
+        return R.status(resourceService.addOrUpdateResource(resource));
+    }
+
+    @Operation(summary = "【菜单】删除菜单", description = "删除菜单")
+    @DeleteMapping()
+    public R<String> deleteMenu() {
+        return R.status(true);
     }
 }

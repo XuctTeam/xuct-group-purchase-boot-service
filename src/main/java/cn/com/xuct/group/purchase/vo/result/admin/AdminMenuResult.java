@@ -11,6 +11,8 @@
 package cn.com.xuct.group.purchase.vo.result.admin;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
+import com.fasterxml.jackson.databind.annotation.JsonSerialize;
+import com.fasterxml.jackson.databind.ser.std.ToStringSerializer;
 import io.swagger.v3.oas.annotations.media.Schema;
 import lombok.AllArgsConstructor;
 import lombok.Data;
@@ -29,8 +31,13 @@ import java.util.List;
 @Data
 public class AdminMenuResult {
 
+    @JsonSerialize(using = ToStringSerializer.class)
     @Schema(description = "数据ID")
-    private String id;
+    private Long id;
+
+    @Schema(description = "父ID")
+    @JsonSerialize(using = ToStringSerializer.class)
+    private Long parentId;
 
     @Schema(description = "路由访问路径")
     private String path;
@@ -41,16 +48,19 @@ public class AdminMenuResult {
     private String redirect;
 
     @Schema(description = "分类")
-    private String classification;
+    private String category;
 
     @Schema(description = "视图文件路径")
     private String component;
 
-    @Schema(description = "路由元信息")
-    private Meta meta;
+    @Schema(description = "权限标识")
+    private String perm;
 
     @Schema(description = "排序")
     private Integer sort;
+
+    @Schema(description = "路由元信息")
+    private Meta meta;
 
     @Schema(description = "子路由")
     private List<AdminMenuResult> children;

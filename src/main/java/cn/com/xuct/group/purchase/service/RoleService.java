@@ -11,37 +11,50 @@
 package cn.com.xuct.group.purchase.service;
 
 import cn.com.xuct.group.purchase.base.service.IBaseService;
+import cn.com.xuct.group.purchase.entity.Resource;
 import cn.com.xuct.group.purchase.entity.Role;
 import cn.com.xuct.group.purchase.mapper.RoleMapper;
 import cn.com.xuct.group.purchase.vo.result.admin.AdminMenuResult;
-import cn.com.xuct.group.purchase.vo.result.admin.AdminMenuTreeResult;
 
 import java.util.List;
+import java.util.Map;
 
 /**
- * 〈一句话功能简述〉<br> 
+ * 〈一句话功能简述〉<br>
  * 〈〉
  *
  * @author Derek Xu
  * @create 2023/3/18
  * @since 1.0.0
  */
-public interface RoleService extends IBaseService<RoleMapper , Role> {
+public interface RoleService extends IBaseService<RoleMapper, Role> {
 
 
     Role findById(final Long id);
 
     /**
-     * 菜单
+     * 菜单列表
+     *
      * @param userId
      * @return
      */
     List<AdminMenuResult> getUserMenuList(final Long userId);
 
+
     /**
+     * 用户按钮权限
      *
      * @param userId
      * @return
      */
-    List<AdminMenuTreeResult> menuTreeList();
+    Map<String, List<String>> getUserButtonList(final Long userId);
+
+    /**
+     * 封装资源到菜单
+     *
+     * @param resources
+     * @return
+     */
+    List<AdminMenuResult> packageResourceToMenu(List<Resource> resources);
+
 }

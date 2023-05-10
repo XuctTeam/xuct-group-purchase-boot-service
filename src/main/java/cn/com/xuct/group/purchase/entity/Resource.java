@@ -15,6 +15,8 @@ import com.baomidou.mybatisplus.annotation.TableName;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
 
+import javax.validation.constraints.NotNull;
+
 /**
  * 〈一句话功能简述〉<br>
  * 〈〉
@@ -28,7 +30,7 @@ import lombok.EqualsAndHashCode;
 @Data
 public class Resource extends SuperEntity<Resource> {
 
-
+    @NotNull
     private Long parentId;
 
     /**
@@ -39,11 +41,13 @@ public class Resource extends SuperEntity<Resource> {
     /**
      * 类型  1 目录 2 菜单 3 按钮 4 外链
      */
-    private String classification;
+    @NotNull
+    private String category;
 
     /**
      * 标题
      */
+    @NotNull
     private String title;
 
     /**
@@ -54,6 +58,7 @@ public class Resource extends SuperEntity<Resource> {
     /**
      * 路径
      */
+    @NotNull
     private String path;
 
 
@@ -61,6 +66,11 @@ public class Resource extends SuperEntity<Resource> {
      * 路径名称
      */
     private String pathName;
+
+    /**
+     * 权限标识
+     */
+    private String perm;
 
     /**
      * 重定向
@@ -76,6 +86,7 @@ public class Resource extends SuperEntity<Resource> {
     /**
      * 图标
      */
+    @NotNull
     private String icon;
 
     /**

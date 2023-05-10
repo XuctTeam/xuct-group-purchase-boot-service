@@ -18,17 +18,21 @@ import cn.com.xuct.group.purchase.entity.User;
 import cn.com.xuct.group.purchase.mapper.RoleMapper;
 import cn.com.xuct.group.purchase.mapper.UserMapper;
 import cn.com.xuct.group.purchase.service.RoleService;
+import cn.com.xuct.group.purchase.vo.dto.ResourceButtonDto;
 import cn.com.xuct.group.purchase.vo.result.admin.AdminMenuResult;
-import cn.com.xuct.group.purchase.vo.result.admin.AdminMenuTreeResult;
 import com.google.common.collect.Lists;
+import com.google.common.collect.Maps;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.BeanUtils;
 import org.springframework.cache.annotation.Cacheable;
 import org.springframework.stereotype.Service;
+import org.springframework.util.CollectionUtils;
 
 import java.util.Comparator;
 import java.util.List;
+import java.util.Map;
+import java.util.stream.Collectors;
 
 /**
  * 〈一句话功能简述〉<br>
@@ -60,16 +64,24 @@ public class RoleServiceImpl extends BaseServiceImpl<RoleMapper, Role> implement
             return null;
         }
         List<Resource> resources = roleMapper.getUserMenuList(user.getRoleId());
-        return this.packageResource(resources);
+        return this.packageResourceToMenu(resources);
     }
 
     @Override
-    public List<AdminMenuTreeResult> menuTreeList() {
-        return null;
+    public Map<String, List<String>> getUserButtonList(Long userId) {
+        User user = userMapper.selectById(userId);
+        if (user == null) {
+            return null;
+        }
+        List<ResourceButtonDto> resourceButtonDos = roleMapper.getUserButtonList(user.getRoleId());
+        if (CollectionUtils.isEmpty(resourceButtonDos)) {
+            return Maps.newHashMap();
+        }
+        return resourceButtonDos.stream().collect(Collectors.groupingBy(ResourceButtonDto::getPathName, Collectors.mapping(ResourceButtonDto::getPerm, Collectors.toList())));
     }
 
-
-    private List<AdminMenuResult> packageResource(List<Resource> resources) {
+    @Override
+    public List<AdminMenuResult> packageResourceToMenu(List<Resource> resources) {
         List<AdminMenuResult> rootMenus = Lists.newArrayList();
         resources.stream().filter(item -> item.getParentId() == -1).sorted(Comparator.comparing(Resource::getSort)).toList().forEach(item -> {
             AdminMenuResult result = getMenuResult(item);
@@ -104,11 +116,19 @@ public class RoleServiceImpl extends BaseServiceImpl<RoleMapper, Role> implement
         return childMenuList;
     }
 
-
+    /**
+     * 封装用户菜单
+     *
+     * @param item
+     * @return cn.com.xuct.group.purchase.vo.result.admin.AdminMenuResult
+     * @return:
+     * @since: 1.0.0
+     * @Author:Derek xu
+     * @Date: 2023/5/10 12:02
+     */
     private AdminMenuResult getMenuResult(Resource item) {
         AdminMenuResult result = new AdminMenuResult();
         BeanUtils.copyProperties(item, result);
-        result.setId(String.valueOf(item.getId()));
         result.setName(item.getPathName());
         AdminMenuResult.Meta meta = new AdminMenuResult.Meta();
         meta.setIcon(item.getIcon());
@@ -118,4 +138,6 @@ public class RoleServiceImpl extends BaseServiceImpl<RoleMapper, Role> implement
         result.setChildren(Lists.newArrayList());
         return result;
     }
+
+
 }

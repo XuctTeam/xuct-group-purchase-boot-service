@@ -26,6 +26,7 @@ import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
+import java.util.Map;
 
 /**
  * 〈一句话功能简述〉<br>
@@ -50,6 +51,12 @@ public class AdminUserController {
     @GetMapping("/menu")
     public R<List<AdminMenuResult>> getUserMenuList() {
         return R.data(roleService.getUserMenuList(StpUtil.getLoginIdAsLong()));
+    }
+
+    @Operation(summary = "【用户】按钮权限", description = "按钮权限")
+    @GetMapping("/button")
+    public R<Map<String, List<String>>> getUserButton() {
+        return R.data(roleService.getUserButtonList(StpUtil.getLoginIdAsLong()));
     }
 
     @Operation(summary = "【用户】修改密码", description = "修改密码")
