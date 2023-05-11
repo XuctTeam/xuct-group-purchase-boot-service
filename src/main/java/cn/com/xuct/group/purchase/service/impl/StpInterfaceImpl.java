@@ -54,6 +54,6 @@ public class StpInterfaceImpl implements StpInterface {
         if (role == null) {
             return Lists.newArrayList();
         }
-        return Lists.newArrayList(role.getCode().name());
+        return Lists.newArrayList(role.getCode());
     }
 }

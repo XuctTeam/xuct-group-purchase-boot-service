@@ -10,13 +10,18 @@
  */
 package cn.com.xuct.group.purchase.service.impl;
 
+import cn.com.xuct.group.purchase.base.enums.ColumnEnum;
 import cn.com.xuct.group.purchase.base.service.BaseServiceImpl;
+import cn.com.xuct.group.purchase.base.vo.Column;
 import cn.com.xuct.group.purchase.constants.RedisCacheConstants;
+import cn.com.xuct.group.purchase.constants.RoleCodeEnum;
 import cn.com.xuct.group.purchase.entity.Resource;
 import cn.com.xuct.group.purchase.entity.Role;
+import cn.com.xuct.group.purchase.entity.RoleResource;
 import cn.com.xuct.group.purchase.entity.User;
 import cn.com.xuct.group.purchase.mapper.RoleMapper;
 import cn.com.xuct.group.purchase.mapper.UserMapper;
+import cn.com.xuct.group.purchase.service.RoleResourceService;
 import cn.com.xuct.group.purchase.service.RoleService;
 import cn.com.xuct.group.purchase.vo.dto.ResourceButtonDto;
 import cn.com.xuct.group.purchase.vo.result.admin.AdminMenuResult;
@@ -27,6 +32,7 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.BeanUtils;
 import org.springframework.cache.annotation.Cacheable;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 import org.springframework.util.CollectionUtils;
 
 import java.util.Comparator;
@@ -50,6 +56,8 @@ public class RoleServiceImpl extends BaseServiceImpl<RoleMapper, Role> implement
     private final UserMapper userMapper;
 
     private final RoleMapper roleMapper;
+
+    private final RoleResourceService roleResourceService;
 
     @Override
     @Cacheable(cacheNames = RedisCacheConstants.USER_CACHE_ROLE_NAME, key = "#id", unless = "#result == null")
@@ -89,6 +97,47 @@ public class RoleServiceImpl extends BaseServiceImpl<RoleMapper, Role> implement
             rootMenus.add(result);
         });
         return rootMenus;
+    }
+
+    @Override
+    public void deleteRoleResourceByResourceIds(List<Long> resourceIds) {
+        Map<String, Object> resourceMaps = Maps.newHashMap();
+        for (Long id : resourceIds) {
+            resourceMaps.put("resource_id", id);
+        }
+        roleResourceService.removeByMap(resourceMaps);
+    }
+
+    @Override
+    public List<Role> findRoleList() {
+        return this.find(Lists.newArrayList(Column.of("code", RoleCodeEnum.member.name(), ColumnEnum.nq)));
+    }
+
+    @Override
+    public List<String> getRoleResourceIds(Long roleId) {
+        return roleResourceService.find(Column.of("role_id", roleId))
+                .stream().map(RoleResource::getResourceId).map(String::valueOf).collect(Collectors.toList());
+    }
+
+    @Override
+    @Transactional(rollbackFor = Exception.class)
+    public void bindRoleResourceIds(final Long roleId, final List<Long> resourceIds) {
+        roleResourceService.delete(Column.of("role_id", roleId));
+        if (CollectionUtils.isEmpty(resourceIds)) {
+            return;
+        }
+        List<RoleResource> roleResources = Lists.newArrayList();
+        RoleResource roleResource = null;
+        for (Long resourceId : resourceIds) {
+            if (resourceId == -1L) {
+                continue;
+            }
+            roleResource = new RoleResource();
+            roleResource.setRoleId(roleId);
+            roleResource.setResourceId(resourceId);
+            roleResources.add(roleResource);
+        }
+        roleResourceService.saveBatch(roleResources);
     }
 
     private List<AdminMenuResult> recursionResource(Long pid, List<Resource> allResources) {

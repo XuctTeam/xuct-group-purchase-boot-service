@@ -24,6 +24,8 @@ import com.google.common.collect.Lists;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
+import org.springframework.util.CollectionUtils;
 
 import java.util.Comparator;
 import java.util.List;
@@ -65,9 +67,20 @@ public class ResourceServiceImpl extends BaseServiceImpl<ResourceMapper, Resourc
         return this.saveOrUpdate(resource);
     }
 
+    @Transactional(rollbackFor = Exception.class)
     @Override
-    public List<AdminMenuTreeResult> menuTreeList() {
-        List<Resource> resources = this.resourceList(1);
+    public boolean deleteResource(Long resourceId) {
+        List<Long> idsList = Lists.newArrayList();
+        this.selectChildListById(resourceId, idsList);
+        idsList.add(resourceId);
+        /* 删除角色绑定资源 */
+        roleService.deleteRoleResourceByResourceIds(idsList);
+        return this.removeByIds(idsList);
+    }
+
+    @Override
+    public List<AdminMenuTreeResult> menuTreeList(final Integer showBtn) {
+        List<Resource> resources = this.resourceList(showBtn != null && showBtn == 1 ? 0 : 1);
         List<AdminMenuTreeResult> rootMenus = Lists.newArrayList();
         resources.stream().filter(item -> item.getParentId() == -1).sorted(Comparator.comparing(Resource::getSort)).toList().forEach(item -> {
             AdminMenuTreeResult result = this.getTreeMenuResult(item);
@@ -133,11 +146,28 @@ public class ResourceServiceImpl extends BaseServiceImpl<ResourceMapper, Resourc
      */
     private AdminMenuTreeResult getTreeMenuResult(Resource resource) {
         AdminMenuTreeResult result = new AdminMenuTreeResult();
-        result.setId(result.getId());
+        result.setId(resource.getId());
         result.setLabel(resource.getTitle());
         result.setValue(String.valueOf(resource.getId()));
         result.setSort(resource.getSort());
         return result;
+    }
+
+
+    /**
+     * @param pid
+     * @param idList
+     * @return:
+     * @since: 1.0.0
+     * @Author:Derek xu
+     * @Date: 2023/5/11 10:55
+     */
+    private void selectChildListById(Long pid, List<Long> idList) {
+        List<Resource> resources = this.find(Column.of("parent_id", pid));
+        if (CollectionUtils.isEmpty(resources)) {
+            return;
+        }
+        idList.addAll(resources.stream().map(Resource::getId).toList());
     }
 
 }

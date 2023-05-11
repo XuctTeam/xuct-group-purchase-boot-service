@@ -31,5 +31,6 @@ public class RoleResource extends SuperEntity<RoleResource> {
 
     private Long roleId;
 
+
     private Long resourceId;
 }

@@ -15,9 +15,6 @@ import cn.com.xuct.group.purchase.service.RoleService;
 import cn.com.xuct.group.purchase.service.UserService;
 import cn.com.xuct.group.purchase.vo.param.AdminModifyPasswordParam;
 import cn.com.xuct.group.purchase.vo.result.admin.AdminMenuResult;
-import cn.com.xuct.group.purchase.vo.result.admin.AdminMenuTreeResult;
-import cn.dev33.satoken.annotation.SaCheckRole;
-import cn.dev33.satoken.annotation.SaMode;
 import cn.dev33.satoken.stp.StpUtil;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;
@@ -40,7 +37,6 @@ import java.util.Map;
 @RequestMapping("/api/admin/v1/user")
 @RequiredArgsConstructor
 @RestController
-@SaCheckRole(value = {"super_admin", "admin"}, mode = SaMode.OR)
 public class AdminUserController {
 
     private final RoleService roleService;

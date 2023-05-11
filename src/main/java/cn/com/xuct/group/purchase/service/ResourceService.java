@@ -34,7 +34,7 @@ public interface ResourceService extends IBaseService<ResourceMapper, Resource> 
      * @param userId
      * @return
      */
-    List<AdminMenuTreeResult> menuTreeList();
+    List<AdminMenuTreeResult> menuTreeList(final Integer showBtn);
 
 
     List<AdminMenuResult> menuList();
@@ -44,5 +44,11 @@ public interface ResourceService extends IBaseService<ResourceMapper, Resource> 
      */
     boolean addOrUpdateResource(Resource resource);
 
-
+    /**
+     * shanc
+     *
+     * @param resourceId
+     * @return
+     */
+    boolean deleteResource(final Long resourceId);
 }

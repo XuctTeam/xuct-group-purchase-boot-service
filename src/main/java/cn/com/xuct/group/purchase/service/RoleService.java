@@ -57,4 +57,35 @@ public interface RoleService extends IBaseService<RoleMapper, Role> {
      */
     List<AdminMenuResult> packageResourceToMenu(List<Resource> resources);
 
+    /**
+     * 删除角色绑定的资源
+     *
+     * @param resourceIds
+     */
+    void deleteRoleResourceByResourceIds(final List<Long> resourceIds);
+
+    /**
+     * 查询角色列表
+     *
+     * @return
+     */
+    List<Role> findRoleList();
+
+    /**
+     * 查询角色对应的资源ID
+     *
+     * @param roleId
+     * @return
+     */
+    List<String> getRoleResourceIds(final Long roleId);
+
+    /**
+     * 角色绑定资源
+     *
+     * @param roleId
+     * @param resourceIds
+     * @return
+     */
+    void bindRoleResourceIds(final Long roleId, final List<Long> resourceIds);
+
 }

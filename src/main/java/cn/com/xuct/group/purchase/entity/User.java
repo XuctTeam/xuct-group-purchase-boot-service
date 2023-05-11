@@ -75,7 +75,7 @@ public class User extends SuperEntity<User> {
 
 
     @TableField(exist = false)
-    private RoleCodeEnum roleCode;
+    private String roleCode;
 
 
     public void cleanData() {
