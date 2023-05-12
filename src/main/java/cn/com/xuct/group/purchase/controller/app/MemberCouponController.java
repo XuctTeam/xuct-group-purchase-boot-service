@@ -40,7 +40,7 @@ import java.util.List;
 @RestController
 @Slf4j
 @RequiredArgsConstructor
-public class UserCouponController {
+public class MemberCouponController {
 
     private final MemberCouponService memberCouponService;
 

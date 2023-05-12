@@ -12,6 +12,7 @@ package cn.com.xuct.group.purchase.controller.app;
 
 import cn.com.xuct.group.purchase.base.res.R;
 import cn.com.xuct.group.purchase.base.vo.Column;
+import cn.com.xuct.group.purchase.entity.Member;
 import cn.com.xuct.group.purchase.entity.User;
 import cn.com.xuct.group.purchase.entity.MemberComment;
 import cn.com.xuct.group.purchase.service.MemberCommentService;
@@ -38,7 +39,7 @@ import java.util.List;
 @RequestMapping("/api/v1/user/comment")
 @RequiredArgsConstructor
 @RestController
-public class UserCommentController {
+public class MemberCommentController {
 
     private final MemberCommentService memberCommentService;
 
@@ -53,8 +54,8 @@ public class UserCommentController {
     @PostMapping("")
     @Operation(summary = "【留言】添加留言", description = "添加留言")
     public R<String> add(@RequestBody @Validated MemberComment comment) {
-        User user = memberService.findById(Long.valueOf(comment.getUser()));
-        Assert.notNull(user, "用户未找到");
+        Member member = memberService.findById(Long.valueOf(comment.getUser()));
+        Assert.notNull(member, "用户未找到");
         memberCommentService.addComment(StpUtil.getLoginIdAsLong(), comment.getUser(), comment.getNickName(), comment.getAvatar(), comment.getContent());
         return R.status(true);
     }

@@ -11,7 +11,6 @@
 package cn.com.xuct.group.purchase.entity;
 
 import cn.com.xuct.group.purchase.base.dao.SuperEntity;
-import cn.com.xuct.group.purchase.constants.RoleCodeEnum;
 import com.baomidou.mybatisplus.annotation.TableField;
 import com.baomidou.mybatisplus.annotation.TableName;
 import io.swagger.v3.oas.annotations.media.Schema;
@@ -28,11 +27,12 @@ import lombok.EqualsAndHashCode;
  */
 @Data
 @EqualsAndHashCode(callSuper = true)
-@TableName("sys_member")
+@TableName("sys_user")
 public class User extends SuperEntity<User> {
 
     @Schema(description = "用户名")
-    private String userName;
+    @TableField("user_name")
+    private String username;
 
     @Schema(description = "密码")
     private String password;
@@ -63,11 +63,6 @@ public class User extends SuperEntity<User> {
     private String phone;
 
     /**
-     * 积分
-     */
-    private Long integral;
-
-    /**
      * 昵称
      */
     @TableField("nick_name")
@@ -76,6 +71,10 @@ public class User extends SuperEntity<User> {
 
     @TableField(exist = false)
     private String roleCode;
+
+    @Schema(description = "角色名称")
+    @TableField(exist = false)
+    private String roleName;
 
 
     public void cleanData() {

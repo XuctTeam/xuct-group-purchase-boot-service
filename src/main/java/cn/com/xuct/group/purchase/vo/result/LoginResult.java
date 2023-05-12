@@ -10,6 +10,7 @@
  */
 package cn.com.xuct.group.purchase.vo.result;
 
+import cn.com.xuct.group.purchase.entity.Member;
 import cn.com.xuct.group.purchase.entity.User;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
@@ -36,6 +37,8 @@ public class LoginResult implements Serializable {
     private String tokenValue;
 
     private String tokenName;
+
+    private Member member;
 
     private User user;
 }

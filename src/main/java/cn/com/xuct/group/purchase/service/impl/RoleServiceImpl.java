@@ -10,6 +10,7 @@
  */
 package cn.com.xuct.group.purchase.service.impl;
 
+import cn.com.xuct.group.purchase.base.enums.ColumnEnum;
 import cn.com.xuct.group.purchase.base.service.BaseServiceImpl;
 import cn.com.xuct.group.purchase.base.vo.Column;
 import cn.com.xuct.group.purchase.constants.RedisCacheConstants;
@@ -110,7 +111,7 @@ public class RoleServiceImpl extends BaseServiceImpl<RoleMapper, Role> implement
 
     @Override
     public List<Role> findRoleList() {
-        return this.find(Lists.newArrayList(Column.notIn("code", Lists.newArrayList(RoleCodeEnum.member.name(), RoleCodeEnum.super_admin.name()))));
+        return this.find(Column.of("code", RoleCodeEnum.super_admin.name(), ColumnEnum.nq));
     }
 
     @Override

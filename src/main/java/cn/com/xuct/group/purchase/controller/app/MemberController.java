@@ -50,7 +50,7 @@ import java.util.Objects;
 @RestController
 @Slf4j
 @RequiredArgsConstructor
-public class UserController {
+public class MemberController {
     private final MemberService memberService;
     private final WxMaConfiguration wxMaConfiguration;
 

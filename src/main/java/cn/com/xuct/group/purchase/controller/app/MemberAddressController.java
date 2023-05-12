@@ -37,7 +37,7 @@ import java.util.List;
 @RestController
 @Slf4j
 @RequiredArgsConstructor
-public class UserAddressController {
+public class MemberAddressController {
 
     private final MemberAddressService memberAddressService;
 
@@ -51,7 +51,7 @@ public class UserAddressController {
     @Operation(summary = "【用户】保存地址", description = "保存地址")
     public R<String> save(@RequestBody MemberAddress address) {
         if (address.getId() == null) {
-            address.setUserId(StpUtil.getLoginIdAsLong());
+            address.setMemberId(StpUtil.getLoginIdAsLong());
         }
         memberAddressService.saveAddress(address);
         return R.status(true);

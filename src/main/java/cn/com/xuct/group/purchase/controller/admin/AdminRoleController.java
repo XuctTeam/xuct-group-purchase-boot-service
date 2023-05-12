@@ -57,7 +57,7 @@ public class AdminRoleController {
     @Operation(summary = "【角色】新增或修改角色", description = "新增或修改角色")
     @PostMapping("")
     public R<String> saveOrUpdate(@RequestBody Role role) {
-        if (role.getId() == null && (role.getCode().toLowerCase().equals(RoleCodeEnum.super_admin.name()) || role.getCode().toLowerCase().equals(RoleCodeEnum.member.name()))) {
+        if (role.getId() == null && (role.getCode().toLowerCase().equals(RoleCodeEnum.super_admin.name()))) {
             return R.fail("角色代码错误！");
         }
         roleService.saveOrUpdate(role);
