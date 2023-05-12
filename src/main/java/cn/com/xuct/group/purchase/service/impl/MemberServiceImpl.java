@@ -13,15 +13,10 @@ package cn.com.xuct.group.purchase.service.impl;
 import cn.com.xuct.group.purchase.base.service.BaseServiceImpl;
 import cn.com.xuct.group.purchase.base.vo.Column;
 import cn.com.xuct.group.purchase.constants.RedisCacheConstants;
-import cn.com.xuct.group.purchase.constants.RoleCodeEnum;
 import cn.com.xuct.group.purchase.entity.Member;
-import cn.com.xuct.group.purchase.entity.Role;
-import cn.com.xuct.group.purchase.entity.User;
 import cn.com.xuct.group.purchase.mapper.MemberMapper;
-import cn.com.xuct.group.purchase.service.RoleService;
 import cn.com.xuct.group.purchase.service.MemberService;
 import cn.com.xuct.group.purchase.vo.result.MemberSumResult;
-import com.github.yulichang.wrapper.MPJLambdaWrapper;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.cache.annotation.CachePut;
@@ -41,7 +36,6 @@ import org.springframework.util.StringUtils;
 @Service
 @RequiredArgsConstructor
 public class MemberServiceImpl extends BaseServiceImpl<MemberMapper, Member> implements MemberService {
-    private final RoleService roleService;
 
     @Override
     public Member findByOpenId(String openId) {
@@ -55,14 +49,14 @@ public class MemberServiceImpl extends BaseServiceImpl<MemberMapper, Member> imp
     }
 
     @Override
-    @Cacheable(cacheNames = RedisCacheConstants.USER_CACHE_ABLE_CACHE_NAME, key = "#id", unless = "#result == null")
+    @Cacheable(cacheNames = RedisCacheConstants.MEMBER_CACHE_ABLE_CACHE_NAME, key = "#id", unless = "#result == null")
     public Member findById(Long id) {
         return this.getById(id);
     }
 
 
     @Override
-    @CachePut(cacheNames = RedisCacheConstants.USER_CACHE_ABLE_CACHE_NAME, key = "#member.id", unless = "#result == null")
+    @CachePut(cacheNames = RedisCacheConstants.MEMBER_CACHE_ABLE_CACHE_NAME, key = "#member.id", unless = "#result == null")
     public Member updateUserInfo(Member member, String phone, String nickname, String avatar) {
         if (StringUtils.hasLength(phone)) {
             member.setPhone(phone);
@@ -78,7 +72,7 @@ public class MemberServiceImpl extends BaseServiceImpl<MemberMapper, Member> imp
     }
 
     @Override
-    @CachePut(cacheNames = RedisCacheConstants.USER_CACHE_ABLE_CACHE_NAME, key = "#memberId", unless = "#result == null")
+    @CachePut(cacheNames = RedisCacheConstants.MEMBER_CACHE_ABLE_CACHE_NAME, key = "#memberId", unless = "#result == null")
     public Member updateUserIntegral(Long memberId, Integer integral) {
         Member member = this.getById(memberId);
         if (member == null) {

@@ -53,7 +53,7 @@ import static cn.com.xuct.group.purchase.constants.RConstants.*;
 @RestController
 @Slf4j
 @RequiredArgsConstructor
-public class UserOrderController {
+public class MemberOrderController {
 
     private final MemberOrderService memberOrderService;
 

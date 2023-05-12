@@ -10,13 +10,14 @@
  */
 package cn.com.xuct.group.purchase.controller.admin;
 
+import cn.com.xuct.group.purchase.annotation.Log;
 import cn.com.xuct.group.purchase.base.res.R;
-import cn.com.xuct.group.purchase.constants.RoleCodeEnum;
+import cn.com.xuct.group.purchase.constants.OptConstants;
 import cn.com.xuct.group.purchase.entity.User;
-import cn.com.xuct.group.purchase.service.MemberService;
 import cn.com.xuct.group.purchase.service.UserService;
-import cn.com.xuct.group.purchase.vo.param.AdminLoginParam;
+import cn.com.xuct.group.purchase.vo.param.admin.AdminLoginParam;
 import cn.com.xuct.group.purchase.vo.result.LoginResult;
+import cn.dev33.satoken.SaManager;
 import cn.dev33.satoken.annotation.SaIgnore;
 import cn.dev33.satoken.stp.SaTokenInfo;
 import cn.dev33.satoken.stp.StpUtil;
@@ -48,6 +49,7 @@ public class AdminLoginController {
     @SaIgnore
     @PostMapping("")
     @Operation(summary = "【登录】后台管理登录", description = "后台管理登录")
+    @Log(modul = "【登录】后台管理登录", type = OptConstants.SELECT, desc = "后台管理登录")
     public R<LoginResult> login(@RequestBody @Validated AdminLoginParam param) {
         User user = userService.findByUsername(param.getUsername());
         if (user == null) {

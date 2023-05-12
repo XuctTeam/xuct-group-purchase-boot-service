@@ -44,14 +44,14 @@ import java.util.Objects;
 @RestController
 @Slf4j
 @RequiredArgsConstructor
-public class UserOpinionController {
+public class MemberOpinionController {
 
     private final MemberOpinionService memberOpinionService;
 
     @Operation(summary = "【意见反馈】新增意见反馈", description = "新增意见反馈")
     @PostMapping()
     public R<String> add(@RequestBody @Validated MemberOpinion opinion) {
-        opinion.setUserId(StpUtil.getLoginIdAsLong());
+        opinion.setMemberId(StpUtil.getLoginIdAsLong());
         opinion.setStatus(false);
         memberOpinionService.save(opinion);
         return R.status(true);

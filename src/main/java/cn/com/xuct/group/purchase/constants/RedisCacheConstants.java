@@ -20,10 +20,13 @@ package cn.com.xuct.group.purchase.constants;
  */
 public interface RedisCacheConstants {
 
-    String USER_CACHE_ABLE_CACHE_NAME = "group::purchase::user::cache#3600";
+    String MEMBER_CACHE_ABLE_CACHE_NAME = "group::purchase::member::cache#3600";
 
 
     String USER_CACHE_ROLE_NAME = "group::purchase::role::cache#3600";
+
+
+    String USER_CACHE_USER_INFO = "group::purchase::user::cache#300";
 
     /**
      * 商品
