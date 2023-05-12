@@ -14,7 +14,7 @@ import cn.com.xuct.group.purchase.base.service.BaseServiceImpl;
 import cn.com.xuct.group.purchase.entity.GoodBrowse;
 import cn.com.xuct.group.purchase.mapper.GoodBrowseMapper;
 import cn.com.xuct.group.purchase.service.GoodBrowseService;
-import cn.com.xuct.group.purchase.service.UserBrowseService;
+import cn.com.xuct.group.purchase.service.MemberBrowseService;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
@@ -32,14 +32,14 @@ import org.springframework.stereotype.Service;
 @RequiredArgsConstructor
 public class GoodBrowseServiceImpl extends BaseServiceImpl<GoodBrowseMapper, GoodBrowse> implements GoodBrowseService {
 
-    private final UserBrowseService userBrowseService;
+    private final MemberBrowseService memberBrowseService;
 
     @Override
-    public void browse(final Long userId , Long goodId) {
+    public void browse(final Long memberId , Long goodId) {
         ((GoodBrowseMapper)this.getBaseMapper()).browse(goodId);
-        if(userId == null){
+        if(memberId == null){
             return;
         }
-        userBrowseService.addUserBrowse(userId , goodId);
+        memberBrowseService.addUserBrowse(memberId , goodId);
     }
 }

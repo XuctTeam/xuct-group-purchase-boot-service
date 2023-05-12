@@ -32,10 +32,10 @@ public interface GoodService extends IBaseService<GoodMapper, Good> {
      * 获取获取详情
      *
      * @param id
-     * @param userId
+     * @param memberId
      * @return cn.com.xuct.group.purchase.vo.result.GoodResult
      */
-    GoodResult getGood(final Long id, final Long userId);
+    GoodResult getGood(final Long id, final Long memberId);
 
     /**
      * 查询列表

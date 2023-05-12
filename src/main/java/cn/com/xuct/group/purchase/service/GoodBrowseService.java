@@ -27,8 +27,8 @@ public interface GoodBrowseService extends IBaseService<GoodBrowseMapper, GoodBr
     /**
      * 收藏或取消收藏
      *
-     * @param userId
+     * @param memberId
      * @param goodId
      */
-    void browse(final Long userId ,  final Long goodId);
+    void browse(final Long memberId ,  final Long goodId);
 }

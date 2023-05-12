@@ -12,6 +12,7 @@ package cn.com.xuct.group.purchase.controller.admin;
 
 import cn.com.xuct.group.purchase.base.res.R;
 import cn.com.xuct.group.purchase.service.RoleService;
+import cn.com.xuct.group.purchase.service.MemberService;
 import cn.com.xuct.group.purchase.service.UserService;
 import cn.com.xuct.group.purchase.vo.param.AdminModifyPasswordParam;
 import cn.com.xuct.group.purchase.vo.result.admin.AdminMenuResult;

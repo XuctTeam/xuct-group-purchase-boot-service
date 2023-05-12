@@ -11,7 +11,6 @@
 package cn.com.xuct.group.purchase.base.service;
 
 
-
 import cn.com.xuct.group.purchase.base.dao.SuperEntity;
 import cn.com.xuct.group.purchase.base.enums.ColumnEnum;
 import cn.com.xuct.group.purchase.base.enums.SortEnum;
@@ -295,6 +294,9 @@ public class BaseServiceImpl<M extends BaseMapper<T>, T extends SuperEntity<T>> 
         if (column.getColumnEnum().equals(ColumnEnum.in)) {
             queryWrapper.in(column.getColumn(), column.getValue());
         }
+        if (column.getColumnEnum().equals(ColumnEnum.not_in)) {
+            queryWrapper.notIn(column.getColumn(), column.getValue());
+        }
         if (column.getColumnEnum().equals(ColumnEnum.like)) {
             queryWrapper.like(column.getColumn(), Lists.newArrayList(column.getValue()).get(0));
         }
@@ -341,6 +343,9 @@ public class BaseServiceImpl<M extends BaseMapper<T>, T extends SuperEntity<T>> 
         }
         if (column.getColumnEnum().equals(ColumnEnum.in)) {
             upWrapper.in(column.getColumn(), column.getValue());
+        }
+        if (column.getColumnEnum().equals(ColumnEnum.not_in)) {
+            upWrapper.notIn(column.getColumn(), column.getValue());
         }
         if (column.getColumnEnum().equals(ColumnEnum.like)) {
             upWrapper.like(column.getColumn(), Lists.newArrayList(column.getValue()).get(0));

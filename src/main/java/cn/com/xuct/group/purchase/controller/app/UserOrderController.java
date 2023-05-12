@@ -15,9 +15,9 @@ import cn.com.xuct.group.purchase.base.vo.PageData;
 import cn.com.xuct.group.purchase.client.cos.client.CosClient;
 import cn.com.xuct.group.purchase.constants.FileFolderConstants;
 import cn.com.xuct.group.purchase.constants.RConstants;
-import cn.com.xuct.group.purchase.entity.UserOrder;
-import cn.com.xuct.group.purchase.entity.UserOrderItem;
-import cn.com.xuct.group.purchase.service.UserOrderService;
+import cn.com.xuct.group.purchase.entity.MemberOrder;
+import cn.com.xuct.group.purchase.entity.MemberOrderItem;
+import cn.com.xuct.group.purchase.service.MemberOrderService;
 import cn.com.xuct.group.purchase.vo.param.*;
 import cn.com.xuct.group.purchase.vo.result.CartResult;
 import cn.com.xuct.group.purchase.vo.result.OrderResult;
@@ -55,24 +55,24 @@ import static cn.com.xuct.group.purchase.constants.RConstants.*;
 @RequiredArgsConstructor
 public class UserOrderController {
 
-    private final UserOrderService userOrderService;
+    private final MemberOrderService memberOrderService;
 
     @Operation(summary = "【订单】统计总数", description = "统计总数")
     @GetMapping("/sum")
     public R<OrderSumResult> sumCount() {
-        return R.data(userOrderService.sumCount(StpUtil.getLoginIdAsLong()));
+        return R.data(memberOrderService.sumCount(StpUtil.getLoginIdAsLong()));
     }
 
     @Operation(summary = "【订单】确认订单详情", description = "确认订单详情")
     @PostMapping("/confirm/detail")
     public R<List<CartResult>> getConfirmOrderDetail(@RequestBody @Validated CartManyGoodParam param) {
-        return R.data(userOrderService.getConfirmOrderDetail(StpUtil.getLoginIdAsLong(), param.getScene(), param.getGids()));
+        return R.data(memberOrderService.getConfirmOrderDetail(StpUtil.getLoginIdAsLong(), param.getScene(), param.getGids()));
     }
 
     @Operation(summary = "【订单】下订单", description = "下订单")
     @PostMapping
     public R<String> place(@Validated @RequestBody OrderParam param) {
-        String result = userOrderService.saveOrder(StpUtil.getLoginIdAsLong(), param.getScene(), param.getAddressId(), param.getCouponId(), param.getIntegral(), param.getRemarks(), param.getGoodIds());
+        String result = memberOrderService.saveOrder(StpUtil.getLoginIdAsLong(), param.getScene(), param.getAddressId(), param.getCouponId(), param.getIntegral(), param.getRemarks(), param.getGoodIds());
         return switch (result) {
             case USER_NOT_EXIST -> R.fail("用户不存在");
             case CART_EMPTY -> R.fail("购买商品错误！");
@@ -94,15 +94,15 @@ public class UserOrderController {
             @Parameter(name = "refundStatus", description = "退单状态"),
             @Parameter(name = "word", description = "关键词")
     })
-    public R<PageData<UserOrder>> list(@RequestParam("status") Integer status, @RequestParam("pageNo") Integer pageNo, @RequestParam("pageSize") Integer pageSize,
-                                       @RequestParam(required = false, name = "refundStatus") Integer refundStatus) {
+    public R<PageData<MemberOrder>> list(@RequestParam("status") Integer status, @RequestParam("pageNo") Integer pageNo, @RequestParam("pageSize") Integer pageSize,
+                                         @RequestParam(required = false, name = "refundStatus") Integer refundStatus) {
         if (status == 0) {
             status = null;
         }
         if (refundStatus != null && refundStatus == 0) {
             refundStatus = null;
         }
-        return R.data(userOrderService.convert(userOrderService.list(StpUtil.getLoginIdAsLong(), status, pageNo, pageSize, refundStatus)));
+        return R.data(memberOrderService.convert(memberOrderService.list(StpUtil.getLoginIdAsLong(), status, pageNo, pageSize, refundStatus)));
     }
 
     @Operation(summary = "【订单】搜索列表", description = "搜索列表")
@@ -114,8 +114,8 @@ public class UserOrderController {
             @Parameter(name = "refund", description = "是否为售后", example = "0不是 1是", required = true),
             @Parameter(name = "word", description = "关键词")
     })
-    public R<PageData<UserOrder>> search(@RequestParam("pageNo") Integer pageNo, @RequestParam("pageSize") Integer pageSize, @RequestParam("refund") Integer refund, @RequestParam("word") String word) {
-        return R.data(userOrderService.convert(userOrderService.search(StpUtil.getLoginIdAsLong(), pageNo, pageSize, refund, word)));
+    public R<PageData<MemberOrder>> search(@RequestParam("pageNo") Integer pageNo, @RequestParam("pageSize") Integer pageSize, @RequestParam("refund") Integer refund, @RequestParam("word") String word) {
+        return R.data(memberOrderService.convert(memberOrderService.search(StpUtil.getLoginIdAsLong(), pageNo, pageSize, refund, word)));
     }
 
     @Operation(summary = "【订单】订单详情", description = "订单详情")
@@ -124,7 +124,7 @@ public class UserOrderController {
             @Parameter(name = "orderId", description = "订单ID"),
     })
     public R<OrderResult> getDetail(@RequestParam("orderId") String orderId) {
-        return R.data(userOrderService.getDetail(StpUtil.getLoginIdAsLong(), Long.valueOf(orderId)));
+        return R.data(memberOrderService.getDetail(StpUtil.getLoginIdAsLong(), Long.valueOf(orderId)));
     }
 
     @Operation(summary = "【订单】退单上传图片", description = "退单上传图片")
@@ -142,7 +142,7 @@ public class UserOrderController {
     @Operation(summary = "【订单】申请退单", description = "申请退单")
     @PostMapping("/refund")
     public R<String> refundOrder(@RequestBody @Validated RefundOrderParam param) {
-        String result = userOrderService.refundOrder(StpUtil.getLoginIdAsLong(), Long.valueOf(param.getOrderId()), param.getRefundType(), param.getRefundReason(), param.getRefundImages());
+        String result = memberOrderService.refundOrder(StpUtil.getLoginIdAsLong(), Long.valueOf(param.getOrderId()), param.getRefundType(), param.getRefundReason(), param.getRefundImages());
         return switch (result) {
             case RConstants.ORDER_NOT_EXIST -> R.fail("订单不存在！");
             case RConstants.ORDER_ALREADY_REFUND -> R.fail("订单已经申请退款！");
@@ -154,7 +154,7 @@ public class UserOrderController {
     @Operation(summary = "【订单】退单取消", description = "退单取消")
     @PostMapping("/refund/cancel")
     public R<String> cancelRefundOrder(@RequestBody @Validated OrderIdParam param) {
-        String result = userOrderService.cancelRefundOrder(StpUtil.getLoginIdAsLong(), Long.valueOf(param.getOrderId()));
+        String result = memberOrderService.cancelRefundOrder(StpUtil.getLoginIdAsLong(), Long.valueOf(param.getOrderId()));
         return switch (result) {
             case RConstants.ORDER_NOT_EXIST -> R.fail("订单不存在！");
             case RConstants.ORDER_NOT_REFUND -> R.fail("订单未退单！");
@@ -165,28 +165,28 @@ public class UserOrderController {
     @Operation(summary = "【订单】催单", description = "催单")
     @PostMapping("/rush")
     public R<String> rushOrder(@RequestBody @Validated OrderIdParam param) {
-        userOrderService.rushOrder(StpUtil.getLoginIdAsLong(), Long.valueOf(param.getOrderId()));
+        memberOrderService.rushOrder(StpUtil.getLoginIdAsLong(), Long.valueOf(param.getOrderId()));
         return R.status(true);
     }
 
     @Operation(summary = "【订单】收货", description = "收货")
     @PostMapping("/receive")
     public R<String> receiveOrder(@RequestBody @Validated OrderIdParam param) {
-        userOrderService.receiveOrder(StpUtil.getLoginIdAsLong(), Long.valueOf(param.getOrderId()));
+        memberOrderService.receiveOrder(StpUtil.getLoginIdAsLong(), Long.valueOf(param.getOrderId()));
         return R.status(true);
     }
 
     @Operation(summary = "【订单】删除订单", description = "删除订单")
     @DeleteMapping
     public R<String> deleteOrder(@RequestBody @Validated OrderIdParam param) {
-        userOrderService.deleteOrder(StpUtil.getLoginIdAsLong(), Long.valueOf(param.getOrderId()));
+        memberOrderService.deleteOrder(StpUtil.getLoginIdAsLong(), Long.valueOf(param.getOrderId()));
         return R.status(true);
     }
 
     @Operation(summary = "【订单】待评价商品", description = "待评价商品")
     @GetMapping("/evaluate/list")
-    public R<List<UserOrderItem>> evaluateList() {
-        return R.data(userOrderService.evaluateList(StpUtil.getLoginIdAsLong()));
+    public R<List<MemberOrderItem>> evaluateList() {
+        return R.data(memberOrderService.evaluateList(StpUtil.getLoginIdAsLong()));
     }
 
     @Operation(summary = "【订单】评价商品上传图片", description = "评价商品上传图片")
@@ -204,13 +204,13 @@ public class UserOrderController {
     @Operation(summary = "【订单】评价商品", description = "评价商品")
     @PostMapping("/evaluate")
     public R<String> evaluate(@RequestBody @Validated EvaluateParam param) {
-        userOrderService.evaluateGood(StpUtil.getLoginIdAsLong(), param.getOrderItemId(), param.getRate(), param.getEvaluateImages(), param.getRemarks());
+        memberOrderService.evaluateGood(StpUtil.getLoginIdAsLong(), param.getOrderItemId(), param.getRate(), param.getEvaluateImages(), param.getRemarks());
         return R.status(true);
     }
 
     @Operation(summary = "【订单】删除订单列表", description = "删除订单列表")
     @GetMapping("/deleted/list")
-    public R<List<UserOrder>> deleteList() {
-        return R.data(userOrderService.deleteList(StpUtil.getLoginIdAsLong()));
+    public R<List<MemberOrder>> deleteList() {
+        return R.data(memberOrderService.deleteList(StpUtil.getLoginIdAsLong()));
     }
 }

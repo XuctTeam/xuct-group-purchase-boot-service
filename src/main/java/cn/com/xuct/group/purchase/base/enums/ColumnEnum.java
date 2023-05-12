@@ -32,6 +32,8 @@ public enum ColumnEnum {
 
     in,
 
+    not_in,
+
     lt,
 
     le,

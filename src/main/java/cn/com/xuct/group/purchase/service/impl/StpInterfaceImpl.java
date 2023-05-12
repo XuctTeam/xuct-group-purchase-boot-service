@@ -13,7 +13,7 @@ package cn.com.xuct.group.purchase.service.impl;
 import cn.com.xuct.group.purchase.entity.Role;
 import cn.com.xuct.group.purchase.entity.User;
 import cn.com.xuct.group.purchase.service.RoleService;
-import cn.com.xuct.group.purchase.service.UserService;
+import cn.com.xuct.group.purchase.service.MemberService;
 import cn.dev33.satoken.stp.StpInterface;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -37,7 +37,7 @@ public class StpInterfaceImpl implements StpInterface {
 
     private final RoleService roleService;
 
-    private final UserService userService;
+    private final MemberService memberService;
 
     @Override
     public List<String> getPermissionList(Object o, String s) {
@@ -46,7 +46,7 @@ public class StpInterfaceImpl implements StpInterface {
 
     @Override
     public List<String> getRoleList(Object loginId, String loginType) {
-        User user = userService.findById(Long.valueOf(String.valueOf(loginId)));
+        User user = memberService.findById(Long.valueOf(String.valueOf(loginId)));
         if (user == null) {
             return Lists.newArrayList();
         }

@@ -20,5 +20,8 @@ package cn.com.xuct.group.purchase.constants;
  */
 public enum RoleCodeEnum {
 
-    member
+    member,
+
+
+    super_admin
 }

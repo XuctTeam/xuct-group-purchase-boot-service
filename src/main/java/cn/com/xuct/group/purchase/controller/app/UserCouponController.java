@@ -11,8 +11,8 @@
 package cn.com.xuct.group.purchase.controller.app;
 
 import cn.com.xuct.group.purchase.base.res.R;
-import cn.com.xuct.group.purchase.entity.UserCoupon;
-import cn.com.xuct.group.purchase.service.UserCouponService;
+import cn.com.xuct.group.purchase.entity.MemberCoupon;
+import cn.com.xuct.group.purchase.service.MemberCouponService;
 import cn.dev33.satoken.stp.StpUtil;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.Parameter;
@@ -42,21 +42,21 @@ import java.util.List;
 @RequiredArgsConstructor
 public class UserCouponController {
 
-    private final UserCouponService userCouponService;
+    private final MemberCouponService memberCouponService;
 
     @GetMapping("/list")
     @Operation(summary = "【优惠券】优惠券列表", description = "优惠券列表")
     @Parameters(value = {
             @Parameter(name = "status", description = "使用状态 0未使用 1使用 2已过期"),
     })
-    public R<List<UserCoupon>> list(@RequestParam("status") Integer status) {
-        return R.data(userCouponService.list(StpUtil.getLoginIdAsLong(), status));
+    public R<List<MemberCoupon>> list(@RequestParam("status") Integer status) {
+        return R.data(memberCouponService.list(StpUtil.getLoginIdAsLong(), status));
     }
 
 
     @GetMapping("/can/used")
     @Operation(summary = "【优惠券】可使用的优惠券列表", description = "可使用的优惠券列表")
-    public R<List<UserCoupon>> canUsed() {
-        return R.data(userCouponService.canUsed(StpUtil.getLoginIdAsLong()));
+    public R<List<MemberCoupon>> canUsed() {
+        return R.data(memberCouponService.canUsed(StpUtil.getLoginIdAsLong()));
     }
 }

@@ -11,6 +11,7 @@
 package cn.com.xuct.group.purchase.controller.admin;
 
 import cn.com.xuct.group.purchase.base.res.R;
+import cn.com.xuct.group.purchase.constants.RoleCodeEnum;
 import cn.com.xuct.group.purchase.entity.Role;
 import cn.com.xuct.group.purchase.service.RoleService;
 import cn.com.xuct.group.purchase.vo.param.RoleResourceIdsParam;
@@ -56,6 +57,9 @@ public class AdminRoleController {
     @Operation(summary = "【角色】新增或修改角色", description = "新增或修改角色")
     @PostMapping("")
     public R<String> saveOrUpdate(@RequestBody Role role) {
+        if (role.getId() == null && (role.getCode().toLowerCase().equals(RoleCodeEnum.super_admin.name()) || role.getCode().toLowerCase().equals(RoleCodeEnum.member.name()))) {
+            return R.fail("角色代码错误！");
+        }
         roleService.saveOrUpdate(role);
         return R.status(true);
     }

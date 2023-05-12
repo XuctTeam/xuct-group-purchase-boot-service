@@ -10,9 +10,9 @@
  */
 package cn.com.xuct.group.purchase.vo.result;
 
-import cn.com.xuct.group.purchase.entity.UserAddress;
-import cn.com.xuct.group.purchase.entity.UserCoupon;
-import cn.com.xuct.group.purchase.entity.UserOrder;
+import cn.com.xuct.group.purchase.entity.MemberAddress;
+import cn.com.xuct.group.purchase.entity.MemberCoupon;
+import cn.com.xuct.group.purchase.entity.MemberOrder;
 import io.swagger.v3.oas.annotations.media.Schema;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
@@ -29,11 +29,11 @@ import java.io.Serializable;
  */
 @EqualsAndHashCode(callSuper = true)
 @Data
-public class OrderResult extends UserOrder implements Serializable {
+public class OrderResult extends MemberOrder implements Serializable {
 
     @Schema(description = "收货地址")
-    private UserAddress address;
+    private MemberAddress address;
 
     @Schema(description = "优惠券")
-    private UserCoupon coupon;
+    private MemberCoupon coupon;
 }

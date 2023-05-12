@@ -1,0 +1,28 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="cn.com.xuct.group.purchase.mapper.MemberGoodCartMapper">
+
+
+    <insert id="addGoodCart">
+        insert into bu_good_member_cart(member_id, good_id)
+        values (#{memberId}, #{goodId}) on duplicate key
+        update
+            num = num + 1
+    </insert>
+
+    <select id="cartList" resultType="cn.com.xuct.group.purchase.vo.result.CartResult">
+        select ca.num , g.name , g.first_drawing , g.unit, ca.good_id , g.inventory
+            from bu_good_member_cart ca
+        inner join bu_good g on ca.good_id = g.id
+            where ca.member_id = #{memberId}
+        <if test="gids!= null and gids.size()>0">
+            and g.id in
+            <foreach collection="gids" item="item" open="(" close=")" separator=",">
+                #{item}
+            </foreach>
+        </if>
+    </select>
+</mapper>

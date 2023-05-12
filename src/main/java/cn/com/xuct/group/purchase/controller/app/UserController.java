@@ -15,12 +15,12 @@ import cn.com.xuct.group.purchase.base.res.R;
 import cn.com.xuct.group.purchase.client.cos.client.CosClient;
 import cn.com.xuct.group.purchase.config.WxMaConfiguration;
 import cn.com.xuct.group.purchase.constants.FileFolderConstants;
-import cn.com.xuct.group.purchase.entity.User;
-import cn.com.xuct.group.purchase.service.UserService;
+import cn.com.xuct.group.purchase.entity.Member;
+import cn.com.xuct.group.purchase.service.MemberService;
 import cn.com.xuct.group.purchase.utils.JsonUtils;
 import cn.com.xuct.group.purchase.vo.param.BindPhoneParam;
 import cn.com.xuct.group.purchase.vo.param.UserParam;
-import cn.com.xuct.group.purchase.vo.result.UserSumResult;
+import cn.com.xuct.group.purchase.vo.result.MemberSumResult;
 import cn.dev33.satoken.stp.StpUtil;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;
@@ -51,15 +51,15 @@ import java.util.Objects;
 @Slf4j
 @RequiredArgsConstructor
 public class UserController {
-    private final UserService userService;
+    private final MemberService memberService;
     private final WxMaConfiguration wxMaConfiguration;
 
     @Operation(summary = "【用户】修改昵称手机号", description = "修改昵称手机号")
     @PutMapping
     public R<String> modify(@Validated @RequestBody UserParam param) {
-        User user = userService.findById(StpUtil.getLoginIdAsLong());
-        Assert.assertNotNull(user);
-        userService.updateUserInfo(user, param.getPhone(), param.getNickname(), null);
+        Member member = memberService.findById(StpUtil.getLoginIdAsLong());
+        Assert.assertNotNull(member);
+        memberService.updateUserInfo(member, param.getPhone(), param.getNickname(), null);
         return R.status(true);
     }
 
@@ -76,9 +76,9 @@ public class UserController {
         if (!StringUtils.hasLength(phone)) {
             return R.fail("获取手机号失败");
         }
-        User user = userService.findById(StpUtil.getLoginIdAsLong());
-        Assert.assertNotNull(user);
-        userService.updateUserInfo(user, phone, null, null);
+        Member member = memberService.findById(StpUtil.getLoginIdAsLong());
+        Assert.assertNotNull(member);
+        memberService.updateUserInfo(member, phone, null, null);
         return R.data(phone);
     }
 
@@ -92,16 +92,16 @@ public class UserController {
             log.error("UserController:: update avatar error");
             return R.fail("上传失败");
         }
-        Long userId = StpUtil.getLoginIdAsLong();
-        User user = userService.findById(userId);
-        User updateUser = userService.updateUserInfo(user, null, null, url.toString());
+        Long memberId = StpUtil.getLoginIdAsLong();
+        Member member = memberService.findById(memberId);
+        Member updateUser = memberService.updateUserInfo(member, null, null, url.toString());
         log.info("UserController:: user = {}", JsonUtils.obj2json(updateUser));
         return R.data(url.toString());
     }
 
     @Operation(summary = "【用户】统计用户相关数据", description = "统计用户相关数据")
     @GetMapping("/sum")
-    public R<UserSumResult> userSum() {
-        return R.data(userService.userSum(StpUtil.getLoginIdAsLong()));
+    public R<MemberSumResult> userSum() {
+        return R.data(memberService.userSum(StpUtil.getLoginIdAsLong()));
     }
 }

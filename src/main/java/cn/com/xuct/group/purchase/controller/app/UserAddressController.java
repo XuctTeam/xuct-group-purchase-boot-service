@@ -11,8 +11,8 @@
 package cn.com.xuct.group.purchase.controller.app;
 
 import cn.com.xuct.group.purchase.base.res.R;
-import cn.com.xuct.group.purchase.entity.UserAddress;
-import cn.com.xuct.group.purchase.service.UserAddressService;
+import cn.com.xuct.group.purchase.entity.MemberAddress;
+import cn.com.xuct.group.purchase.service.MemberAddressService;
 import cn.dev33.satoken.stp.StpUtil;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.Parameter;
@@ -39,28 +39,28 @@ import java.util.List;
 @RequiredArgsConstructor
 public class UserAddressController {
 
-    private final UserAddressService userAddressService;
+    private final MemberAddressService memberAddressService;
 
     @GetMapping("/list")
     @Operation(summary = "【用户】获取用户地址", description = "获取用户地址")
-    public R<List<UserAddress>> list(@RequestParam(value = "searchValue", required = false) String searchValue) {
-        return R.data(userAddressService.findList(StpUtil.getLoginIdAsLong(), searchValue));
+    public R<List<MemberAddress>> list(@RequestParam(value = "searchValue", required = false) String searchValue) {
+        return R.data(memberAddressService.findList(StpUtil.getLoginIdAsLong(), searchValue));
     }
 
     @PostMapping
     @Operation(summary = "【用户】保存地址", description = "保存地址")
-    public R<String> save(@RequestBody UserAddress address) {
+    public R<String> save(@RequestBody MemberAddress address) {
         if (address.getId() == null) {
             address.setUserId(StpUtil.getLoginIdAsLong());
         }
-        userAddressService.saveAddress(address);
+        memberAddressService.saveAddress(address);
         return R.status(true);
     }
 
     @GetMapping()
     @Operation(summary = "【用户】查询地址", description = "查询地址")
-    public R<UserAddress> get(@RequestParam("id") String id) {
-        return R.data(userAddressService.getById(Long.valueOf(id)));
+    public R<MemberAddress> get(@RequestParam("id") String id) {
+        return R.data(memberAddressService.getById(Long.valueOf(id)));
     }
 
     @DeleteMapping
@@ -69,13 +69,13 @@ public class UserAddressController {
             @Parameter(name = "id", description = "地址ID"),
     })
     public R<String> delete(@RequestParam("id") String id) {
-        userAddressService.delete(StpUtil.getLoginIdAsLong(), Long.valueOf(id));
+        memberAddressService.delete(StpUtil.getLoginIdAsLong(), Long.valueOf(id));
         return R.status(true);
     }
 
     @GetMapping("/default")
     @Operation(summary = "【用户】获取默认地址", description = "获取默认地址")
-    public R<UserAddress> getDefault() {
-        return R.data(userAddressService.getDefault(StpUtil.getLoginIdAsLong()));
+    public R<MemberAddress> getDefault() {
+        return R.data(memberAddressService.getDefault(StpUtil.getLoginIdAsLong()));
     }
 }

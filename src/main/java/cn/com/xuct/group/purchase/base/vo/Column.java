@@ -60,11 +60,20 @@ public class Column {
         return c;
     }
 
-    public static Column in(String column, Collection values) {
+    public static <T> Column in(String column, Collection<T> values) {
         Column c = new Column();
         c.setColumn(column);
         c.getValue().addAll(values);
         c.setColumnEnum(ColumnEnum.in);
+        return c;
+    }
+
+
+    public static <T> Column notIn(String column, Collection<T> values){
+        Column c = new Column();
+        c.setColumn(column);
+        c.getValue().addAll(values);
+        c.setColumnEnum(ColumnEnum.not_in);
         return c;
     }
 }

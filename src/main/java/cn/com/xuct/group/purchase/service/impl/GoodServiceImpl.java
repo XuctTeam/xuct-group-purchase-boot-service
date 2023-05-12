@@ -37,8 +37,8 @@ import java.util.Map;
 public class GoodServiceImpl extends BaseServiceImpl<GoodMapper, Good> implements GoodService {
 
     @Override
-    public GoodResult getGood(Long id, Long userId) {
-        return ((GoodMapper) super.getBaseMapper()).getGoodInfo(id, userId);
+    public GoodResult getGood(Long id, Long memberId) {
+        return ((GoodMapper) super.getBaseMapper()).getGoodInfo(id, memberId);
     }
 
     @Override

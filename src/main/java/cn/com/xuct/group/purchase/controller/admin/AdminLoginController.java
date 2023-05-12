@@ -13,14 +13,13 @@ package cn.com.xuct.group.purchase.controller.admin;
 import cn.com.xuct.group.purchase.base.res.R;
 import cn.com.xuct.group.purchase.constants.RoleCodeEnum;
 import cn.com.xuct.group.purchase.entity.User;
+import cn.com.xuct.group.purchase.service.MemberService;
 import cn.com.xuct.group.purchase.service.UserService;
 import cn.com.xuct.group.purchase.vo.param.AdminLoginParam;
 import cn.com.xuct.group.purchase.vo.result.LoginResult;
 import cn.dev33.satoken.annotation.SaIgnore;
 import cn.dev33.satoken.stp.SaTokenInfo;
 import cn.dev33.satoken.stp.StpUtil;
-import cn.hutool.crypto.digest.DigestUtil;
-import cn.hutool.crypto.digest.MD5;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import lombok.RequiredArgsConstructor;
@@ -51,7 +50,7 @@ public class AdminLoginController {
     @Operation(summary = "【登录】后台管理登录", description = "后台管理登录")
     public R<LoginResult> login(@RequestBody @Validated AdminLoginParam param) {
         User user = userService.findByUsername(param.getUsername());
-        if (user == null || user.getRoleCode().equals(RoleCodeEnum.member)) {
+        if (user == null) {
             return R.fail("用户不存在！");
         }
         if (!user.getPassword().equals(param.getPassword())) {
@@ -64,7 +63,6 @@ public class AdminLoginController {
         user.cleanData();
         return R.data(LoginResult.builder().user(user).tokenName(tokenInfo.getTokenName()).tokenValue(tokenInfo.getTokenValue()).build());
     }
-
 
 
 }

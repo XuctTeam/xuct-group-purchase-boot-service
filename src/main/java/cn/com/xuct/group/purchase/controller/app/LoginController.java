@@ -14,7 +14,7 @@ import cn.binarywang.wx.miniapp.bean.WxMaJscode2SessionResult;
 import cn.com.xuct.group.purchase.base.res.R;
 import cn.com.xuct.group.purchase.config.WxMaConfiguration;
 import cn.com.xuct.group.purchase.entity.User;
-import cn.com.xuct.group.purchase.service.UserService;
+import cn.com.xuct.group.purchase.service.MemberService;
 import cn.com.xuct.group.purchase.vo.param.WxCodeParam;
 import cn.com.xuct.group.purchase.vo.result.LoginResult;
 import cn.dev33.satoken.annotation.SaIgnore;
@@ -44,7 +44,7 @@ public class LoginController {
 
     private final WxMaConfiguration wxMaConfiguration;
 
-    private final UserService userService;
+    private final MemberService memberService;
 
     @SaIgnore
     @Operation(summary = "【登录】获取微信Session", description = "根据code获取小程序SessionInfo")
@@ -54,7 +54,7 @@ public class LoginController {
         if (session == null || !StringUtils.hasLength(session.getOpenid())) {
             return R.fail("查询session失败");
         }
-        User user = userService.findByOpenId(session.getOpenid());
+        User user = memberService.findByOpenId(session.getOpenid());
         // 第1步，先登录上
         StpUtil.login(user.getId());
         // 第2步，获取 Token  相关参数

@@ -62,7 +62,7 @@ public class ResourceServiceImpl extends BaseServiceImpl<ResourceMapper, Resourc
         }
         if (resource.getId() == null && CategoryConstants.BUTTON.equals(resource.getCategory()) && parentResource != null) {
             resource.setPath(parentResource.getPath());
-            resource.setPathName(resource.getPathName());
+            resource.setPathName(parentResource.getPathName());
         }
         return this.saveOrUpdate(resource);
     }

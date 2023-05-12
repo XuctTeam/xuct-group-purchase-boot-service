@@ -13,8 +13,8 @@ package cn.com.xuct.group.purchase.controller.app;
 import cn.com.xuct.group.purchase.base.res.R;
 import cn.com.xuct.group.purchase.client.cos.client.CosClient;
 import cn.com.xuct.group.purchase.constants.FileFolderConstants;
-import cn.com.xuct.group.purchase.entity.UserOpinion;
-import cn.com.xuct.group.purchase.service.UserOpinionService;
+import cn.com.xuct.group.purchase.entity.MemberOpinion;
+import cn.com.xuct.group.purchase.service.MemberOpinionService;
 import cn.dev33.satoken.stp.StpUtil;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.Parameter;
@@ -46,21 +46,21 @@ import java.util.Objects;
 @RequiredArgsConstructor
 public class UserOpinionController {
 
-    private final UserOpinionService userOpinionService;
+    private final MemberOpinionService memberOpinionService;
 
     @Operation(summary = "【意见反馈】新增意见反馈", description = "新增意见反馈")
     @PostMapping()
-    public R<String> add(@RequestBody @Validated UserOpinion opinion) {
+    public R<String> add(@RequestBody @Validated MemberOpinion opinion) {
         opinion.setUserId(StpUtil.getLoginIdAsLong());
         opinion.setStatus(false);
-        userOpinionService.save(opinion);
+        memberOpinionService.save(opinion);
         return R.status(true);
     }
 
     @Operation(summary = "【意见反馈】反馈列表", description = "反馈列表")
     @GetMapping("/list")
-    public R<List<UserOpinion>> list() {
-        return R.data(userOpinionService.list(StpUtil.getLoginIdAsLong()));
+    public R<List<MemberOpinion>> list() {
+        return R.data(memberOpinionService.list(StpUtil.getLoginIdAsLong()));
     }
 
     @Operation(summary = "【意见反馈】上传反馈图片", description = "上传反馈图片")
@@ -81,7 +81,7 @@ public class UserOpinionController {
     @Parameters(value = {
             @Parameter(name = "id", description = "详情ID"),
     })
-    public R<UserOpinion> get(@RequestParam("id") String id) {
-        return R.data(userOpinionService.getById(Long.valueOf(id)));
+    public R<MemberOpinion> get(@RequestParam("id") String id) {
+        return R.data(memberOpinionService.getById(Long.valueOf(id)));
     }
 }

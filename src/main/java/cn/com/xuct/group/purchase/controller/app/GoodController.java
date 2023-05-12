@@ -19,7 +19,7 @@ import cn.com.xuct.group.purchase.vo.param.CartManyGoodParam;
 import cn.com.xuct.group.purchase.vo.param.GoodParam;
 import cn.com.xuct.group.purchase.vo.param.UpdateCartNumParam;
 import cn.com.xuct.group.purchase.vo.result.CartResult;
-import cn.com.xuct.group.purchase.vo.result.UserGoodResult;
+import cn.com.xuct.group.purchase.vo.result.MemberGoodResult;
 import cn.dev33.satoken.annotation.SaIgnore;
 import cn.dev33.satoken.stp.StpUtil;
 import io.swagger.v3.oas.annotations.Operation;
@@ -50,10 +50,10 @@ import java.util.List;
 public class GoodController {
 
     private final GoodService goodService;
-    private final UserGoodCollectService userGoodCollectService;
-    private final UserGoodCartService userGoodCartService;
+    private final MemberGoodCollectService memberGoodCollectService;
+    private final MemberGoodCartService memberGoodCartService;
     private final GoodBrowseService goodBrowseService;
-    private final UserBrowseService userBrowseService;
+    private final MemberBrowseService memberBrowseService;
 
     @SaIgnore
     @GetMapping("/list")
@@ -83,54 +83,54 @@ public class GoodController {
     @PostMapping("/collect")
     @Operation(summary = "【商品】收藏或取消收藏", description = "收藏或取消收藏")
     public R<String> collect(@RequestBody @Validated GoodParam param) {
-        userGoodCollectService.collect(StpUtil.getLoginIdAsLong(), param.getGid());
+        memberGoodCollectService.collect(StpUtil.getLoginIdAsLong(), param.getGid());
         return R.status(true);
     }
 
     @PostMapping("/cart/add")
     @Operation(summary = "【购物车】添加购物车", description = "添加购物车")
     public R<String> addCart(@RequestBody @Validated AddCartParam addCartParam) {
-        userGoodCartService.addCart(addCartParam.getGid(), StpUtil.getLoginIdAsLong());
+        memberGoodCartService.addCart(addCartParam.getGid(), StpUtil.getLoginIdAsLong());
         return R.status(true);
     }
 
     @GetMapping("/cart/list")
     @Operation(summary = "【购物车】购物车列表", description = "购物车列表")
     public R<List<CartResult>> cartList() {
-        return R.data(userGoodCartService.cartList(StpUtil.getLoginIdAsLong(), Lists.newArrayList()));
+        return R.data(memberGoodCartService.cartList(StpUtil.getLoginIdAsLong(), Lists.newArrayList()));
     }
 
     @PostMapping("/cart/update/num")
     @Operation(summary = "【购物车】修改购物车数量", description = "修改购物车数量")
     public R<String> updateCartGoodNum(@RequestBody @Validated UpdateCartNumParam param) {
-        userGoodCartService.updateCartGoodNum(StpUtil.getLoginIdAsLong(), param.getGid(), param.getNum());
+        memberGoodCartService.updateCartGoodNum(StpUtil.getLoginIdAsLong(), param.getGid(), param.getNum());
         return R.status(true);
     }
 
     @PostMapping("/cart/del")
     @Operation(summary = "【购物车】删除购物车商品", description = "删除购物车商品")
     public R<String> deleteCartGood(@RequestBody @Validated CartManyGoodParam param) {
-        userGoodCartService.deleteCartGood(param.getGids(), StpUtil.getLoginIdAsLong());
+        memberGoodCartService.deleteCartGood(param.getGids(), StpUtil.getLoginIdAsLong());
         return R.status(true);
     }
 
     @DeleteMapping("/cart/del/all")
     @Operation(summary = "【购物车】清空购物车", description = "清空购物车")
     public R<String> cleanCart() {
-        userGoodCartService.delete(Column.of("user_id", StpUtil.getLoginIdAsLong()));
+        memberGoodCartService.delete(Column.of("user_id", StpUtil.getLoginIdAsLong()));
         return R.status(true);
     }
 
     @Operation(summary = "【用户】我的收藏", description = "我的收藏")
     @GetMapping("/user/collect")
-    public R<List<UserGoodResult>> findUserCollect() {
-        return R.data(userGoodCollectService.list(StpUtil.getLoginIdAsLong()));
+    public R<List<MemberGoodResult>> findUserCollect() {
+        return R.data(memberGoodCollectService.list(StpUtil.getLoginIdAsLong()));
     }
 
     @Operation(summary = "【用户】我的浏览", description = "我的浏览")
     @GetMapping("/user/browse")
     public R<List<Good>> findUserBrowse() {
-        return R.data(userBrowseService.list(StpUtil.getLoginIdAsLong()));
+        return R.data(memberBrowseService.list(StpUtil.getLoginIdAsLong()));
     }
 
     @Operation(summary = "【用户】删除浏览记录", description = "删除浏览记录")
@@ -139,7 +139,7 @@ public class GoodController {
     })
     @DeleteMapping("/user/browse")
     public R<String> deleteUserBrowse(@RequestParam("gid") String gid) {
-        userBrowseService.delete(StpUtil.getLoginIdAsLong(), Long.valueOf(gid));
+        memberBrowseService.delete(StpUtil.getLoginIdAsLong(), Long.valueOf(gid));
         return R.status(true);
     }
 }

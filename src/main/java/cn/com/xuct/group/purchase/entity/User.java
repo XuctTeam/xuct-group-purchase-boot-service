@@ -28,7 +28,7 @@ import lombok.EqualsAndHashCode;
  */
 @Data
 @EqualsAndHashCode(callSuper = true)
-@TableName("sys_user")
+@TableName("sys_member")
 public class User extends SuperEntity<User> {
 
     @Schema(description = "用户名")
