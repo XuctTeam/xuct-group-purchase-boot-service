@@ -15,6 +15,7 @@ import cn.com.xuct.group.purchase.entity.Resource;
 import cn.com.xuct.group.purchase.entity.Role;
 import cn.com.xuct.group.purchase.mapper.RoleMapper;
 import cn.com.xuct.group.purchase.vo.result.admin.AdminMenuResult;
+import cn.com.xuct.group.purchase.vo.result.admin.AdminRoleSelectResult;
 
 import java.util.List;
 import java.util.Map;
@@ -88,4 +89,17 @@ public interface RoleService extends IBaseService<RoleMapper, Role> {
      */
     void bindRoleResourceIds(final Long roleId, final List<Long> resourceIds);
 
+    /**
+     * 获取角色下拉选择
+     *
+     * @return
+     */
+    List<AdminRoleSelectResult> getRoleSelect();
+
+    /**
+     * 删除角色
+     *
+     * @param roleId
+     */
+    void deleteRole(final Long roleId);
 }

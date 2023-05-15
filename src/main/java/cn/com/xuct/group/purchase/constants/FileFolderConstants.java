@@ -29,4 +29,6 @@ public interface FileFolderConstants {
 
     String OPINION = "opinion".concat(OBLIQUE_LINE);
 
+    String ADMIN = "admin".concat(OBLIQUE_LINE);
+
 }

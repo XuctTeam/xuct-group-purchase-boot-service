@@ -13,9 +13,13 @@ package cn.com.xuct.group.purchase.entity;
 import cn.com.xuct.group.purchase.base.dao.SuperEntity;
 import com.baomidou.mybatisplus.annotation.TableField;
 import com.baomidou.mybatisplus.annotation.TableName;
+import com.fasterxml.jackson.databind.annotation.JsonSerialize;
+import com.fasterxml.jackson.databind.ser.std.ToStringSerializer;
 import io.swagger.v3.oas.annotations.media.Schema;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
+
+import javax.validation.constraints.NotNull;
 
 /**
  * 〈一句话功能简述〉<br>
@@ -32,7 +36,9 @@ public class User extends SuperEntity<User> {
 
     @Schema(description = "用户名")
     @TableField("user_name")
+    @NotNull
     private String username;
+
 
     @Schema(description = "密码")
     private String password;
@@ -45,11 +51,13 @@ public class User extends SuperEntity<User> {
     /**
      * 头像
      */
+    @Schema(description = "头像")
     private String avatar;
 
     /**
      * 角色ID
      */
+    @JsonSerialize(using = ToStringSerializer.class)
     private Long roleId;
 
     /**
@@ -60,12 +68,15 @@ public class User extends SuperEntity<User> {
     /**
      * 电话
      */
+    @Schema(description = "电话")
     private String phone;
 
     /**
      * 昵称
      */
     @TableField("nick_name")
+    @Schema(description = "昵称")
+    @NotNull
     private String nickname;
 
 

@@ -12,15 +12,21 @@ package cn.com.xuct.group.purchase.service.impl;
 
 import cn.com.xuct.group.purchase.base.service.BaseServiceImpl;
 import cn.com.xuct.group.purchase.base.vo.Column;
+import cn.com.xuct.group.purchase.config.DefaultProperties;
 import cn.com.xuct.group.purchase.constants.RedisCacheConstants;
 import cn.com.xuct.group.purchase.constants.RoleCodeEnum;
 import cn.com.xuct.group.purchase.entity.Role;
 import cn.com.xuct.group.purchase.entity.User;
 import cn.com.xuct.group.purchase.mapper.UserMapper;
 import cn.com.xuct.group.purchase.service.UserService;
+import cn.dev33.satoken.stp.StpUtil;
 import cn.hutool.core.date.DateUtil;
+import cn.hutool.crypto.SecureUtil;
 import com.github.yulichang.wrapper.MPJLambdaWrapper;
+import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.cache.annotation.CacheEvict;
+import org.springframework.cache.annotation.CachePut;
 import org.springframework.cache.annotation.Cacheable;
 import org.springframework.stereotype.Service;
 import org.springframework.util.CollectionUtils;
@@ -38,7 +44,11 @@ import java.util.List;
  */
 @Slf4j
 @Service
+@RequiredArgsConstructor
 public class UserServiceImpl extends BaseServiceImpl<UserMapper, User> implements UserService {
+
+
+    private final DefaultProperties defaultProperties;
 
     @Override
     public User updatePassword(Long memberId, String pass) {
@@ -60,6 +70,33 @@ public class UserServiceImpl extends BaseServiceImpl<UserMapper, User> implement
     @Cacheable(cacheNames = RedisCacheConstants.USER_CACHE_USER_INFO, key = "#id", unless = "#result == null")
     public User findById(Long id) {
         return this.getById(id);
+    }
+
+
+    @CachePut(cacheNames = RedisCacheConstants.USER_CACHE_USER_INFO, key = "#user.id", unless = "#result == null")
+    @Override
+    public User updateUser(User user) {
+        this.updateById(user);
+        return user;
+    }
+
+    @Override
+    public void addUser(User user) {
+        user.setStatus(0);
+        user.setPassword(SecureUtil.md5(defaultProperties.getUserPassword()));
+        this.save(user);
+    }
+
+    @Override
+    @CacheEvict(cacheNames = RedisCacheConstants.USER_CACHE_USER_INFO, key = "#userId")
+    public void deleteUser(Long userId) {
+        User user = this.getById(userId);
+        if (user == null) {
+            return;
+        }
+        /* 禁止账号 */
+        StpUtil.disable(userId, -1);
+        this.removeById(userId);
     }
 
     @Override
@@ -90,6 +127,14 @@ public class UserServiceImpl extends BaseServiceImpl<UserMapper, User> implement
         if (existUser == null) {
             return false;
         }
+        /* 冻结账号 */
+        if (status == 1 && !StpUtil.isDisable(userId)) {
+            StpUtil.disable(userId, -1);
+        }
+        //解封账号
+        if (status == 0 && StpUtil.isDisable(userId)) {
+            StpUtil.untieDisable(userId);
+        }
         existUser.setStatus(status);
         this.updateById(existUser);
         return true;
@@ -97,6 +142,11 @@ public class UserServiceImpl extends BaseServiceImpl<UserMapper, User> implement
 
     @Override
     public void resetPassword(Long userId) {
-
+        User existUser = this.getById(userId);
+        if (existUser == null) {
+            return;
+        }
+        existUser.setPassword(SecureUtil.md5(defaultProperties.getUserPassword()));
+        this.updateById(existUser);
     }
 }

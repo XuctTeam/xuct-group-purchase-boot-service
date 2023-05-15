@@ -12,6 +12,7 @@ package cn.com.xuct.group.purchase.mapper;
 
 import cn.com.xuct.group.purchase.entity.User;
 import com.baomidou.mybatisplus.core.mapper.BaseMapper;
+import org.apache.ibatis.annotations.Param;
 
 /**
  * 〈一句话功能简述〉<br> 
@@ -23,4 +24,6 @@ import com.baomidou.mybatisplus.core.mapper.BaseMapper;
  */
 public interface UserMapper extends BaseMapper<User> {
 
+
+    void updateUserRoleToNull(@Param("roleId")Long roleId);
 }

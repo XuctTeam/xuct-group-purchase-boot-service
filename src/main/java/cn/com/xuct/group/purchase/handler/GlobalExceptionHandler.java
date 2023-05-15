@@ -13,6 +13,7 @@ package cn.com.xuct.group.purchase.handler;
 import cn.com.xuct.group.purchase.base.res.R;
 import cn.com.xuct.group.purchase.base.res.SvrResCode;
 import cn.com.xuct.group.purchase.exception.SvrException;
+import cn.dev33.satoken.exception.DisableServiceException;
 import cn.dev33.satoken.exception.NotLoginException;
 import lombok.extern.slf4j.Slf4j;
 import me.chanjar.weixin.common.error.WxErrorException;
@@ -42,6 +43,7 @@ public class GlobalExceptionHandler {
         log.error("微信访问异常！原因是：{}", e.getMessage());
         return R.fail(e.getError().getErrorCode(), e.getMessage());
     }
+
     @ResponseStatus(HttpStatus.BAD_REQUEST)
     @ResponseBody
     @ExceptionHandler(value = HttpRequestMethodNotSupportedException.class)
@@ -56,6 +58,14 @@ public class GlobalExceptionHandler {
     public R<String> notLoginException(NotLoginException e) {
         log.error("未登录！原因是：{}", e.getMessage());
         return R.success("未登录");
+    }
+
+    @ResponseStatus(HttpStatus.OK)
+    @ResponseBody
+    @ExceptionHandler(value = DisableServiceException.class)
+    public R<String> notLoginException(DisableServiceException e) {
+        log.error("账号被禁用！原因是：{}", e.getMessage());
+        return R.fail("账号被禁用");
     }
 
     @ResponseStatus(HttpStatus.INTERNAL_SERVER_ERROR)

@@ -10,11 +10,14 @@
  */
 package cn.com.xuct.group.purchase.controller.admin;
 
+import cn.com.xuct.group.purchase.annotation.Log;
 import cn.com.xuct.group.purchase.base.res.R;
+import cn.com.xuct.group.purchase.constants.OptConstants;
 import cn.com.xuct.group.purchase.constants.RoleCodeEnum;
 import cn.com.xuct.group.purchase.entity.Role;
 import cn.com.xuct.group.purchase.service.RoleService;
 import cn.com.xuct.group.purchase.vo.param.RoleResourceIdsParam;
+import cn.com.xuct.group.purchase.vo.result.admin.AdminRoleSelectResult;
 import cn.dev33.satoken.annotation.SaCheckRole;
 import cn.dev33.satoken.annotation.SaMode;
 import io.swagger.v3.oas.annotations.Operation;
@@ -56,6 +59,7 @@ public class AdminRoleController {
 
     @Operation(summary = "【角色】新增或修改角色", description = "新增或修改角色")
     @PostMapping("")
+    @Log(modul = "【角色】新增或修改角色", type = OptConstants.UPDATE, desc = "新增或修改角色")
     public R<String> saveOrUpdate(@RequestBody Role role) {
         if (role.getId() == null && (role.getCode().toLowerCase().equals(RoleCodeEnum.super_admin.name()))) {
             return R.fail("角色代码错误！");
@@ -64,11 +68,25 @@ public class AdminRoleController {
         return R.status(true);
     }
 
-    @Operation(summary = "【角色】角色绑定资源", description = "角色绑定资源")
+    @Operation(summary = "【角色】绑定角色资源", description = "绑定角色资源")
     @PostMapping("/resource")
+    @Log(modul = "【角色】绑定角色资源", type = OptConstants.INSERT, desc = "绑定角色资源")
     public R<String> bindRoleResourceIds(@RequestBody @Validated RoleResourceIdsParam param) {
         roleService.bindRoleResourceIds(param.getRoleId(), param.getResourceIds());
         return R.status(true);
     }
 
+    @Operation(summary = "【角色】获取角色下拉选择", description = "获取角色下拉选择")
+    @GetMapping("/selected")
+    public R<List<AdminRoleSelectResult>> getRoleSelect() {
+        return R.data(roleService.getRoleSelect());
+    }
+
+    @Operation(summary = "【角色】删除角色", description = "删除角色")
+    @DeleteMapping("/{roleId}")
+    @Log(modul = "【角色】删除角色", type = OptConstants.INSERT, desc = "删除角色")
+    public R<String> deleteRole(@PathVariable("roleId") Long roleId) {
+        roleService.deleteRole(roleId);
+        return R.status(true);
+    }
 }

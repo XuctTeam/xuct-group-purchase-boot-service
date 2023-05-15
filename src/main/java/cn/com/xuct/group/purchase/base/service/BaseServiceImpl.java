@@ -17,6 +17,9 @@ import cn.com.xuct.group.purchase.base.enums.SortEnum;
 import cn.com.xuct.group.purchase.base.vo.Column;
 import cn.com.xuct.group.purchase.base.vo.PageData;
 import cn.com.xuct.group.purchase.base.vo.Sort;
+import cn.com.xuct.group.purchase.constants.RConstants;
+import cn.com.xuct.group.purchase.exception.SvrException;
+import cn.hutool.core.util.ArrayUtil;
 import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import com.baomidou.mybatisplus.core.conditions.update.UpdateWrapper;
 import com.baomidou.mybatisplus.core.mapper.BaseMapper;
@@ -25,8 +28,12 @@ import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
 import com.google.common.collect.Lists;
 import org.springframework.util.CollectionUtils;
 
+import java.lang.reflect.Array;
 import java.lang.reflect.ParameterizedType;
+import java.util.Arrays;
 import java.util.List;
+import java.util.stream.Collectors;
+import java.util.stream.Stream;
 
 /**
  * 〈一句话功能简述〉<br>
@@ -277,50 +284,15 @@ public class BaseServiceImpl<M extends BaseMapper<T>, T extends SuperEntity<T>> 
      * 功能描述: <br>
      * 〈〉
      *
-     * @param queryWrapper
+     * @param qr
      * @param column
      * @return:void
      * @since: 1.0.0
      * @Author:
      * @Date: 2020/2/3 17:33
      */
-    private void setWrapper(QueryWrapper<T> queryWrapper, Column column) {
-        if (column.getColumnEnum().equals(ColumnEnum.eq)) {
-            queryWrapper.eq(column.getColumn(), Lists.newArrayList(column.getValue()).get(0));
-        }
-        if (column.getColumnEnum().equals(ColumnEnum.nq)) {
-            queryWrapper.ne(column.getColumn(), Lists.newArrayList(column.getValue()).get(0));
-        }
-        if (column.getColumnEnum().equals(ColumnEnum.in)) {
-            queryWrapper.in(column.getColumn(), column.getValue());
-        }
-        if (column.getColumnEnum().equals(ColumnEnum.not_in)) {
-            queryWrapper.notIn(column.getColumn(), column.getValue());
-        }
-        if (column.getColumnEnum().equals(ColumnEnum.like)) {
-            queryWrapper.like(column.getColumn(), Lists.newArrayList(column.getValue()).get(0));
-        }
-        if (column.getColumnEnum().equals(ColumnEnum.like_left)) {
-            queryWrapper.likeLeft(column.getColumn(), Lists.newArrayList(column.getValue()).get(0));
-        }
-        if (column.getColumnEnum().equals(ColumnEnum.like_right)) {
-            queryWrapper.likeRight(column.getColumn(), Lists.newArrayList(column.getValue()).get(0));
-        }
-        if (column.getColumnEnum().equals(ColumnEnum.lt)) {
-            queryWrapper.lt(column.getColumn(), Lists.newArrayList(column.getValue()).get(0));
-        }
-        if (column.getColumnEnum().equals(ColumnEnum.le)) {
-            queryWrapper.le(column.getColumn(), Lists.newArrayList(column.getValue()).get(0));
-        }
-        if (column.getColumnEnum().equals(ColumnEnum.gt)) {
-            queryWrapper.gt(column.getColumn(), Lists.newArrayList(column.getValue()).get(0));
-        }
-        if (column.getColumnEnum().equals(ColumnEnum.ge)) {
-            queryWrapper.ge(column.getColumn(), Lists.newArrayList(column.getValue()).get(0));
-        }
-        if (column.getColumn().equals(ColumnEnum.is_not_null)) {
-            queryWrapper.isNotNull(column.getColumn());
-        }
+    private void setWrapper(QueryWrapper<T> qr, Column column) {
+        column.buildQuery(qr);
     }
 
     /**
@@ -335,45 +307,7 @@ public class BaseServiceImpl<M extends BaseMapper<T>, T extends SuperEntity<T>> 
      * @Date: 2020/3/16 11:00
      */
     private void setUpWrapper(UpdateWrapper<T> upWrapper, Column column) {
-        if (column.getColumnEnum().equals(ColumnEnum.eq)) {
-            upWrapper.eq(column.getColumn(), Lists.newArrayList(column.getValue()).get(0));
-        }
-        if (column.getColumnEnum().equals(ColumnEnum.nq)) {
-            upWrapper.ne(column.getColumn(), Lists.newArrayList(column.getValue()).get(0));
-        }
-        if (column.getColumnEnum().equals(ColumnEnum.in)) {
-            upWrapper.in(column.getColumn(), column.getValue());
-        }
-        if (column.getColumnEnum().equals(ColumnEnum.not_in)) {
-            upWrapper.notIn(column.getColumn(), column.getValue());
-        }
-        if (column.getColumnEnum().equals(ColumnEnum.like)) {
-            upWrapper.like(column.getColumn(), Lists.newArrayList(column.getValue()).get(0));
-        }
-        if (column.getColumnEnum().equals(ColumnEnum.like_left)) {
-            upWrapper.likeLeft(column.getColumn(), Lists.newArrayList(column.getValue()).get(0));
-        }
-        if (column.getColumnEnum().equals(ColumnEnum.like_right)) {
-            upWrapper.likeRight(column.getColumn(), Lists.newArrayList(column.getValue()).get(0));
-        }
-        if (column.getColumnEnum().equals(ColumnEnum.lt)) {
-            upWrapper.lt(column.getColumn(), Lists.newArrayList(column.getValue()).get(0));
-        }
-        if (column.getColumnEnum().equals(ColumnEnum.le)) {
-            upWrapper.le(column.getColumn(), Lists.newArrayList(column.getValue()).get(0));
-        }
-        if (column.getColumnEnum().equals(ColumnEnum.gt)) {
-            upWrapper.gt(column.getColumn(), Lists.newArrayList().get(0));
-        }
-        if (column.getColumnEnum().equals(ColumnEnum.ge)) {
-            upWrapper.ge(column.getColumn(), Lists.newArrayList(column.getValue()).get(0));
-        }
-        if (column.getColumn().equals(ColumnEnum.is_not_null)) {
-            upWrapper.isNotNull(column.getColumn());
-        }
-        if (column.getColumnEnum().equals(ColumnEnum.is_null)) {
-            upWrapper.isNull(column.getColumn());
-        }
+        column.buildUpdateQuery(upWrapper);
     }
 
     /**

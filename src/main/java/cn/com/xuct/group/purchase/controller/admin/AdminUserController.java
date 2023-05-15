@@ -26,6 +26,7 @@ import cn.dev33.satoken.stp.StpUtil;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 
@@ -40,6 +41,7 @@ import java.util.Map;
  * @create 2023/5/9
  * @since 1.0.0
  */
+@Slf4j
 @Tag(name = "【管理员-用户模块】")
 @RequestMapping("/api/admin/v1/user")
 @RequiredArgsConstructor
@@ -99,6 +101,32 @@ public class AdminUserController {
     @Operation(summary = "【用户】重置密码", description = "重置密码")
     public R<String> resetPassword(@RequestBody @Validated AdminUserParam param) {
         userService.resetPassword(param.getId());
+        return R.status(true);
+    }
+
+    @SaCheckRole(value = {"super_admin", "admin"}, mode = SaMode.OR)
+    @PutMapping("")
+    @Log(modul = "【用户】编辑用户", type = OptConstants.UPDATE, desc = "编辑用户")
+    @Operation(summary = "【用户】编辑用户", description = "编辑用户")
+    public R<String> editUser(@RequestBody @Validated User user) {
+        userService.updateUser(user);
+        return R.status(true);
+    }
+
+    @SaCheckRole(value = {"super_admin", "admin"}, mode = SaMode.OR)
+    @PostMapping("")
+    @Log(modul = "【用户】新增用户", type = OptConstants.INSERT, desc = "新增用户")
+    @Operation(summary = "【用户】新增用户", description = "新增用户")
+    public R<String> addUser(@RequestBody @Validated User user) {
+        userService.addUser(user);
+        return R.status(true);
+    }
+
+    @SaCheckRole(value = {"super_admin", "admin"}, mode = SaMode.OR)
+    @Log(modul = "【用户】新增用户", type = OptConstants.INSERT, desc = "新增用户")
+    @DeleteMapping("/{userId}")
+    public R<String> deleteUser(@PathVariable("userId") Long userId) {
+        userService.deleteUser(userId);
         return R.status(true);
     }
 }

@@ -11,10 +11,16 @@
 package cn.com.xuct.group.purchase.base.vo;
 
 import cn.com.xuct.group.purchase.base.enums.ColumnEnum;
+import cn.com.xuct.group.purchase.constants.RConstants;
+import cn.com.xuct.group.purchase.exception.SvrException;
+import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
+import com.baomidou.mybatisplus.core.conditions.update.UpdateWrapper;
+import com.google.common.collect.Lists;
 import com.google.common.collect.Sets;
 import lombok.Data;
 
 import java.util.Collection;
+import java.util.List;
 import java.util.Set;
 
 /**
@@ -30,7 +36,7 @@ public class Column {
 
     private String column;
 
-    private Set<Object> value = Sets.newHashSet();
+    private Object value;
 
     private ColumnEnum columnEnum;
 
@@ -40,12 +46,13 @@ public class Column {
     public static Column of(String column, Object value) {
         Column c = new Column();
         c.setColumn(column);
-        c.getValue().add(value);
+        c.setValue(value);
         c.setColumnEnum(ColumnEnum.eq);
         return c;
     }
 
     public static Column of(String column, ColumnEnum columnEnum) {
+        Column.checkedIn(columnEnum);
         Column c = new Column();
         c.setColumn(column);
         c.setColumnEnum(columnEnum);
@@ -53,9 +60,19 @@ public class Column {
     }
 
     public static Column of(String column, Object value, ColumnEnum columnEnum) {
+        Column.checkedIn(columnEnum);
         Column c = new Column();
         c.setColumn(column);
-        c.getValue().add(value);
+        c.setValue(value);
+        c.setColumnEnum(columnEnum);
+        return c;
+    }
+
+    public static Column of(String column, Object[] values, ColumnEnum columnEnum) {
+        Column.checkedIn(columnEnum);
+        Column c = new Column();
+        c.setColumn(column);
+        c.setValue(values);
         c.setColumnEnum(columnEnum);
         return c;
     }
@@ -63,17 +80,24 @@ public class Column {
     public static <T> Column in(String column, Collection<T> values) {
         Column c = new Column();
         c.setColumn(column);
-        c.getValue().addAll(values);
+        c.setValue(Sets.newHashSet(values));
         c.setColumnEnum(ColumnEnum.in);
         return c;
     }
 
+    public <T> void buildQuery(QueryWrapper<T> qr) {
+        this.getColumnEnum().buildQuery(qr, this);
+    }
 
-    public static <T> Column notIn(String column, Collection<T> values){
-        Column c = new Column();
-        c.setColumn(column);
-        c.getValue().addAll(values);
-        c.setColumnEnum(ColumnEnum.not_in);
-        return c;
+
+    public <T> void buildUpdateQuery(UpdateWrapper<T> wr) {
+        this.getColumnEnum().buildUpdateQuery(wr, this);
+    }
+
+
+    private static void checkedIn(ColumnEnum columnEnum) {
+        if (columnEnum.equals(ColumnEnum.in)) {
+            throw new SvrException("请使用Column.in方法", Integer.parseInt(RConstants.ERROR));
+        }
     }
 }

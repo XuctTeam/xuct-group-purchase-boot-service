@@ -76,3 +76,8 @@ cos:
   secret-key: ENC(YQyNRHFTti9waIIS+gEUun/e5oKmuqrGx8+u6599kXAFBWDj1OL2RG9QA9S861uiMTJ+e+1qPJNgvACX94szaiJWNw4LqKUhorGptP0pF/w=)
   bucket-name: group-purchase-1308769147
   region: ap-beijing
+
+
+default:
+  props:
+    user-password: 123456

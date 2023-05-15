@@ -17,7 +17,6 @@ import cn.com.xuct.group.purchase.entity.User;
 import cn.com.xuct.group.purchase.service.UserService;
 import cn.com.xuct.group.purchase.vo.param.admin.AdminLoginParam;
 import cn.com.xuct.group.purchase.vo.result.LoginResult;
-import cn.dev33.satoken.SaManager;
 import cn.dev33.satoken.annotation.SaIgnore;
 import cn.dev33.satoken.stp.SaTokenInfo;
 import cn.dev33.satoken.stp.StpUtil;
@@ -58,6 +57,8 @@ public class AdminLoginController {
         if (!user.getPassword().equals(param.getPassword())) {
             return R.fail("用户名或密码错误！");
         }
+        // 校验指定账号是否已被封禁，如果被封禁则抛出异常 `DisableServiceException`
+        StpUtil.checkDisable(user.getId());
         // 第1步，先登录上
         StpUtil.login(user.getId());
         // 第2步，获取 Token  相关参数

@@ -13,6 +13,8 @@ package cn.com.xuct.group.purchase.entity;
 import cn.com.xuct.group.purchase.base.dao.SuperEntity;
 import com.baomidou.mybatisplus.annotation.TableField;
 import com.baomidou.mybatisplus.annotation.TableName;
+import com.fasterxml.jackson.databind.annotation.JsonSerialize;
+import com.fasterxml.jackson.databind.ser.std.ToStringSerializer;
 import lombok.*;
 
 /**
@@ -48,6 +50,7 @@ public class LogInfo extends SuperEntity<LogInfo> {
     private String resParam;
 
     // 耗时
+    @JsonSerialize(using = ToStringSerializer.class)
     private Long takeUpTime;
 
     // 操作用户id

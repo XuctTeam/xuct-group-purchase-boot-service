@@ -117,7 +117,7 @@ public class LogAspect {
                 logInfo.setMessage(log.desc());
             }
             logInfo.setMethod(className + "." + method.getName()); // 请求的方法名
-            logInfo.setReqParam(JsonUtils.mapToJson(converMap(request.getParameterMap()))); // 请求参数
+            logInfo.setReqParam(JsonUtils.obj2json(joinPoint.getArgs())); // 请求参数
             logInfo.setResParam(JsonUtils.obj2json(keys)); // 返回结果
             logInfo.setUserId(StpUtil.getLoginIdAsLong()); // 请求用户ID
             logInfo.setUserName(userService.findById(StpUtil.getLoginIdAsLong()).getUsername()); // 请求用户名称

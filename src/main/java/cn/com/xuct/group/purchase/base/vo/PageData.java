@@ -12,6 +12,8 @@ package cn.com.xuct.group.purchase.base.vo;
 
 import com.baomidou.mybatisplus.core.metadata.IPage;
 import com.google.common.collect.Lists;
+import lombok.Data;
+import org.springframework.data.relational.core.sql.In;
 
 import java.util.List;
 
@@ -23,6 +25,7 @@ import java.util.List;
  * @create 2019/12/27
  * @since 1.0.0
  */
+@Data
 public class PageData<T> {
 
     //时间戳
@@ -33,41 +36,12 @@ public class PageData<T> {
     //总条数
     private long total;
 
+    private long pageSize;
+
+    private long pageNum;
+
     //数据
     private List<T> list = Lists.newArrayList();
-
-    public Long getTimestamp() {
-        return timestamp;
-    }
-
-    public void setTimestamp(Long timestamp) {
-        this.timestamp = timestamp;
-    }
-
-    public Long getPageTotal() {
-        return pageTotal;
-    }
-
-    public void setPageTotal(Long pageTotal) {
-        this.pageTotal = pageTotal;
-    }
-
-    public long getTotal() {
-        return total;
-    }
-
-    public void setTotal(long total) {
-        this.total = total;
-    }
-
-    public List<T> getList() {
-        return list;
-    }
-
-    public void setList(List<T> list) {
-        this.list = list;
-    }
-
 
     /**
      * 功能描述: <br>
@@ -79,10 +53,12 @@ public class PageData<T> {
      * @Author:
      * @Date: 2019/12/27 16:40
      */
-    public PageData put(IPage page) {
+    public PageData<T> put(IPage<T> page) {
         this.setList(page.getRecords());
         this.setPageTotal(page.getPages());
         this.setTotal(page.getTotal());
+        this.setPageNum(page.getCurrent());
+        this.setPageSize(page.getSize());
         return this;
     }
 
@@ -90,7 +66,7 @@ public class PageData<T> {
      * @param list
      * @return
      */
-    public PageData put(List<T> list) {
+    public PageData<T> put(List<T> list) {
         this.setList(list);
         this.setPageTotal(1L);
         this.setTotal(list.size());

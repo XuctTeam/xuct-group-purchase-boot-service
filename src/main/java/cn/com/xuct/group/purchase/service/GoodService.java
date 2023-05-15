@@ -11,6 +11,7 @@
 package cn.com.xuct.group.purchase.service;
 
 import cn.com.xuct.group.purchase.base.service.IBaseService;
+import cn.com.xuct.group.purchase.base.vo.PageData;
 import cn.com.xuct.group.purchase.entity.Good;
 import cn.com.xuct.group.purchase.mapper.GoodMapper;
 import cn.com.xuct.group.purchase.vo.result.GoodResult;
@@ -50,4 +51,13 @@ public interface GoodService extends IBaseService<GoodMapper, Good> {
      * @param goodIds
      */
     void updateGoodInventory(Map<Long , Integer> inventoryMap);
+
+    /**
+     *
+     * @param name
+     * @param pageNum
+     * @param pageSize
+     * @return
+     */
+    PageData<Good> pageGoods(final String name , final Integer pageNum , final Integer pageSize);
 }

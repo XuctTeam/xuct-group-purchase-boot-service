@@ -20,12 +20,12 @@ import cn.com.xuct.group.purchase.entity.Role;
 import cn.com.xuct.group.purchase.entity.RoleResource;
 import cn.com.xuct.group.purchase.entity.User;
 import cn.com.xuct.group.purchase.mapper.RoleMapper;
-import cn.com.xuct.group.purchase.mapper.MemberMapper;
 import cn.com.xuct.group.purchase.mapper.UserMapper;
 import cn.com.xuct.group.purchase.service.RoleResourceService;
 import cn.com.xuct.group.purchase.service.RoleService;
 import cn.com.xuct.group.purchase.vo.dto.ResourceButtonDto;
 import cn.com.xuct.group.purchase.vo.result.admin.AdminMenuResult;
+import cn.com.xuct.group.purchase.vo.result.admin.AdminRoleSelectResult;
 import com.google.common.collect.Lists;
 import com.google.common.collect.Maps;
 import lombok.RequiredArgsConstructor;
@@ -139,6 +139,24 @@ public class RoleServiceImpl extends BaseServiceImpl<RoleMapper, Role> implement
             roleResources.add(roleResource);
         }
         roleResourceService.saveBatch(roleResources);
+    }
+
+    @Override
+    public List<AdminRoleSelectResult> getRoleSelect() {
+        List<Role> roles = this.findRoleList();
+        return roles.stream().map(x -> {
+            AdminRoleSelectResult result = new AdminRoleSelectResult();
+            result.setLabel(x.getName());
+            result.setValue(String.valueOf(x.getId()));
+            return result;
+        }).collect(Collectors.toList());
+    }
+
+    @Override
+    @Transactional(rollbackFor = Exception.class)
+    public void deleteRole(Long roleId) {
+        userMapper.updateUserRoleToNull(roleId);
+        this.removeById(roleId);
     }
 
     private List<AdminMenuResult> recursionResource(Long pid, List<Resource> allResources) {
