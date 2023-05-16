@@ -5,21 +5,23 @@
 
 <mapper namespace="cn.com.xuct.group.purchase.mapper.GoodMapper">
     <select id="getGoodInfo" resultType="cn.com.xuct.group.purchase.vo.result.GoodResult">
-        select g.id , g.name , g.first_drawing , g.swiper_images , g.detail , g.inventory , ifnull(br.num , 1) as browse , s.sellCount as sell
-        <if test="userId != null">
-            , if(uc.user_id , 1, 0) as collect
+        select g.id , g.name , g.blurb, g.first_drawing , g.swiper_images , g.detail , g.inventory , ifnull(br.num , 1)
+        as browse , s.sellCount as sell
+        <if test="memberId != null">
+            , if(uc.member_id , 1, 0) as collect
         </if>
         from bu_good g
-        <if test="userId != null">
-            left join (select user_id , good_id from bu_good_member_collect uc where user_id = #{userId}) uc on g.id = uc.good_id
+        <if test="memberId != null">
+            left join (select member_id , good_id from bu_good_member_collect uc where member_id = #{memberId}) uc on
+            g.id = uc.good_id
         </if>
         left join bu_good_browse br on g.id = br.good_id
         left join (
-             select count(1) as sellCount , i.good_id from bu_member_order_item i
+            select count(1) as sellCount , i.good_id from bu_member_order_item i
                 inner join bu_member_order o on i.order_id = o.id
                     where good_id = #{gid}
                 and o.deleted = false and o.refund_status in (0, 3) and o.status = 4
-            ) s on g.id = s.good_id
+        ) s on g.id = s.good_id
         where g.id = #{gid}
     </select>
 

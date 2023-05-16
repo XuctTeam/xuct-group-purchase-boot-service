@@ -34,6 +34,17 @@ spring:
           max-idle: 10
           # 连接池中的最小空闲连接
           min-idle: 0
+  rabbitmq:
+    # 主机地址
+    host: 119.96.193.174
+    # 虚拟主机
+    virtual-host: /group_purchase
+    # 端口号默认是5672，可以不写
+    port: 5672
+    # 用户名
+    username: group
+    # 密码
+    password: group!@#$%^
 
 mybatis-plus:
   mapper-locations:  classpath:/META-INF/mappers/*.xml

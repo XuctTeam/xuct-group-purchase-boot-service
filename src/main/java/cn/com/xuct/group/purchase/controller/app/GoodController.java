@@ -117,7 +117,7 @@ public class GoodController {
     @DeleteMapping("/cart/del/all")
     @Operation(summary = "【购物车】清空购物车", description = "清空购物车")
     public R<String> cleanCart() {
-        memberGoodCartService.delete(Column.of("user_id", StpUtil.getLoginIdAsLong()));
+        memberGoodCartService.delete(Column.of("member_id", StpUtil.getLoginIdAsLong()));
         return R.status(true);
     }
 

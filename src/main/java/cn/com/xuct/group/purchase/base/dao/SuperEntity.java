@@ -36,10 +36,10 @@ public class SuperEntity<T> implements Serializable {
     private Long id;
 
     //insert时自动填充
-    @TableField(fill = FieldFill.INSERT, value = "create_time")
+    @TableField(fill = FieldFill.INSERT)
     private Date createTime = new Date();
 
     //update时自动填充
-    @TableField(fill = FieldFill.INSERT_UPDATE, value = "update_time")
+    @TableField(fill = FieldFill.INSERT_UPDATE)
     private Date updateTime = new Date();
 }

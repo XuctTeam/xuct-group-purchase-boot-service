@@ -14,7 +14,7 @@
         <result column="good_unit" property="goodUnit"/>
     </resultMap>
 
-    <!--根据userID查询地址信息-->
+    <!--查询地址信息-->
     <select id="getOrderItemByOrderId" resultMap="BaseResultMap">
         select oi.id, g.id as good_id, g.name as good_name, g.first_drawing as good_first_drawing, g.unit as good_unit, oi.num, oi.price , oi.evaluation
         from bu_member_order_item oi
@@ -30,7 +30,7 @@
         where 1 = 1
           and o.status = 4
           and oi.evaluation = false
-          and oi.member_id = #{userId}
+          and oi.member_id = #{memberId}
     </select>
 
 
@@ -40,7 +40,7 @@
                  inner join bu_good g on oi.good_id = g.id
                  inner join bu_member_order o on oi.order_id = o.id
         where 1=1
-          and oi.member_id = #{userId}
+          and oi.member_id = #{memberId}
           and o.status = 4
           and evaluation = false
     </select>

@@ -101,7 +101,7 @@ public class MemberController {
 
     @Operation(summary = "【用户】统计用户相关数据", description = "统计用户相关数据")
     @GetMapping("/sum")
-    public R<MemberSumResult> userSum() {
-        return R.data(memberService.userSum(StpUtil.getLoginIdAsLong()));
+    public R<MemberSumResult> memberSum() {
+        return R.data(memberService.memberSum(StpUtil.getLoginIdAsLong()));
     }
 }

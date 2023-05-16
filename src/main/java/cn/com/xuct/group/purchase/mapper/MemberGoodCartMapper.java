@@ -31,7 +31,7 @@ public interface MemberGoodCartMapper extends BaseMapper<MemberGoodCart> {
      * 添加商品到购物车
      *
      * @param goodId
-     * @param userId
+     * @param memberId
      * @
      */
     void addGoodCart(@Param("goodId") final Long goodId, @Param("memberId") final Long memberId);

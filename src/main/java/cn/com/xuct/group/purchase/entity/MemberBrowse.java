@@ -25,7 +25,7 @@ import lombok.EqualsAndHashCode;
  */
 @EqualsAndHashCode(callSuper = true)
 @Data
-@TableName("sys_member_browse")
+@TableName("bu_member_browse")
 public class MemberBrowse extends SuperEntity<MemberBrowse> {
 
     private Long goodId;

@@ -84,7 +84,7 @@ public class MemberServiceImpl extends BaseServiceImpl<MemberMapper, Member> imp
     }
 
     @Override
-    public MemberSumResult userSum(final Long memberId) {
+    public MemberSumResult memberSum(final Long memberId) {
         return ((MemberMapper) this.getBaseMapper()).memberSum(memberId);
     }
 }

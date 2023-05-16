@@ -50,14 +50,42 @@ public interface GoodService extends IBaseService<GoodMapper, Good> {
      *
      * @param goodIds
      */
-    void updateGoodInventory(Map<Long , Integer> inventoryMap);
+    void updateGoodInventory(Map<Long, Integer> inventoryMap);
 
     /**
-     *
      * @param name
      * @param pageNum
      * @param pageSize
      * @return
      */
-    PageData<Good> pageGoods(final String name , final Integer pageNum , final Integer pageSize);
+    PageData<Good> pageGoods(final String name, final Integer pageNum, final Integer pageSize);
+
+    /**
+     * 修改商品状态
+     *
+     * @param goodId
+     * @param status
+     */
+    void changeGoodStatus(final Long goodId, final Integer status);
+
+    /**
+     * 删除商品
+     *
+     * @param goodId
+     */
+    void deleteGood(final Long goodId);
+
+    /**
+     * 添加商品
+     *
+     * @param good
+     */
+    int addGood(final Good good);
+
+    /**
+     * 编辑商品
+     *
+     * @param good
+     */
+    int editGood(final Good good);
 }

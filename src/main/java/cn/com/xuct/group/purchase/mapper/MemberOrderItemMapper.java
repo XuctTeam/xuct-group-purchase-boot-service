@@ -32,15 +32,16 @@ public interface MemberOrderItemMapper extends BaseMapper<MemberOrderItem> {
     /**
      * 统计待评价商品总数
      *
-     * @param userId
+     * @param memberId
      * @return
      */
     int countEvaluation(@Param("memberId") Long memberId);
 
     /**
+     * 查询评价列表
      *
-     * @param userId
+     * @param memberId
      * @return
      */
-    List<MemberOrderItem> queryEvaluateByMemberId(@Param("memberId")Long memberId);
+    List<MemberOrderItem> queryEvaluateByMemberId(@Param("memberId") Long memberId);
 }

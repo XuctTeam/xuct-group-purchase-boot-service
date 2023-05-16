@@ -69,5 +69,5 @@ public class LogInfo extends SuperEntity<LogInfo> {
     private String ip;
 
     // 版本号
-    private String version;
+    private String logVersion;
 }

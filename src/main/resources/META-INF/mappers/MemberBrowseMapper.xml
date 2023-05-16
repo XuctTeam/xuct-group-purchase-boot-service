@@ -7,12 +7,12 @@
 
 
     <insert id="addUserBrowse">
-        insert ignore into sys_member_browse(member_id , good_id) values(#{memberId} , #{goodId});
+        insert ignore into bu_member_browse(member_id , good_id) values(#{memberId} , #{goodId});
     </insert>
 
     <select id="list" resultType="cn.com.xuct.group.purchase.entity.Good">
         select g.id, g.name, g.unit, g.first_drawing, g.start_time, g.end_time, g.inventory
-        from sys_member_browse b
+        from bu_member_browse b
                  inner join bu_good g on b.good_id = g.id
         where b.member_id = #{memberId}
     </select>

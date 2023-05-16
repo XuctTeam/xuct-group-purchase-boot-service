@@ -123,7 +123,7 @@ public class LogAspect {
             logInfo.setUserName(userService.findById(StpUtil.getLoginIdAsLong()).getUsername()); // 请求用户名称
             logInfo.setIp(JakartaServletUtil.getClientIP(request)); // 请求IP
             logInfo.setUri(request.getRequestURI()); // 请求URI
-            logInfo.setVersion(version); // 操作版本
+            logInfo.setLogVersion(version); // 操作版本
             logInfo.setTakeUpTime(System.currentTimeMillis() - startTime.get()); // 耗时
             logInfoService.save(logInfo);
         } catch (Exception e) {

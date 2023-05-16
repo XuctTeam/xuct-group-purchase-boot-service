@@ -68,7 +68,7 @@ public interface MemberService extends IBaseService<MemberMapper, Member> {
      * @param memberId
      * @return
      */
-    MemberSumResult userSum(final Long memberId);
+    MemberSumResult memberSum(final Long memberId);
 
 
 }

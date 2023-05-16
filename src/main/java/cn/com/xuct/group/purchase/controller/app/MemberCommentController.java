@@ -48,7 +48,7 @@ public class MemberCommentController {
     @GetMapping("/list")
     @Operation(summary = "【留言】获取留言列表", description = "获取留言列表")
     public R<List<MemberComment>> list() {
-        return R.data(memberCommentService.find(Column.of("user_id", StpUtil.getLoginIdAsLong())));
+        return R.data(memberCommentService.find(Column.of("member_id", StpUtil.getLoginIdAsLong())));
     }
 
     @PostMapping("")

@@ -26,6 +26,8 @@ import org.springframework.web.multipart.MultipartFile;
 
 import java.io.IOException;
 import java.net.URL;
+import java.util.HashMap;
+import java.util.Map;
 import java.util.Objects;
 
 /**
@@ -46,7 +48,7 @@ public class AdminUploadController {
     @SaCheckRole(value = {"super_admin", "admin"}, mode = SaMode.OR)
     @Operation(summary = "【文件上传】上传文件", description = "上传文件")
     @PostMapping("")
-    public R<String> uploadAvatar(MultipartFile file) {
+    public R<Map<String, String>> uploadAvatar(MultipartFile file) {
         URL url = null;
         try {
             url = CosClient.uploadFile(file, FileFolderConstants.ADMIN.concat(Objects.requireNonNull(file.getOriginalFilename())));
@@ -54,6 +56,10 @@ public class AdminUploadController {
             log.error("UserController:: update avatar error");
             return R.fail("上传失败");
         }
-        return R.data(url.toString());
+        String finalUrl = url.toString();
+        Map<String, String> maps = new HashMap<>() {{
+            put("fileUrl", finalUrl);
+        }};
+        return R.data(maps);
     }
 }

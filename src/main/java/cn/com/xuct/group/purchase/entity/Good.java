@@ -11,7 +11,10 @@
 package cn.com.xuct.group.purchase.entity;
 
 import cn.com.xuct.group.purchase.base.dao.SuperEntity;
+import com.baomidou.mybatisplus.annotation.FieldFill;
+import com.baomidou.mybatisplus.annotation.TableField;
 import com.baomidou.mybatisplus.annotation.TableName;
+import com.baomidou.mybatisplus.annotation.Version;
 import io.swagger.v3.oas.annotations.media.Schema;
 import lombok.AllArgsConstructor;
 import lombok.Data;
@@ -42,10 +45,16 @@ public class Good extends SuperEntity<Good> {
     @Schema(description = "首页图片")
     private String firstDrawing;
 
+    @Schema(description = "简介")
+    private String blurb;
+
+    @Schema(description = "标签(通过，分割)" )
+    private String tags;
+
     @Schema(description = "详情轮播图(通过，分割)")
     private String swiperImages;
 
-    @Schema( description = "状态(0未上架 1已上架)")
+    @Schema(description = "状态(0未上架 1已上架)")
     private Integer status;
 
     @Schema(description = "开始售卖时间")
@@ -62,4 +71,11 @@ public class Good extends SuperEntity<Good> {
 
     @Schema(description = "单位")
     private String unit;
+
+    @Schema(description = "是否删除")
+    private boolean deleted;
+
+    @TableField(value = "version", fill = FieldFill.INSERT)
+    @Version
+    private Integer version;
 }

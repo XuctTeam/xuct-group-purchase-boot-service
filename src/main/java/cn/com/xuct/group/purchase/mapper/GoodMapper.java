@@ -33,10 +33,10 @@ public interface GoodMapper extends BaseMapper<Good> {
      * 获取商品详情
      *
      * @param gid
-     * @param userId
+     * @param memberId
      * @return
      */
-    GoodResult getGoodInfo(@Param("gid") Long gid, @Param("userId") Long userId);
+    GoodResult getGoodInfo(@Param("gid") Long gid, @Param("memberId") Long memberId);
 
     /**
      * 更新商品

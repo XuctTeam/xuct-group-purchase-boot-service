@@ -28,4 +28,6 @@ public interface OptConstants {
 
    final String INSERT = "insert";
 
+   final String DELETE = "delete";
+
 }

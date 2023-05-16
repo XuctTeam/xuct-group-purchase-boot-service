@@ -84,7 +84,7 @@ public class AdminRoleController {
 
     @Operation(summary = "【角色】删除角色", description = "删除角色")
     @DeleteMapping("/{roleId}")
-    @Log(modul = "【角色】删除角色", type = OptConstants.INSERT, desc = "删除角色")
+    @Log(modul = "【角色】删除角色", type = OptConstants.DELETE, desc = "删除角色")
     public R<String> deleteRole(@PathVariable("roleId") Long roleId) {
         roleService.deleteRole(roleId);
         return R.status(true);

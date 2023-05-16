@@ -31,7 +31,7 @@ public interface ResourceService extends IBaseService<ResourceMapper, Resource> 
     /**
      * 树型菜单
      *
-     * @param userId
+     * @param showBtn
      * @return
      */
     List<AdminMenuTreeResult> menuTreeList(final Integer showBtn);

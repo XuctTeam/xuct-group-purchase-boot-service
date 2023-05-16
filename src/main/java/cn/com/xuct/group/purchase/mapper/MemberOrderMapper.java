@@ -65,7 +65,6 @@ public interface MemberOrderMapper extends BaseMapper<MemberOrder> {
     /**
      * 获取订单详情
      *
-     * @param userId
      * @param orderId
      * @return
      */
@@ -74,7 +73,7 @@ public interface MemberOrderMapper extends BaseMapper<MemberOrder> {
     /**
      * 删除订单列表
      *
-     * @param userId
+     * @param memberId
      * @return
      */
     List<MemberOrder> deleteList(@Param("memberId") Long memberId);
