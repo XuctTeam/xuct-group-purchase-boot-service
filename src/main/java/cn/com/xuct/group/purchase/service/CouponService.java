@@ -34,4 +34,37 @@ public interface CouponService extends IBaseService<CouponMapper, Coupon> {
      * @return
      */
     PageData<Coupon> pages(final String name, final Integer pageNum, final Integer pageSize);
+
+    /**
+     * 添加优惠券
+     *
+     * @param coupon
+     * @return
+     */
+    int addCoupon(final Coupon coupon);
+
+    /**
+     * 编辑优惠券
+     *
+     * @param coupon
+     * @return
+     */
+    int editCoupon(final Coupon coupon);
+
+    /**
+     * 修改优惠券状态
+     *
+     * @param couponId
+     * @param status
+     */
+    void changeCouponStatus(final Long couponId, final Integer status);
+
+    /**
+     * 删除优惠券
+     *
+     * @param couponId
+     */
+    void deleteCoupon(final Long couponId);
+
+
 }
