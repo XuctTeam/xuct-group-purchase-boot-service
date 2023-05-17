@@ -31,7 +31,7 @@ public interface RedisCacheConstants {
     /**
      * 商品
      */
-    String GOOD_INVENTORY_REDIS_KEY = "group::purchase::good::inventory:";
+    String WARES_INVENTORY_REDIS_KEY = "group::purchase::wares::inventory:";
 
 
     String APP_CACHE_CONFIG_NAME = "group::purchase::app::config";

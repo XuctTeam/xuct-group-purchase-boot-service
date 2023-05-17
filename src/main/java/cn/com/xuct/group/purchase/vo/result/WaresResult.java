@@ -1,6 +1,6 @@
 /**
  * Copyright (C), 2015-2023, XXX有限公司
- * FileName: GoodResult
+ * FileName: WaresResult
  * Author:   Derek Xu
  * Date:     2023/3/28 18:00
  * Description:
@@ -14,6 +14,7 @@ import cn.com.xuct.group.purchase.entity.Wares;
 import io.swagger.v3.oas.annotations.media.Schema;
 import lombok.AllArgsConstructor;
 import lombok.Data;
+import lombok.EqualsAndHashCode;
 import lombok.NoArgsConstructor;
 
 /**
@@ -24,6 +25,7 @@ import lombok.NoArgsConstructor;
  * @create 2023/3/28
  * @since 1.0.0
  */
+@EqualsAndHashCode(callSuper = true)
 @Data
 @AllArgsConstructor
 @NoArgsConstructor

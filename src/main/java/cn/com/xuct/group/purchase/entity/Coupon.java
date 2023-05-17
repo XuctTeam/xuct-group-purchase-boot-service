@@ -46,5 +46,5 @@ public class Coupon extends SuperEntity<Coupon> {
 
     @Schema(description = "可使用商品")
     @TableField(exist = false)
-    private List<Long> goodIds;
+    private List<Long> waresIds;
 }

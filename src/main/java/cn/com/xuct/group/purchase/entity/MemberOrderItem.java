@@ -54,15 +54,15 @@ public class MemberOrderItem extends SuperEntity<MemberOrderItem> {
 
     @Schema(description = "商品名称")
     @TableField(exist = false)
-    private String goodName;
+    private String waresName;
 
     @Schema(description = "商品首页图")
     @TableField(exist = false)
-    private String goodFirstDrawing;
+    private String waresFirstDrawing;
 
     @Schema(description = "商品单位")
     @TableField(exist = false)
-    private String goodUnit;
+    private String waresUnit;
 
 
 

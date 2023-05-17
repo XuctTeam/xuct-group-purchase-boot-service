@@ -29,7 +29,7 @@ import java.util.List;
 @Data
 public class OrderParam implements Serializable {
 
-    @Schema(description = "场景 cart 购物车 good 立即购买")
+    @Schema(description = "场景 cart 购物车 wares 立即购买")
     private String scene;
 
     @NotNull
@@ -49,6 +49,6 @@ public class OrderParam implements Serializable {
 
     @NotEmpty
     @Schema(description = "商品IDS")
-    private List<Long> goodIds;
+    private List<Long> waresIds;
 
 }

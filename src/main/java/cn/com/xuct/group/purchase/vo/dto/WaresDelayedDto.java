@@ -1,6 +1,6 @@
 /**
  * Copyright (C), 2015-2023, 263企业通信
- * FileName: GoodDelayedDto
+ * FileName: WaresDelayedDto
  * Author:   Derek Xu
  * Date:     2023/5/16 14:37
  * Description:
@@ -25,10 +25,10 @@ import java.io.Serializable;
  */
 @Data
 @Builder
-public class GoodDelayedDto implements Serializable {
+public class WaresDelayedDto implements Serializable {
 
     private Integer version;
 
-    private Long goodId;
+    private Long waresId;
 
 }

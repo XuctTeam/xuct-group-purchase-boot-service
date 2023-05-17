@@ -1,6 +1,6 @@
 /**
  * Copyright (C), 2015-2023, XXX有限公司
- * FileName: GoodServiceImpl
+ * FileName: WaresServiceImpl
  * Author:   Derek Xu
  * Date:     2023/3/27 11:24
  * Description:
@@ -23,7 +23,7 @@ import cn.com.xuct.group.purchase.mapper.WaresMapper;
 import cn.com.xuct.group.purchase.service.WaresService;
 import cn.com.xuct.group.purchase.utils.JsonUtils;
 import cn.com.xuct.group.purchase.vo.dto.DelayMessageDto;
-import cn.com.xuct.group.purchase.vo.dto.GoodDelayedDto;
+import cn.com.xuct.group.purchase.vo.dto.WaresDelayedDto;
 import cn.com.xuct.group.purchase.vo.dto.WaresInventoryDto;
 import cn.com.xuct.group.purchase.vo.result.WaresResult;
 import cn.hutool.core.date.DateTime;
@@ -105,10 +105,10 @@ public class WaresServiceImpl extends BaseServiceImpl<WaresMapper, Wares> implem
     }
 
     @Override
-    public void changeWaresStatus(Long goodId, Integer status) {
-        Wares wares = this.getById(goodId);
+    public void changeWaresStatus(Long waresId, Integer status) {
+        Wares wares = this.getById(waresId);
         if (wares == null) {
-            log.error("GoodServiceImpl:: change good status error , good id = {}", goodId);
+            log.error("WaresServiceImpl:: change wares status error , wares id = {}", waresId);
             return;
         }
         wares.setStatus(status);
@@ -116,16 +116,16 @@ public class WaresServiceImpl extends BaseServiceImpl<WaresMapper, Wares> implem
     }
 
     @Override
-    public void deleteWares(Long goodId) {
-        Wares wares = this.getById(goodId);
+    public void deleteWares(Long waresId) {
+        Wares wares = this.getById(waresId);
         if (wares == null) {
-            log.error("GoodServiceImpl:: delete good status error , good id = {}", goodId);
+            log.error("WaresServiceImpl:: delete wares status error , wares id = {}", waresId);
             return;
         }
         wares.setDeleted(true);
         wares.setStatus(1);
         //删除redis中的库存
-        redisTemplate.delete(RedisCacheConstants.GOOD_INVENTORY_REDIS_KEY.concat(String.valueOf(goodId)));
+        redisTemplate.delete(RedisCacheConstants.WARES_INVENTORY_REDIS_KEY.concat(String.valueOf(waresId)));
         this.updateById(wares);
     }
 
@@ -136,12 +136,12 @@ public class WaresServiceImpl extends BaseServiceImpl<WaresMapper, Wares> implem
         }
         this.save(wares);
         /* 保存商品库存 */
-        redisTemplate.opsForValue().increment(RedisCacheConstants.GOOD_INVENTORY_REDIS_KEY.concat(String.valueOf(wares.getId())), wares.getInventory());
+        redisTemplate.opsForValue().increment(RedisCacheConstants.WARES_INVENTORY_REDIS_KEY.concat(String.valueOf(wares.getId())), wares.getInventory());
         /* 2. 增加商品过期时间 */
-        String message = JsonUtils.obj2json(DelayMessageDto.builder().current(new Date()).code(EventCodeEnum.good_expire)
-                .data(JsonUtils.obj2json(GoodDelayedDto.builder().goodId(wares.getId()).version(wares.getVersion()).build())).build());
+        String message = JsonUtils.obj2json(DelayMessageDto.builder().current(new Date()).code(EventCodeEnum.wares_expire)
+                .data(JsonUtils.obj2json(WaresDelayedDto.builder().waresId(wares.getId()).version(wares.getVersion()).build())).build());
 
-        log.info("GoodServiceImpl:: send good delay message = {}", message);
+        log.info("WaresServiceImpl:: send wares delay message = {}", message);
         rabbitTemplate.convertAndSend(DELAYED_EXCHANGE_NAME, DELAYED_ROUTING_KEY, message,
                 correlationData -> {
                     correlationData.getMessageProperties().setDelay(Long.valueOf(wares.getEndTime().getTime() - DateUtil.current()).intValue());
@@ -166,16 +166,16 @@ public class WaresServiceImpl extends BaseServiceImpl<WaresMapper, Wares> implem
         this.updateById(existWares);
         /* 1. 库存不等于 更新redis新的库存 */
         if (!String.valueOf(wares.getInventory()).equals(String.valueOf(inventory))) {
-            redisTemplate.opsForValue().increment(RedisCacheConstants.GOOD_INVENTORY_REDIS_KEY.concat(String.valueOf(wares.getId())), wares.getInventory());
+            redisTemplate.opsForValue().increment(RedisCacheConstants.WARES_INVENTORY_REDIS_KEY.concat(String.valueOf(wares.getId())), wares.getInventory());
         }
         /* 2. 增加商品过期时间 */
         if (DateUtil.isSameDay(wares.getStartTime(), startTime) && DateUtil.isSameDay(wares.getEndTime(), endTime)) {
             return 0;
         }
 
-        String message = JsonUtils.obj2json(DelayMessageDto.builder().current(new Date()).code(EventCodeEnum.good_expire)
-                .data(JsonUtils.obj2json(GoodDelayedDto.builder().goodId(wares.getId()).version(wares.getVersion()).build())).build());
-        log.info("WaresServiceImpl:: send good delay message = {}", message);
+        String message = JsonUtils.obj2json(DelayMessageDto.builder().current(new Date()).code(EventCodeEnum.wares_expire)
+                .data(JsonUtils.obj2json(WaresDelayedDto.builder().waresId(wares.getId()).version(wares.getVersion()).build())).build());
+        log.info("WaresServiceImpl:: send wares delay message = {}", message);
         rabbitTemplate.convertAndSend(DELAYED_EXCHANGE_NAME, DELAYED_ROUTING_KEY, message,
                 correlationData -> {
                     correlationData.getMessageProperties().setDelay(Long.valueOf(wares.getEndTime().getTime() - DateUtil.current()).intValue());
@@ -193,15 +193,15 @@ public class WaresServiceImpl extends BaseServiceImpl<WaresMapper, Wares> implem
     public void waresExpire(Long waresId, Integer version) {
         Wares wares = this.getById(waresId);
         if (wares == null) {
-            log.error("WaresServiceImpl:: good expire error , good id = {}", wares);
+            log.error("WaresServiceImpl:: wares expire error , wares id = {}", wares);
             return;
         }
         if (wares.getStatus() == 0) {
-            log.error("WaresServiceImpl:: good not shelf , good id = {}", wares);
+            log.error("WaresServiceImpl:: wares not shelf , wares id = {}", wares);
             return;
         }
         if (!String.valueOf(wares.getVersion()).equals(String.valueOf(version + 1))) {
-            log.error("WaresServiceImpl:: good version change , good id = {} , version = {}", wares, version);
+            log.error("WaresServiceImpl:: wares version change , wares id = {} , version = {}", wares, version);
             return;
         }
         wares.setStatus(0);

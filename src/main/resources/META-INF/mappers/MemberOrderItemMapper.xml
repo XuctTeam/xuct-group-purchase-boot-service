@@ -9,14 +9,14 @@
     <resultMap id="BaseResultMap" type="cn.com.xuct.group.purchase.entity.MemberOrderItem">
         <id column="id" property="id"/>
         <result column="wares_id" property="waresId"/>
-        <result column="good_name" property="goodName"/>
-        <result column="good_first_drawing" property="goodFirstDrawing"/>
-        <result column="good_unit" property="goodUnit"/>
+        <result column="wares_name" property="waresName"/>
+        <result column="wares_first_drawing" property="waresFirstDrawing"/>
+        <result column="wares_unit" property="waresUnit"/>
     </resultMap>
 
     <!--查询地址信息-->
     <select id="getOrderItemByOrderId" resultMap="BaseResultMap">
-        select oi.id, g.id as wares_id, g.name as good_name, g.first_drawing as good_first_drawing, g.unit as good_unit, oi.num, oi.price , oi.evaluation
+        select oi.id, g.id as wares_id, g.name as wares_name, g.first_drawing as wares_first_drawing, g.unit as wares_unit, oi.num, oi.price , oi.evaluation
         from bu_member_order_item oi
                  inner join bu_wares g on oi.wares_id = g.id
         where oi.order_id = #{orderId}
@@ -35,7 +35,7 @@
 
 
     <select id="queryEvaluateByMemberId" resultType="cn.com.xuct.group.purchase.entity.MemberOrderItem">
-        select oi.id, g.id as wares_id, g.name as good_name, g.first_drawing as good_first_drawing, g.unit as good_unit, oi.order_id , oi.num, oi.price , oi.evaluation ,oi.create_time
+        select oi.id, g.id as wares_id, g.name as wares_name, g.first_drawing as wares_first_drawing, g.unit as wares_unit, oi.order_id , oi.num, oi.price , oi.evaluation ,oi.create_time
         from bu_member_order_item oi
                  inner join bu_wares g on oi.wares_id = g.id
                  inner join bu_member_order o on oi.order_id = o.id

@@ -1,6 +1,6 @@
 /**
  * Copyright (C), 2015-2023, XXX有限公司
- * FileName: UserGoodCollectServiceImpl
+ * FileName: MemberWaresCollectServiceImpl
  * Author:   Derek Xu
  * Date:     2023/3/28 17:39
  * Description:
@@ -33,12 +33,12 @@ import java.util.List;
 public class MemberWaresCollectServiceImpl extends BaseServiceImpl<MemberWaresCollectMapper, MemberWaresCollect> implements MemberWaresCollectService {
 
     @Override
-    public void collect(Long memberId, Long goodId) {
-        MemberWaresCollect memberWaresCollect = this.get(Lists.newArrayList(Column.of("member_id", memberId), Column.of("wares_id", goodId)));
+    public void collect(Long memberId, Long waresId) {
+        MemberWaresCollect memberWaresCollect = this.get(Lists.newArrayList(Column.of("member_id", memberId), Column.of("wares_id", waresId)));
         if (memberWaresCollect == null) {
             memberWaresCollect = new MemberWaresCollect();
             memberWaresCollect.setMemberId(memberId);
-            memberWaresCollect.setGoodId(goodId);
+            memberWaresCollect.setWaresId(waresId);
             this.save(memberWaresCollect);
             return;
         }

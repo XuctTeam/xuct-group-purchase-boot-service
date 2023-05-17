@@ -1,6 +1,6 @@
 /**
  * Copyright (C), 2015-2023, 263企业通信
- * FileName: AdminGoodController
+ * FileName: AdminWaresController
  * Author:   Derek Xu
  * Date:     2023/5/15 16:11
  * Description:
@@ -16,7 +16,7 @@ import cn.com.xuct.group.purchase.base.vo.PageData;
 import cn.com.xuct.group.purchase.constants.OptConstants;
 import cn.com.xuct.group.purchase.entity.Wares;
 import cn.com.xuct.group.purchase.service.WaresService;
-import cn.com.xuct.group.purchase.vo.param.admin.AdminGoodStatusParam;
+import cn.com.xuct.group.purchase.vo.param.admin.AdminWaresStatusParam;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.Parameter;
 import io.swagger.v3.oas.annotations.Parameters;
@@ -57,7 +57,7 @@ public class AdminWaresController {
     @Operation(summary = "【商品】修改商品状态", description = "修改商品状态")
     @PostMapping("/change/status")
     @Log(modul = "【商品】修改商品状态", type = OptConstants.UPDATE, desc = "修改商品状态")
-    public R<String> changeWaresStatus(@RequestBody @Validated AdminGoodStatusParam param) {
+    public R<String> changeWaresStatus(@RequestBody @Validated AdminWaresStatusParam param) {
         waresService.changeWaresStatus(param.getId(), param.getStatus());
         return R.status(true);
     }
@@ -65,7 +65,7 @@ public class AdminWaresController {
     @Operation(summary = "【商品】删除商品", description = "删除商品")
     @Log(modul = "【商品】删除商品", type = OptConstants.DELETE, desc = "删除商品")
     @DeleteMapping("/{id}")
-    public R<String> deleteGood(@PathVariable("id") Long id) {
+    public R<String> deleteWares(@PathVariable("id") Long id) {
         waresService.deleteWares(id);
         return R.status(true);
     }
@@ -84,7 +84,7 @@ public class AdminWaresController {
     @Operation(summary = "【商品】编辑商品", description = "编辑商品")
     @PutMapping("")
     @Log(modul = "【商品】编辑商品", type = OptConstants.UPDATE, desc = "编辑商品")
-    public R<String> editGood(@RequestBody @Validated Wares wares) {
+    public R<String> editWares(@RequestBody @Validated Wares wares) {
         int result = waresService.editWares(wares);
         return switch (result) {
             case -1 -> R.fail("商品结束时间不能小于当前时间");

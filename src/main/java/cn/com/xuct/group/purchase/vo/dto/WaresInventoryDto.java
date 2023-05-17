@@ -1,6 +1,6 @@
 /**
  * Copyright (C), 2015-2023, 楚恬商场
- * FileName: GoodInventoryDto
+ * FileName: WaresInventoryDto
  * Author:   Derek Xu
  * Date:     2023/4/15 8:59
  * Description:

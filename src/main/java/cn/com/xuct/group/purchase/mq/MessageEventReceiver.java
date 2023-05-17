@@ -12,7 +12,7 @@ package cn.com.xuct.group.purchase.mq;
 
 import cn.com.xuct.group.purchase.service.WaresService;
 import cn.com.xuct.group.purchase.utils.JsonUtils;
-import cn.com.xuct.group.purchase.vo.dto.GoodDelayedDto;
+import cn.com.xuct.group.purchase.vo.dto.WaresDelayedDto;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.context.event.EventListener;
@@ -43,17 +43,17 @@ public class MessageEventReceiver {
     @EventListener
     public void receiveMessage(MessageEvent event) {
         switch (event.getCode()) {
-            case good_expire -> this.goodExpire(event.getData());
+            case wares_expire -> this.waresExpire(event.getData());
             default -> log.error("MessageEventReceiver:: message not support , code = {}", event.getCode());
         }
     }
 
 
-    private <T> void goodExpire(T data) {
-        GoodDelayedDto goodDelayedDto = JsonUtils.json2pojo(String.valueOf(data), GoodDelayedDto.class);
-        if (goodDelayedDto == null) {
+    private <T> void waresExpire(T data) {
+        WaresDelayedDto waresDelayedDto = JsonUtils.json2pojo(String.valueOf(data), WaresDelayedDto.class);
+        if (waresDelayedDto == null) {
             return;
         }
-        waresService.goodExpire(goodDelayedDto.getGoodId(), goodDelayedDto.getVersion());
+        waresService.waresExpire(waresDelayedDto.getWaresId(), waresDelayedDto.getVersion());
     }
 }

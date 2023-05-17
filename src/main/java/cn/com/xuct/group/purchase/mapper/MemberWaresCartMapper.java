@@ -34,7 +34,7 @@ public interface MemberWaresCartMapper extends BaseMapper<MemberWaresCart> {
      * @param memberId
      * @
      */
-    void addGoodCart(@Param("waresId") final Long waresId, @Param("memberId") final Long memberId);
+    void addWaresCart(@Param("waresId") final Long waresId, @Param("memberId") final Long memberId);
 
     /**
      * @param userId

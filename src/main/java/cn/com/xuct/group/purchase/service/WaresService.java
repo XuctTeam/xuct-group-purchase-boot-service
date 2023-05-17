@@ -1,6 +1,6 @@
 /**
  * Copyright (C), 2015-2023, XXX有限公司
- * FileName: GoodService
+ * FileName: WaresService
  * Author:   Derek Xu
  * Date:     2023/3/27 11:24
  * Description:
@@ -34,7 +34,7 @@ public interface WaresService extends IBaseService<WaresMapper, Wares> {
      *
      * @param id
      * @param memberId
-     * @return cn.com.xuct.group.purchase.vo.result.GoodResult
+     * @return cn.com.xuct.group.purchase.vo.result.WaresResult
      */
     WaresResult getWareInfo(final Long id, final Long memberId);
 
@@ -48,7 +48,7 @@ public interface WaresService extends IBaseService<WaresMapper, Wares> {
     /**
      * 根据商品ID更新库存
      *
-     * @param goodIds
+     * @param MemberWaresEvaluateMapper
      */
     void updateWaresInventory(Map<Long, Integer> inventoryMap);
 
@@ -66,31 +66,31 @@ public interface WaresService extends IBaseService<WaresMapper, Wares> {
     /**
      * 修改商品状态
      *
-     * @param goodId
+     * @param waresId
      * @param status
      */
-    void changeWaresStatus(final Long goodId, final Integer status);
+    void changeWaresStatus(final Long waresId, final Integer status);
 
     /**
      * 删除商品
      *
-     * @param goodId
+     * @param waresId
      */
-    void deleteWares(final Long goodId);
+    void deleteWares(final Long waresId);
 
     /**
      * 添加商品
      *
-     * @param goods
+     * @param wares
      */
-    int addWares(final Wares goods);
+    int addWares(final Wares wares);
 
     /**
      * 编辑商品
      *
-     * @param goods
+     * @param wares
      */
-    int editWares(final Wares goods);
+    int editWares(final Wares wares);
 
     /**
      * 删除商品分类

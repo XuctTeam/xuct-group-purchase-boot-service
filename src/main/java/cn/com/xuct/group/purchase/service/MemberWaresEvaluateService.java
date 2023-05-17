@@ -1,6 +1,6 @@
 /**
  * Copyright (C), 2015-2023, 楚恬商场
- * FileName: UserGoodEvaluateService
+ * FileName: MemberWaresEvaluateService
  * Author:   Derek Xu
  * Date:     2023/4/23 20:12
  * Description:
@@ -22,6 +22,6 @@ import cn.com.xuct.group.purchase.mapper.MemberWaresEvaluateMapper;
  * @create 2023/4/23
  * @since 1.0.0
  */
-public interface MemberGoodEvaluateService extends IBaseService<MemberWaresEvaluateMapper, MemberWaresEvaluate> {
+public interface MemberWaresEvaluateService extends IBaseService<MemberWaresEvaluateMapper, MemberWaresEvaluate> {
 
 }

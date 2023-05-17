@@ -40,9 +40,7 @@ public interface MemberOrderMapper extends BaseMapper<MemberOrder> {
      * @param memberId
      * @param status
      * @param page
-     * @param refundStatus 退课状态
-     * @param wordOrderId  like 订单id
-     * @param wordGoodName like 商品名称
+     * @param refundStatus
      * @return
      */
     IPage<MemberOrder> list(@Param("memberId") Long memberId, @Param("status") Integer status, Page<MemberOrder> page, @Param("refundStatus") Integer refundStatus);
@@ -56,10 +54,10 @@ public interface MemberOrderMapper extends BaseMapper<MemberOrder> {
      * @param page
      * @param refund       是否是售后搜索
      * @param wordOrderId
-     * @param wordGoodName
+     * @param wordWaresName
      * @return
      */
-    IPage<MemberOrder> search(@Param("memberId") Long memberId, Page<MemberOrder> page, @Param("refund") int refund, @Param("wordOrderId") String wordOrderId, @Param("wordGoodName") String wordGoodName);
+    IPage<MemberOrder> search(@Param("memberId") Long memberId, Page<MemberOrder> page, @Param("refund") int refund, @Param("wordOrderId") String wordOrderId, @Param("wordWaresName") String wordWaresName);
 
 
     /**

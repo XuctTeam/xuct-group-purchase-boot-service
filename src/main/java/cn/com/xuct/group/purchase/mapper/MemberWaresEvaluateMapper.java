@@ -1,6 +1,6 @@
 /**
  * Copyright (C), 2015-2023, 楚恬商场
- * FileName: UserGoodEvaluateMapper
+ * FileName: MemberWaresEvaluateMapper
  * Author:   Derek Xu
  * Date:     2023/4/23 20:12
  * Description:

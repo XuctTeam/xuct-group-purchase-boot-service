@@ -6,7 +6,7 @@
 <mapper namespace="cn.com.xuct.group.purchase.mapper.MemberWaresCartMapper">
 
 
-    <insert id="addGoodCart">
+    <insert id="addWaresCart">
         insert into bu_wares_member_cart(member_id, wares_id)
         values (#{memberId}, #{waresId}) on duplicate key
         update

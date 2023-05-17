@@ -10,7 +10,7 @@
         <result column="create_time" property="createTime"/>
         <result column="deliver_time" property="deliverTime"/>
         <result column="serve_time" property="serveTime"/>
-        <result column="good_num" property="goodNum"/>
+        <result column="wares_num" property="waresNum"/>
         <result column="remarks" property="remarks"/>
         <result column="integral" property="integral"/>
         <result column="rush" property="rush"/>
@@ -37,7 +37,7 @@
     </resultMap>
 
     <select id="list" resultMap="baseResultMap">
-        select id , create_time , deliver_time , serve_time , status , good_num , rush , refund_status
+        select id , create_time , deliver_time , serve_time , status , wares_num , rush , refund_status
         from bu_member_order
         where 1 =1
         and member_id = #{memberId}
@@ -59,7 +59,7 @@
 
 
     <select id="search" resultMap="baseResultMap">
-        select id , create_time , deliver_time , serve_time , status , good_num , rush , refund_status
+        select id , create_time , deliver_time , serve_time , status , wares_num , rush , refund_status
         from bu_member_order
         where 1 =1
         and member_id = #{memberId}
@@ -80,7 +80,7 @@
                 and id in (
                 select o.order_id from bu_member_order_item o
                 inner join bu_wares g on o.wares_id = g.id
-                where g.name like concat('%',#{wordGoodName,jdbcType=VARCHAR},'%')
+                where g.name like concat('%',#{wordWaresName,jdbcType=VARCHAR},'%')
                 and o.member_id = #{memberId}
                 )
             </otherwise>
@@ -94,7 +94,7 @@
                o.deliver_time,
                o.serve_time,
                o.status,
-               o.good_num,
+               o.wares_num,
                o.address_id,
                o.integral,
                o.rush,
@@ -129,7 +129,7 @@
     </select>
 
     <select id="deleteList" resultMap="baseResultMap">
-        select id , create_time , deliver_time , serve_time , status , good_num , rush , refund_status
+        select id , create_time , deliver_time , serve_time , status , wares_num , rush , refund_status
         from bu_member_order
         where 1 =1
           and member_id = #{memberId}

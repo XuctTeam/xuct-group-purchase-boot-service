@@ -1,6 +1,6 @@
 /**
  * Copyright (C), 2015-2023, 楚恬商场
- * FileName: UserGoodEvaluateServiceImpl
+ * FileName: MemberWaresEvaluateServiceImpl
  * Author:   Derek Xu
  * Date:     2023/4/23 20:13
  * Description:
@@ -13,7 +13,7 @@ package cn.com.xuct.group.purchase.service.impl;
 import cn.com.xuct.group.purchase.base.service.BaseServiceImpl;
 import cn.com.xuct.group.purchase.entity.MemberWaresEvaluate;
 import cn.com.xuct.group.purchase.mapper.MemberWaresEvaluateMapper;
-import cn.com.xuct.group.purchase.service.MemberGoodEvaluateService;
+import cn.com.xuct.group.purchase.service.MemberWaresEvaluateService;
 import org.springframework.stereotype.Service;
 
 /**
@@ -25,6 +25,6 @@ import org.springframework.stereotype.Service;
  * @since 1.0.0
  */
 @Service
-public class MemberGoodEvaluateServiceImpl extends BaseServiceImpl<MemberWaresEvaluateMapper, MemberWaresEvaluate> implements MemberGoodEvaluateService {
+public class MemberWaresEvaluateServiceImpl extends BaseServiceImpl<MemberWaresEvaluateMapper, MemberWaresEvaluate> implements MemberWaresEvaluateService {
 
 }

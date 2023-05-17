@@ -1,6 +1,6 @@
 /**
  * Copyright (C), 2015-2023, XXX有限公司
- * FileName: GoodController
+ * FileName: WaresController
  * Author:   Derek Xu
  * Date:     2023/3/27 11:27
  * Description:
@@ -15,9 +15,9 @@ import cn.com.xuct.group.purchase.base.vo.Column;
 import cn.com.xuct.group.purchase.entity.Wares;
 import cn.com.xuct.group.purchase.service.*;
 import cn.com.xuct.group.purchase.vo.param.AddCartParam;
-import cn.com.xuct.group.purchase.vo.param.CartManyGoodParam;
-import cn.com.xuct.group.purchase.vo.param.GoodParam;
+import cn.com.xuct.group.purchase.vo.param.CartManyWaresParam;
 import cn.com.xuct.group.purchase.vo.param.UpdateCartNumParam;
+import cn.com.xuct.group.purchase.vo.param.WaresParam;
 import cn.com.xuct.group.purchase.vo.result.CartResult;
 import cn.com.xuct.group.purchase.vo.result.MemberWaresResult;
 import cn.com.xuct.group.purchase.vo.result.WaresResult;
@@ -76,15 +76,15 @@ public class WaresController {
     @SaIgnore
     @PostMapping("/browse")
     @Operation(summary = "【商品】观看次数", description = "自增商品观看次数")
-    public R<String> addGoodBrowse(@RequestBody @Validated GoodParam param) {
-        waresBrowseService.browse(StpUtil.isLogin() ? StpUtil.getLoginIdAsLong() : null, param.getGid());
+    public R<String> addWaresBrowse(@RequestBody @Validated WaresParam param) {
+        waresBrowseService.browse(StpUtil.isLogin() ? StpUtil.getLoginIdAsLong() : null, param.getWaresId());
         return R.status(true);
     }
 
     @PostMapping("/collect")
     @Operation(summary = "【商品】收藏或取消收藏", description = "收藏或取消收藏")
-    public R<String> collect(@RequestBody @Validated GoodParam param) {
-        memberWaresCollectService.collect(StpUtil.getLoginIdAsLong(), param.getGid());
+    public R<String> collect(@RequestBody @Validated WaresParam param) {
+        memberWaresCollectService.collect(StpUtil.getLoginIdAsLong(), param.getWaresId());
         return R.status(true);
     }
 
@@ -103,15 +103,15 @@ public class WaresController {
 
     @PostMapping("/cart/update/num")
     @Operation(summary = "【购物车】修改购物车数量", description = "修改购物车数量")
-    public R<String> updateCartGoodNum(@RequestBody @Validated UpdateCartNumParam param) {
-        memberWaresCartService.updateCartGoodNum(StpUtil.getLoginIdAsLong(), param.getGid(), param.getNum());
+    public R<String> updateCartWaresNum(@RequestBody @Validated UpdateCartNumParam param) {
+        memberWaresCartService.updateCartWaresNum(StpUtil.getLoginIdAsLong(), param.getWaresId(), param.getNum());
         return R.status(true);
     }
 
     @PostMapping("/cart/del")
     @Operation(summary = "【购物车】删除购物车商品", description = "删除购物车商品")
-    public R<String> deleteCartGood(@RequestBody @Validated CartManyGoodParam param) {
-        memberWaresCartService.deleteCartGood(param.getGids(), StpUtil.getLoginIdAsLong());
+    public R<String> deleteCartWares(@RequestBody @Validated CartManyWaresParam param) {
+        memberWaresCartService.deleteCartWares(param.getWaresIds(), StpUtil.getLoginIdAsLong());
         return R.status(true);
     }
 

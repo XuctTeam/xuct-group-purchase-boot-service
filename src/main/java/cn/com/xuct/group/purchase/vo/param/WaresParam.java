@@ -1,6 +1,6 @@
 /**
  * Copyright (C), 2015-2023, XXX有限公司
- * FileName: GoodCollectParam
+ * FileName: WaresParam
  * Author:   Derek Xu
  * Date:     2023/3/28 17:44
  * Description:
@@ -25,9 +25,9 @@ import java.io.Serializable;
  * @since 1.0.0
  */
 @Data
-public class GoodParam implements Serializable {
+public class WaresParam implements Serializable {
 
     @Schema(description = "商品ID")
     @NotNull
-    private Long gid;
+    private Long waresId;
 }

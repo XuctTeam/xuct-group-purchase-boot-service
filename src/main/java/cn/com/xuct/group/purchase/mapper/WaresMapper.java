@@ -1,6 +1,6 @@
 /**
  * Copyright (C), 2015-2023, XXX有限公司
- * FileName: GoodMapper
+ * FileName: WaresMapper
  * Author:   Derek Xu
  * Date:     2023/3/27 11:24
  * Description:
@@ -41,7 +41,7 @@ public interface WaresMapper extends BaseMapper<Wares> {
     /**
      * 更新商品
      *
-     * @param goods
+     * @param wares
      * @return
      */
     int updateWaresInventory(@Param("wares") List<WaresInventoryDto> wares);

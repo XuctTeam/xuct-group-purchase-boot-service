@@ -65,14 +65,14 @@ public class MemberOrderController {
 
     @Operation(summary = "【订单】确认订单详情", description = "确认订单详情")
     @PostMapping("/confirm/detail")
-    public R<List<CartResult>> getConfirmOrderDetail(@RequestBody @Validated CartManyGoodParam param) {
-        return R.data(memberOrderService.getConfirmOrderDetail(StpUtil.getLoginIdAsLong(), param.getScene(), param.getGids()));
+    public R<List<CartResult>> getConfirmOrderDetail(@RequestBody @Validated CartManyWaresParam param) {
+        return R.data(memberOrderService.getConfirmOrderDetail(StpUtil.getLoginIdAsLong(), param.getScene(), param.getWaresIds()));
     }
 
     @Operation(summary = "【订单】下订单", description = "下订单")
     @PostMapping
     public R<String> place(@Validated @RequestBody OrderParam param) {
-        String result = memberOrderService.saveOrder(StpUtil.getLoginIdAsLong(), param.getScene(), param.getAddressId(), param.getCouponId(), param.getIntegral(), param.getRemarks(), param.getGoodIds());
+        String result = memberOrderService.saveOrder(StpUtil.getLoginIdAsLong(), param.getScene(), param.getAddressId(), param.getCouponId(), param.getIntegral(), param.getRemarks(), param.getWaresIds());
         return switch (result) {
             case USER_NOT_EXIST -> R.fail("用户不存在");
             case CART_EMPTY -> R.fail("购买商品错误！");
@@ -204,7 +204,7 @@ public class MemberOrderController {
     @Operation(summary = "【订单】评价商品", description = "评价商品")
     @PostMapping("/evaluate")
     public R<String> evaluate(@RequestBody @Validated EvaluateParam param) {
-        memberOrderService.evaluateGood(StpUtil.getLoginIdAsLong(), param.getOrderItemId(), param.getRate(), param.getEvaluateImages(), param.getRemarks());
+        memberOrderService.evaluateWares(StpUtil.getLoginIdAsLong(), param.getOrderItemId(), param.getRate(), param.getEvaluateImages(), param.getRemarks());
         return R.status(true);
     }
 

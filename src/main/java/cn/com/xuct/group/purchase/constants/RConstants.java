@@ -67,7 +67,7 @@ public interface RConstants {
     /**
      * 商品已下架
      */
-    String ORDER_GOOD_EXPIRE = "-1004";
+    String ORDER_WARES_EXPIRE = "-1004";
 
     /**
      * 订单已申请退单

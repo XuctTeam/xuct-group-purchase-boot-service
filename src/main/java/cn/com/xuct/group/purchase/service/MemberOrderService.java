@@ -33,7 +33,7 @@ public interface MemberOrderService extends IBaseService<MemberOrderMapper, Memb
 
     final String FROM_CART = "cart";
 
-    final String FROM_GOOD = "good";
+    final String FROM_WARES = "wares";
 
     /**
      * 订单总数统计
@@ -57,7 +57,7 @@ public interface MemberOrderService extends IBaseService<MemberOrderMapper, Memb
      * 保存订单
      *
      * @param memberId
-     * @param scene     cart 购物车 good立即购买
+     * @param scene     cart 购物车 wares 立即购买
      * @param addressId 配置地址
      * @param couponId  优惠券ID
      * @param integral
@@ -170,7 +170,7 @@ public interface MemberOrderService extends IBaseService<MemberOrderMapper, Memb
      * @param evaluateImages
      * @param remarks
      */
-    void evaluateGood(final Long memberId, final Long orderItemId, final String rate, final String evaluateImages, final String remarks);
+    void evaluateWares(final Long memberId, final Long orderItemId, final String rate, final String evaluateImages, final String remarks);
 
     /**
      * 查询删除列表

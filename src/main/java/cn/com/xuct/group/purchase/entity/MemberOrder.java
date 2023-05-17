@@ -59,7 +59,7 @@ public class MemberOrder extends SuperEntity<MemberOrder> {
     private String remarks;
 
     @Schema(description = "商品总数")
-    private Integer goodNum;
+    private Integer waresNum;
 
     @Schema(description = "总金额")
     private Long totalPrice;

@@ -1,6 +1,6 @@
 /**
  * Copyright (C), 2015-2023, 263企业通信
- * FileName: UserGoodEvaluate
+ * FileName: MemberWaresEvaluate
  * Author:   Derek Xu
  * Date:     2023/4/23 17:53
  * Description: 用户商品评价

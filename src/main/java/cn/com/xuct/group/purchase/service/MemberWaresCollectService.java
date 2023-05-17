@@ -1,6 +1,6 @@
 /**
  * Copyright (C), 2015-2023, XXX有限公司
- * FileName: UserGoodCollectService
+ * FileName: MemberWaresCollectService
  * Author:   Derek Xu
  * Date:     2023/3/28 17:39
  * Description:
@@ -31,7 +31,7 @@ public interface MemberWaresCollectService extends IBaseService<MemberWaresColle
      * 收藏或取消收藏
      *
      * @param waresId
-     * @param goodId
+     * @param memberId
      */
     void collect(final Long memberId, final Long waresId);
 

@@ -58,7 +58,7 @@ public class MemberOrderServiceImpl extends BaseServiceImpl<MemberOrderMapper, M
     private final MemberOrderItemService memberOrderItemService;
     private final WaresService waresService;
     private final MemberService memberService;
-    private final MemberGoodEvaluateService memberGoodEvaluateService;
+    private final MemberWaresEvaluateService memberWaresEvaluateService;
     private final MemberCouponService memberCouponService;
 
     private final StringRedisTemplate redisTemplate;
@@ -89,7 +89,7 @@ public class MemberOrderServiceImpl extends BaseServiceImpl<MemberOrderMapper, M
     @Override
     @Transactional(rollbackFor = Exception.class)
     public String saveOrder(final Long memberId, final String scene, final Long addressId, Long couponId, Integer integral, final String remarks, List<Long> waresIds) {
-        log.info("UserOrderServiceImpl:: save order , member id = {} , address id = {} , couponId id = {} , integral = {} , goodIds = {}", memberId, addressId, couponId, integral, JsonUtils.obj2json(waresIds));
+        log.info("UserOrderServiceImpl:: save order , member id = {} , address id = {} , couponId id = {} , integral = {} , waresIds = {}", memberId, addressId, couponId, integral, JsonUtils.obj2json(waresIds));
         //全部积分
         integral = this.checkIntegral(integral, memberId);
         switch (integral) {
@@ -108,7 +108,7 @@ public class MemberOrderServiceImpl extends BaseServiceImpl<MemberOrderMapper, M
             case FROM_CART -> {
                 return this.saveCartWaresOrder(memberId, addressId, couponId, integral, remarks, waresIds);
             }
-            case FROM_GOOD -> {
+            case FROM_WARES -> {
                 return this.saveBuyingOutrightOrder(memberId, addressId, couponId, integral, remarks, waresIds.get(0));
             }
             default -> {
@@ -120,12 +120,12 @@ public class MemberOrderServiceImpl extends BaseServiceImpl<MemberOrderMapper, M
     @Override
     public IPage<MemberOrder> search(final Long memberId, int pageNo, int pageSize, final int refund, final String word) {
         String wordId = word;
-        String wordGoodName = null;
+        String wordWaresName = null;
         if (Validator.hasChinese(word) || Validator.isWord(word)) {
-            wordGoodName = word;
+            wordWaresName = word;
             wordId = null;
         }
-        return ((MemberOrderMapper) this.getBaseMapper()).search(memberId, Page.of(pageNo, pageSize), refund, wordId, wordGoodName);
+        return ((MemberOrderMapper) this.getBaseMapper()).search(memberId, Page.of(pageNo, pageSize), refund, wordId, wordWaresName);
     }
 
     @Override
@@ -193,14 +193,14 @@ public class MemberOrderServiceImpl extends BaseServiceImpl<MemberOrderMapper, M
         }
         List<Wares> waresList = waresService.find(Column.in("id", memberOrderItems.stream().map(MemberOrderItem::getWaresId).collect(Collectors.toList())));
         Date date = DateUtil.date().toJdkDate();
-        boolean goodExpire = waresList.stream().anyMatch(x -> x.getEndTime().getTime() <= date.getTime());
-        if (goodExpire) {
-            return ORDER_GOOD_EXPIRE;
+        boolean waresExpire = waresList.stream().anyMatch(x -> x.getEndTime().getTime() <= date.getTime());
+        if (waresExpire) {
+            return ORDER_WARES_EXPIRE;
         }
         Map<Long, Integer> inventoryMap = memberOrderItems.stream().collect(Collectors.toMap(MemberOrderItem::getMemberId, MemberOrderItem::getNum));
         /* 1.更新商品库存 */
         for (Long gid : inventoryMap.keySet()) {
-            redisTemplate.opsForValue().increment(RedisCacheConstants.GOOD_INVENTORY_REDIS_KEY.concat(String.valueOf(gid)), inventoryMap.get(gid));
+            redisTemplate.opsForValue().increment(RedisCacheConstants.WARES_INVENTORY_REDIS_KEY.concat(String.valueOf(gid)), inventoryMap.get(gid));
         }
         waresList.forEach(g -> {
             g.setInventory(g.getInventory() + inventoryMap.get(g.getId()));
@@ -253,7 +253,7 @@ public class MemberOrderServiceImpl extends BaseServiceImpl<MemberOrderMapper, M
 
     @Override
     @Transactional(rollbackFor = Exception.class)
-    public void evaluateGood(Long memberId, Long orderItemId, String rate, String evaluateImages, String remarks) {
+    public void evaluateWares(Long memberId, Long orderItemId, String rate, String evaluateImages, String remarks) {
         MemberOrderItem item = memberOrderItemService.getById(orderItemId);
         if (item == null) {
             log.error("UserOrderServiceImpl:: save evaluate error , order item id = {}", orderItemId);
@@ -270,7 +270,7 @@ public class MemberOrderServiceImpl extends BaseServiceImpl<MemberOrderMapper, M
         if (StringUtils.hasLength(remarks)) {
             evaluate.setRemarks(remarks);
         }
-        memberGoodEvaluateService.save(evaluate);
+        memberWaresEvaluateService.save(evaluate);
         item.setEvaluation(true);
         memberOrderItemService.updateById(item);
     }
@@ -330,13 +330,13 @@ public class MemberOrderServiceImpl extends BaseServiceImpl<MemberOrderMapper, M
     private String saveCartWaresOrder(final Long memberId, final Long addressId, final Long couponId, final Integer integral, final String remarks, List<Long> waresIds) {
         List<CartResult> cartResult = memberWaresCartService.cartList(memberId, waresIds);
         if (CollectionUtils.isEmpty(cartResult)) {
-            log.error("UserOrderServiceImpl:: user id = {} , cart ids empty , good ids = {}", memberId, cartResult);
+            log.error("UserOrderServiceImpl:: user id = {} , cart ids empty , wares ids = {}", memberId, cartResult);
             return CART_EMPTY;
         }
         Map<Long, Integer> inventoryMap = Maps.newHashMap();
         boolean canCreate = true;
         for (CartResult waresCart : cartResult) {
-            Long inventory = redisTemplate.opsForValue().increment(RedisCacheConstants.GOOD_INVENTORY_REDIS_KEY.concat(String.valueOf(waresCart.getWaresId())), -waresCart.getNum());
+            Long inventory = redisTemplate.opsForValue().increment(RedisCacheConstants.WARES_INVENTORY_REDIS_KEY.concat(String.valueOf(waresCart.getWaresId())), -waresCart.getNum());
             inventoryMap.put(waresCart.getWaresId(), waresCart.getNum());
             if (inventory == null || inventory <= 0) {
                 canCreate = false;
@@ -346,7 +346,7 @@ public class MemberOrderServiceImpl extends BaseServiceImpl<MemberOrderMapper, M
         if (!canCreate) {
             log.info("UserOrderServiceImpl:: wares not enough , wares maps = {}", JsonUtils.mapToJson(inventoryMap));
             for (Long waresId : inventoryMap.keySet()) {
-                redisTemplate.opsForValue().increment(RedisCacheConstants.GOOD_INVENTORY_REDIS_KEY.concat(String.valueOf(waresId)), inventoryMap.get(waresId));
+                redisTemplate.opsForValue().increment(RedisCacheConstants.WARES_INVENTORY_REDIS_KEY.concat(String.valueOf(waresId)), inventoryMap.get(waresId));
             }
             return NOT_ENOUGH;
         }
@@ -355,8 +355,8 @@ public class MemberOrderServiceImpl extends BaseServiceImpl<MemberOrderMapper, M
             orderId = this.save(memberId, FROM_CART, addressId, couponId, integral, remarks, cartResult);
         } catch (Exception ee) {
             log.error("UserOrderServiceImpl:: save order error , msg = {}", ee.getMessage());
-            for (Long goodId : inventoryMap.keySet()) {
-                redisTemplate.opsForValue().increment(RedisCacheConstants.GOOD_INVENTORY_REDIS_KEY.concat(String.valueOf(goodId)), inventoryMap.get(goodId));
+            for (Long waresId : inventoryMap.keySet()) {
+                redisTemplate.opsForValue().increment(RedisCacheConstants.WARES_INVENTORY_REDIS_KEY.concat(String.valueOf(waresId)), inventoryMap.get(waresId));
             }
             return ERROR;
         }
@@ -379,9 +379,9 @@ public class MemberOrderServiceImpl extends BaseServiceImpl<MemberOrderMapper, M
      * @Date: 2023/4/16 15:47
      */
     private String saveBuyingOutrightOrder(final Long memberId, final Long addressId, final Long couponId, Integer integral, final String remarks, final Long waresId) {
-        Long inventory = redisTemplate.opsForValue().increment(RedisCacheConstants.GOOD_INVENTORY_REDIS_KEY.concat(String.valueOf(waresId)), -1);
+        Long inventory = redisTemplate.opsForValue().increment(RedisCacheConstants.WARES_INVENTORY_REDIS_KEY.concat(String.valueOf(waresId)), -1);
         if (inventory == null || inventory <= 0) {
-            redisTemplate.opsForValue().increment(RedisCacheConstants.GOOD_INVENTORY_REDIS_KEY.concat(String.valueOf(waresId)), 1);
+            redisTemplate.opsForValue().increment(RedisCacheConstants.WARES_INVENTORY_REDIS_KEY.concat(String.valueOf(waresId)), 1);
             return NOT_ENOUGH;
         }
         CartResult cartResult = new CartResult();
@@ -389,10 +389,10 @@ public class MemberOrderServiceImpl extends BaseServiceImpl<MemberOrderMapper, M
         cartResult.setWaresId(waresId);
         Long orderId = null;
         try {
-            orderId = this.save(memberId, FROM_GOOD, addressId, couponId, integral, remarks, Lists.newArrayList(cartResult));
+            orderId = this.save(memberId, FROM_WARES, addressId, couponId, integral, remarks, Lists.newArrayList(cartResult));
         } catch (Exception ee) {
             log.error("UserOrderServiceImpl:: save buying out order error , user id = {}", memberId);
-            redisTemplate.opsForValue().increment(RedisCacheConstants.GOOD_INVENTORY_REDIS_KEY.concat(String.valueOf(waresId)), 1);
+            redisTemplate.opsForValue().increment(RedisCacheConstants.WARES_INVENTORY_REDIS_KEY.concat(String.valueOf(waresId)), 1);
             return ERROR;
         }
         return String.valueOf(orderId);
@@ -419,7 +419,7 @@ public class MemberOrderServiceImpl extends BaseServiceImpl<MemberOrderMapper, M
         memberOrder.setAddressId(addressId);
         memberOrder.setIntegral(integral);
         memberOrder.setRemarks(remarks);
-        memberOrder.setGoodNum(cartResult.stream().map(CartResult::getNum).mapToInt(x -> x).sum());
+        memberOrder.setWaresNum(cartResult.stream().map(CartResult::getNum).mapToInt(x -> x).sum());
         memberOrder.setTotalPrice(0L);
         memberOrder.setStatus(2);
         memberOrder.setUserCouponId(couponId);
@@ -443,7 +443,7 @@ public class MemberOrderServiceImpl extends BaseServiceImpl<MemberOrderMapper, M
         waresService.updateWaresInventory(inventoryMap);
         /*4. 删除购物车商品*/
         if (scene.equals(FROM_CART)) {
-            memberWaresCartService.deleteCartGood(cartResult.stream().map(CartResult::getWaresId).collect(Collectors.toList()), memberId);
+            memberWaresCartService.deleteCartWares(cartResult.stream().map(CartResult::getWaresId).collect(Collectors.toList()), memberId);
         }
         /*5. 更新优惠券 */
         if (couponId != null) {

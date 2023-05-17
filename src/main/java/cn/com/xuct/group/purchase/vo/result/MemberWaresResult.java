@@ -1,6 +1,6 @@
 /**
  * Copyright (C), 2015-2023, 263企业通信
- * FileName: UserGoodResult
+ * FileName: MemberWaresResult
  * Author:   Derek Xu
  * Date:     2023/4/28 13:42
  * Description:

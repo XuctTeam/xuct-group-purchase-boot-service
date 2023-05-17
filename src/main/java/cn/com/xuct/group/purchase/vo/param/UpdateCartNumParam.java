@@ -24,7 +24,7 @@ import javax.validation.constraints.NotNull;
  * @since 1.0.0
  */
 @Data
-public class UpdateCartNumParam extends GoodParam{
+public class UpdateCartNumParam extends WaresParam {
 
     @NotNull
     @Schema(description = "数量")

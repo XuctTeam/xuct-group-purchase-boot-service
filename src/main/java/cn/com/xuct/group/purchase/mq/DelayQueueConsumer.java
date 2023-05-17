@@ -13,7 +13,6 @@ package cn.com.xuct.group.purchase.mq;
 import cn.com.xuct.group.purchase.utils.JsonUtils;
 import cn.com.xuct.group.purchase.utils.SpringContextUtils;
 import cn.com.xuct.group.purchase.vo.dto.DelayMessageDto;
-import cn.com.xuct.group.purchase.vo.dto.GoodDelayedDto;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.amqp.core.Message;
 import org.springframework.amqp.rabbit.annotation.RabbitListener;

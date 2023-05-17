@@ -1,6 +1,6 @@
 /**
  * Copyright (C), 2015-2023, XXX有限公司
- * FileName: UserGoodCollect
+ * FileName: MemberWaresCollect
  * Author:   Derek Xu
  * Date:     2023/3/28 17:35
  * Description:
@@ -36,5 +36,5 @@ public class MemberWaresCollect extends SuperEntity<MemberWaresCollect> {
     /**
      * 商品ID
      */
-    private Long goodId;
+    private Long waresId;
 }

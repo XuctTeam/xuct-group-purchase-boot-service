@@ -1,6 +1,6 @@
 /**
  * Copyright (C), 2015-2023, XXX有限公司
- * FileName: GoodBrowse
+ * FileName: WaresBrowse
  * Author:   Derek Xu
  * Date:     2023/3/29 10:58
  * Description:
@@ -26,7 +26,7 @@ import lombok.EqualsAndHashCode;
  */
 @EqualsAndHashCode(callSuper = true)
 @Data
-@TableName("bu_waress_browse")
+@TableName("bu_wares_browse")
 public class WaresBrowse extends SuperEntity<WaresBrowse> {
 
     @Schema(title = "商品ID")

@@ -37,7 +37,7 @@ public class MemberWaresCartServiceImpl extends BaseServiceImpl<MemberWaresCartM
 
     @Override
     public void addCart(Long waresId, Long memberId) {
-        ((MemberWaresCartMapper) super.getBaseMapper()).addGoodCart(waresId, memberId);
+        ((MemberWaresCartMapper) super.getBaseMapper()).addWaresCart(waresId, memberId);
     }
 
     @Override
@@ -46,7 +46,7 @@ public class MemberWaresCartServiceImpl extends BaseServiceImpl<MemberWaresCartM
     }
 
     @Override
-    public void updateCartGoodNum(Long memberId, Long waresIds, Integer num) {
+    public void updateCartWaresNum(Long memberId, Long waresIds, Integer num) {
         MemberWaresCart memberWaresCart = this.get(Lists.newArrayList(Column.of("member_id", memberId), Column.of("wares_id", waresIds)));
         if (memberWaresCart == null) {
             return;
@@ -56,7 +56,7 @@ public class MemberWaresCartServiceImpl extends BaseServiceImpl<MemberWaresCartM
     }
 
     @Override
-    public void deleteCartGood(List<Long> waresIds, final Long memberId) {
+    public void deleteCartWares(List<Long> waresIds, final Long memberId) {
         QueryWrapper<MemberWaresCart> qr = super.getQuery();
         qr.eq("member_id", memberId).in("wares_id", waresIds);
         this.remove(qr);

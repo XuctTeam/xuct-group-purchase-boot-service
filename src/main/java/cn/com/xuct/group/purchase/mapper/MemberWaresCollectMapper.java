@@ -1,6 +1,6 @@
 /**
  * Copyright (C), 2015-2023, XXX有限公司
- * FileName: UserGoodCollectMapper
+ * FileName: MemberWaresCollectMapper
  * Author:   Derek Xu
  * Date:     2023/3/28 17:39
  * Description:

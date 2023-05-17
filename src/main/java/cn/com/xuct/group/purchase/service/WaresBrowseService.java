@@ -1,6 +1,6 @@
 /**
  * Copyright (C), 2015-2023, XXX有限公司
- * FileName: GoodBrowseService
+ * FileName: WaresBrowseService
  * Author:   Derek Xu
  * Date:     2023/3/29 11:10
  * Description:

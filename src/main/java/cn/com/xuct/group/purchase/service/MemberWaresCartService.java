@@ -51,12 +51,12 @@ public interface MemberWaresCartService extends IBaseService<MemberWaresCartMapp
      * @param waresIds
      * @param num
      */
-    void updateCartGoodNum(final Long memberId, final Long waresIds, final Integer num);
+    void updateCartWaresNum(final Long memberId, final Long waresIds, final Integer num);
 
     /**
      * 删除购物车中商品
      *
      * @param waresIds
      */
-    void deleteCartGood(final List<Long> waresIds , final Long memberId);
+    void deleteCartWares(final List<Long> waresIds , final Long memberId);
 }
