@@ -24,6 +24,8 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.multipart.MultipartFile;
 
+import javax.imageio.ImageIO;
+import java.awt.image.BufferedImage;
 import java.io.IOException;
 import java.net.URL;
 import java.util.HashMap;
@@ -56,9 +58,16 @@ public class AdminUploadController {
             log.error("UserController:: update avatar error");
             return R.fail("上传失败");
         }
-        String finalUrl = url.toString();
+        String uri = url.toString();
+        try {
+            BufferedImage image = ImageIO.read(file.getInputStream());
+            uri = uri.concat("?w=" + image.getWidth()).concat("&h=" + image.getHeight());
+        } catch (IOException e) {
+            log.error("AdminUploadController:: get image error , msg = {}", e.getMessage());
+        }
+        String finalUrl1 = uri;
         Map<String, String> maps = new HashMap<>() {{
-            put("fileUrl", finalUrl);
+            put("fileUrl", finalUrl1);
         }};
         return R.data(maps);
     }
