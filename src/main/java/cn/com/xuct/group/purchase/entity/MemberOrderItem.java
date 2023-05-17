@@ -41,7 +41,7 @@ public class MemberOrderItem extends SuperEntity<MemberOrderItem> {
 
     @Schema(description = "商品ID")
     @JsonSerialize(using = ToStringSerializer.class)
-    private Long goodId;
+    private Long waresId;
 
     @Schema(description = "购买数量")
     private Integer num;

@@ -14,14 +14,33 @@ import cn.com.xuct.group.purchase.base.service.IBaseService;
 import cn.com.xuct.group.purchase.entity.Banner;
 import cn.com.xuct.group.purchase.mapper.BannerMapper;
 
+import java.util.List;
+
 /**
- * 〈一句话功能简述〉<br> 
+ * 〈一句话功能简述〉<br>
  * 〈〉
  *
  * @author Derek Xu
  * @create 2023/3/22
  * @since 1.0.0
  */
-public interface BannerService extends IBaseService<BannerMapper , Banner> {
+public interface BannerService extends IBaseService<BannerMapper, Banner> {
 
+
+    /**
+     * 查询列表
+     * @param title
+     * @param status
+     * @return
+     */
+    List<Banner> list(final String title , final Integer status);
+
+    /**
+     * 修改轮播图状态
+     *
+     * @param bannerId
+     * @param status
+     * @return
+     */
+    boolean changeBannerStatus(final Long bannerId, final Integer status);
 }

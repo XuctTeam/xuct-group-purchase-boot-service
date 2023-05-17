@@ -1,8 +1,8 @@
 /**
  * Copyright (C), 2015-2023, XXX有限公司
- * FileName: Banner
+ * FileName: UserCart
  * Author:   Derek Xu
- * Date:     2023/3/22 10:44
+ * Date:     2023/3/29 9:44
  * Description:
  * History:
  * <author>          <time>          <version>          <desc>
@@ -16,46 +16,25 @@ import io.swagger.v3.oas.annotations.media.Schema;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
 
-import javax.validation.constraints.NotNull;
-
 /**
  * 〈一句话功能简述〉<br> 
  * 〈〉
  *
  * @author Derek Xu
- * @create 2023/3/22
+ * @create 2023/3/29
  * @since 1.0.0
  */
 @EqualsAndHashCode(callSuper = true)
 @Data
-@TableName("bu_banner")
-public class Banner extends SuperEntity<Banner> {
+@TableName("bu_wares_member_cart")
+public class MemberWaresCart extends SuperEntity<MemberWaresCart> {
 
-    /**
-     * 描述
-     */
-    @NotNull
-    private String title;
+    @Schema(title = "用户ID")
+    private Long memberId;
 
-    /**
-     * 图片地址
-     */
-    @NotNull
-    private String image;
+    @Schema(title = "商品ID")
+    private Long waresId;
 
-
-    @Schema(description = "状态 0禁用 1正常")
-    private Integer status;
-
-    /**
-     * 跳转
-     */
-    @NotNull
-    private String router;
-
-    /**
-     * 排序
-     */
-    @NotNull
-    private Integer sort;
+    @Schema(title = "商品数量")
+    private Integer num;
 }

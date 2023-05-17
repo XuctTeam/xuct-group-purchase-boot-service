@@ -11,8 +11,8 @@
 package cn.com.xuct.group.purchase.service.impl;
 
 import cn.com.xuct.group.purchase.base.service.BaseServiceImpl;
-import cn.com.xuct.group.purchase.entity.Good;
 import cn.com.xuct.group.purchase.entity.MemberBrowse;
+import cn.com.xuct.group.purchase.entity.Wares;
 import cn.com.xuct.group.purchase.mapper.MemberBrowseMapper;
 import cn.com.xuct.group.purchase.service.MemberBrowseService;
 import lombok.extern.slf4j.Slf4j;
@@ -35,20 +35,20 @@ public class MemberBrowseServiceImpl extends BaseServiceImpl<MemberBrowseMapper,
 
 
     @Override
-    public void addUserBrowse(Long memberId, Long goodId) {
-        ((MemberBrowseMapper) this.getBaseMapper()).addUserBrowse(memberId, goodId);
+    public void addUserBrowse(Long memberId, Long waresId) {
+        ((MemberBrowseMapper) this.getBaseMapper()).addUserBrowse(memberId, waresId);
     }
 
     @Override
-    public List<Good> list(Long memberId) {
+    public List<Wares> list(Long memberId) {
         return ((MemberBrowseMapper) this.getBaseMapper()).list(memberId);
     }
 
     @Override
-    public void delete(Long memberId, Long goodId) {
+    public void delete(Long memberId, Long waresId) {
         this.removeByMap(new HashMap<>() {{
             put("member_id", memberId);
-            put("good_id", goodId);
+            put("wares_id", waresId);
         }});
     }
 }

@@ -11,9 +11,13 @@
 package cn.com.xuct.group.purchase.entity;
 
 import cn.com.xuct.group.purchase.base.dao.SuperEntity;
+import com.baomidou.mybatisplus.annotation.TableField;
 import com.baomidou.mybatisplus.annotation.TableName;
 import io.swagger.v3.oas.annotations.media.Schema;
 import lombok.Data;
+import lombok.EqualsAndHashCode;
+
+import java.util.List;
 
 /**
  * 〈一句话功能简述〉<br>
@@ -23,6 +27,7 @@ import lombok.Data;
  * @create 2023/4/26
  * @since 1.0.0
  */
+@EqualsAndHashCode(callSuper = true)
 @Data
 @TableName("bu_coupon")
 public class Coupon extends SuperEntity<Coupon> {
@@ -33,9 +38,13 @@ public class Coupon extends SuperEntity<Coupon> {
     @Schema(description = "满减金额")
     private Long fullPrice;
 
-    @Schema(description = "名字")
+    @Schema(description = "名称")
     private String name;
 
     @Schema(description = "是否启用")
     private boolean used;
+
+    @Schema(description = "可使用商品")
+    @TableField(exist = false)
+    private List<Long> goodIds;
 }

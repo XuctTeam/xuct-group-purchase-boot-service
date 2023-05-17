@@ -48,10 +48,10 @@ public interface MemberOrderService extends IBaseService<MemberOrderMapper, Memb
      *
      * @param memberId
      * @param scene
-     * @param gids
+     * @param waresIds
      * @return
      */
-    List<CartResult> getConfirmOrderDetail(final Long memberId, final String scene, List<Long> gids);
+    List<CartResult> getConfirmOrderDetail(final Long memberId, final String scene, List<Long> waresIds);
 
     /**
      * 保存订单
@@ -62,9 +62,9 @@ public interface MemberOrderService extends IBaseService<MemberOrderMapper, Memb
      * @param couponId  优惠券ID
      * @param integral
      * @param remarks
-     * @param goodIds
+     * @param waresIds
      */
-    String saveOrder(final Long memberId, final String scene, final Long addressId, Long couponId, Integer integral, final String remarks, List<Long> goodIds);
+    String saveOrder(final Long memberId, final String scene, final Long addressId, Long couponId, Integer integral, final String remarks, List<Long> waresIds);
 
     /**
      * 订单分页查询

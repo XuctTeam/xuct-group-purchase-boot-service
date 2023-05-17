@@ -79,7 +79,7 @@
             <otherwise>
                 and id in (
                 select o.order_id from bu_member_order_item o
-                inner join bu_good g on o.good_id = g.id
+                inner join bu_wares g on o.wares_id = g.id
                 where g.name like concat('%',#{wordGoodName,jdbcType=VARCHAR},'%')
                 and o.member_id = #{memberId}
                 )

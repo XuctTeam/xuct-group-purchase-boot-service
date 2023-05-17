@@ -10,11 +10,18 @@
  */
 package cn.com.xuct.group.purchase.mq;
 
+import cn.com.xuct.group.purchase.utils.JsonUtils;
+import cn.com.xuct.group.purchase.utils.SpringContextUtils;
+import cn.com.xuct.group.purchase.vo.dto.DelayMessageDto;
+import cn.com.xuct.group.purchase.vo.dto.GoodDelayedDto;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.amqp.core.Message;
 import org.springframework.amqp.rabbit.annotation.RabbitListener;
 import org.springframework.stereotype.Component;
+import org.springframework.util.StringUtils;
+
 import java.util.Date;
+
 import static cn.com.xuct.group.purchase.config.DelayedQueueConfiguration.DELAYED_QUEUE_NAME;
 
 /**
@@ -33,5 +40,16 @@ public class DelayQueueConsumer {
     public void receiveDelayedQueue(Message message) {
         String msg = new String(message.getBody());
         log.info("当前时间：{},收到延时队列的消息：{}", new Date().toString(), msg);
+        if (!StringUtils.hasLength(msg)) {
+            log.error("DelayQueueConsumer:: get delay message error");
+            return;
+        }
+        DelayMessageDto delayMessageDto = JsonUtils.json2pojo(msg, DelayMessageDto.class);
+        if (delayMessageDto == null) {
+            log.error("DelayQueueConsumer:: to bean error...");
+            return;
+        }
+        MessageEvent<Object> event = new MessageEvent<>(this, delayMessageDto.getCode(), delayMessageDto.getData());
+        SpringContextUtils.publishEvent(event);
     }
 }

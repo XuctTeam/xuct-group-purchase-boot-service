@@ -1,0 +1,15 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="cn.com.xuct.group.purchase.mapper.WaresBrowseMapper">
+
+    <select id="browse">
+        insert into bu_wares_browse(wares_id)
+        values (#{waresId}) on duplicate key
+        update
+            num = num + 1
+
+    </select>
+</mapper>

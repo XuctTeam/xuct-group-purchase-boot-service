@@ -1,0 +1,15 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="cn.com.xuct.group.purchase.mapper.MemberWaresCollectMapper">
+
+
+    <select id="queryWaresByMemberId" resultType="cn.com.xuct.group.purchase.vo.result.MemberWaresResult">
+        select g.id, g.name, g.unit, g.first_drawing, g.start_time, g.end_time, g.inventory , c.create_time
+        from bu_wares_member_collect c
+                 inner join bu_wares g on c.wares_id = g.id
+        where c.member_id = #{memberId}
+    </select>
+</mapper>

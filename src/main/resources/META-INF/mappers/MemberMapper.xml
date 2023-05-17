@@ -13,9 +13,9 @@
                ifnull(b.browseCount, 0)  as browseCount,
                ifnull(co.couponCount, 0) as couponCount
         from sys_member s
-                 left join (select member_id, count(good_id) as collectCount from bu_good_member_collect group by member_id) c
+                 left join (select member_id, count(wares_id) as collectCount from bu_wares_member_collect group by member_id) c
                            on s.id = c.member_id
-                 left join (select member_id, count(good_id) as browseCount from bu_member_browse group by member_id) b
+                 left join (select member_id, count(wares_id) as browseCount from bu_member_browse group by member_id) b
                            on s.id = b.member_id
                  left join (select member_id, count(coupon_id) as couponCount from bu_member_coupon where used = 0 group by member_id) co
                            on s.id = co.member_id

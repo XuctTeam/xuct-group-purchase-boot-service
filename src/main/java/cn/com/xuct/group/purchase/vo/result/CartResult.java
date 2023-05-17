@@ -30,7 +30,7 @@ public class CartResult implements Serializable {
 
     @JsonSerialize(using = ToStringSerializer.class)
     @Schema(description = "商品ID")
-    private Long goodId;
+    private Long waresId;
 
     @Schema(description = "名称")
     private String name;

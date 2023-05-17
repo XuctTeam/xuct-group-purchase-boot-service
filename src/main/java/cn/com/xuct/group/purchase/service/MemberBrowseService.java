@@ -11,8 +11,8 @@
 package cn.com.xuct.group.purchase.service;
 
 import cn.com.xuct.group.purchase.base.service.IBaseService;
-import cn.com.xuct.group.purchase.entity.Good;
 import cn.com.xuct.group.purchase.entity.MemberBrowse;
+import cn.com.xuct.group.purchase.entity.Wares;
 import cn.com.xuct.group.purchase.mapper.MemberBrowseMapper;
 
 import java.util.List;
@@ -31,9 +31,9 @@ public interface MemberBrowseService extends IBaseService<MemberBrowseMapper, Me
      * 添加用户浏览记录
      *
      * @param memberId
-     * @param goodId
+     * @param waresId
      */
-    void addUserBrowse(final Long memberId, final Long goodId);
+    void addUserBrowse(final Long memberId, final Long waresId);
 
     /**
      * 用户浏览商品列表
@@ -41,13 +41,13 @@ public interface MemberBrowseService extends IBaseService<MemberBrowseMapper, Me
      * @param memberId
      * @return
      */
-    List<Good> list(final Long memberId);
+    List<Wares> list(final Long memberId);
 
     /**
      * 删除浏览记录
      *
      * @param memberId
-     * @param goodId
+     * @param waresId
      */
-    void delete(final Long memberId, final Long goodId);
+    void delete(final Long memberId, final Long waresId);
 }

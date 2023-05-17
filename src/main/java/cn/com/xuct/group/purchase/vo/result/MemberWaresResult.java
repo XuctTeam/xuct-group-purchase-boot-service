@@ -1,34 +1,33 @@
 /**
  * Copyright (C), 2015-2023, 263企业通信
- * FileName: UserBrowse
+ * FileName: UserGoodResult
  * Author:   Derek Xu
- * Date:     2023/4/25 22:45
+ * Date:     2023/4/28 13:42
  * Description:
  * History:
  * <author>          <time>          <version>          <desc>
  * 作者姓名           修改时间           版本号              描述
  */
-package cn.com.xuct.group.purchase.entity;
+package cn.com.xuct.group.purchase.vo.result;
 
-import cn.com.xuct.group.purchase.base.dao.SuperEntity;
-import com.baomidou.mybatisplus.annotation.TableName;
+import cn.com.xuct.group.purchase.entity.Wares;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
+
+import java.io.Serializable;
+import java.util.Date;
 
 /**
  * 〈一句话功能简述〉<br> 
  * 〈〉
  *
  * @author Derek Xu
- * @create 2023/4/25
+ * @create 2023/4/28
  * @since 1.0.0
  */
 @EqualsAndHashCode(callSuper = true)
 @Data
-@TableName("bu_member_browse")
-public class MemberBrowse extends SuperEntity<MemberBrowse> {
+public class MemberWaresResult extends Wares implements Serializable {
 
-    private Long waresId;
-
-    private Long memberId;
+    private Date createTime;
 }

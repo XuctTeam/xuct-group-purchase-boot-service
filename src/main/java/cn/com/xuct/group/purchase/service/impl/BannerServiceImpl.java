@@ -10,11 +10,17 @@
  */
 package cn.com.xuct.group.purchase.service.impl;
 
+import cn.com.xuct.group.purchase.base.enums.ColumnEnum;
 import cn.com.xuct.group.purchase.base.service.BaseServiceImpl;
+import cn.com.xuct.group.purchase.base.vo.Column;
 import cn.com.xuct.group.purchase.entity.Banner;
 import cn.com.xuct.group.purchase.mapper.BannerMapper;
 import cn.com.xuct.group.purchase.service.BannerService;
+import com.google.common.collect.Lists;
 import org.springframework.stereotype.Service;
+import org.springframework.util.StringUtils;
+
+import java.util.List;
 
 /**
  * 〈一句话功能简述〉<br> 
@@ -27,4 +33,26 @@ import org.springframework.stereotype.Service;
 @Service
 public class BannerServiceImpl extends BaseServiceImpl<BannerMapper, Banner> implements BannerService {
 
+    @Override
+    public List<Banner> list(String title, Integer status) {
+        List<Column> columnList = Lists.newArrayList();
+        if(StringUtils.hasLength(title)){
+            columnList.add(Column.of("title" , title , ColumnEnum.like));
+        }
+        if(status != null){
+            columnList.add(Column.of("status" , status));
+        }
+        return this.find(columnList);
+    }
+
+    @Override
+    public boolean changeBannerStatus(Long bannerId, Integer status) {
+        Banner banner = this.getById(bannerId);
+        if(banner == null){
+            return false;
+        }
+        banner.setStatus(status);
+        this.updateById(banner);
+        return true;
+    }
 }

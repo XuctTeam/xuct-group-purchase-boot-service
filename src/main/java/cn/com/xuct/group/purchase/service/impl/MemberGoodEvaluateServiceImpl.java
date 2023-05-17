@@ -11,8 +11,8 @@
 package cn.com.xuct.group.purchase.service.impl;
 
 import cn.com.xuct.group.purchase.base.service.BaseServiceImpl;
-import cn.com.xuct.group.purchase.entity.MemberGoodEvaluate;
-import cn.com.xuct.group.purchase.mapper.MemberGoodEvaluateMapper;
+import cn.com.xuct.group.purchase.entity.MemberWaresEvaluate;
+import cn.com.xuct.group.purchase.mapper.MemberWaresEvaluateMapper;
 import cn.com.xuct.group.purchase.service.MemberGoodEvaluateService;
 import org.springframework.stereotype.Service;
 
@@ -25,6 +25,6 @@ import org.springframework.stereotype.Service;
  * @since 1.0.0
  */
 @Service
-public class MemberGoodEvaluateServiceImpl extends BaseServiceImpl<MemberGoodEvaluateMapper, MemberGoodEvaluate> implements MemberGoodEvaluateService {
+public class MemberGoodEvaluateServiceImpl extends BaseServiceImpl<MemberWaresEvaluateMapper, MemberWaresEvaluate> implements MemberGoodEvaluateService {
 
 }

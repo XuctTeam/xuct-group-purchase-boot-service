@@ -1,8 +1,8 @@
 /**
  * Copyright (C), 2015-2023, XXX有限公司
- * FileName: Banner
+ * FileName: UserGoodCollect
  * Author:   Derek Xu
- * Date:     2023/3/22 10:44
+ * Date:     2023/3/28 17:35
  * Description:
  * History:
  * <author>          <time>          <version>          <desc>
@@ -12,50 +12,29 @@ package cn.com.xuct.group.purchase.entity;
 
 import cn.com.xuct.group.purchase.base.dao.SuperEntity;
 import com.baomidou.mybatisplus.annotation.TableName;
-import io.swagger.v3.oas.annotations.media.Schema;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
-
-import javax.validation.constraints.NotNull;
 
 /**
  * 〈一句话功能简述〉<br> 
  * 〈〉
  *
  * @author Derek Xu
- * @create 2023/3/22
+ * @create 2023/3/28
  * @since 1.0.0
  */
 @EqualsAndHashCode(callSuper = true)
 @Data
-@TableName("bu_banner")
-public class Banner extends SuperEntity<Banner> {
+@TableName("bu_wares_member_collect")
+public class MemberWaresCollect extends SuperEntity<MemberWaresCollect> {
 
     /**
-     * 描述
+     * 用户ID
      */
-    @NotNull
-    private String title;
+    private Long memberId;
 
     /**
-     * 图片地址
+     * 商品ID
      */
-    @NotNull
-    private String image;
-
-
-    @Schema(description = "状态 0禁用 1正常")
-    private Integer status;
-
-    /**
-     * 跳转
-     */
-    @NotNull
-    private String router;
-
-    /**
-     * 排序
-     */
-    @NotNull
-    private Integer sort;
+    private Long goodId;
 }
