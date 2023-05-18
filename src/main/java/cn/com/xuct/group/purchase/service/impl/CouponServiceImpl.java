@@ -16,22 +16,33 @@ import cn.com.xuct.group.purchase.base.service.BaseServiceImpl;
 import cn.com.xuct.group.purchase.base.vo.Column;
 import cn.com.xuct.group.purchase.base.vo.PageData;
 import cn.com.xuct.group.purchase.base.vo.Sort;
+import cn.com.xuct.group.purchase.constants.EventCodeEnum;
 import cn.com.xuct.group.purchase.entity.Coupon;
 import cn.com.xuct.group.purchase.entity.CouponWares;
 import cn.com.xuct.group.purchase.mapper.CouponMapper;
 import cn.com.xuct.group.purchase.service.CouponService;
 import cn.com.xuct.group.purchase.service.CouponWaresService;
+import cn.com.xuct.group.purchase.utils.JsonUtils;
+import cn.com.xuct.group.purchase.vo.dto.CouponDelayedDto;
+import cn.com.xuct.group.purchase.vo.dto.DelayMessageDto;
+import cn.hutool.core.date.DateTime;
+import cn.hutool.core.date.DateUtil;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.google.common.collect.Lists;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.amqp.rabbit.core.RabbitTemplate;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.util.CollectionUtils;
 import org.springframework.util.StringUtils;
 
+import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
+
+import static cn.com.xuct.group.purchase.config.DelayedQueueConfiguration.DELAYED_EXCHANGE_NAME;
+import static cn.com.xuct.group.purchase.config.DelayedQueueConfiguration.DELAYED_ROUTING_KEY;
 
 /**
  * 〈一句话功能简述〉<br>
@@ -47,6 +58,8 @@ import java.util.List;
 public class CouponServiceImpl extends BaseServiceImpl<CouponMapper, Coupon> implements CouponService {
 
     private final CouponWaresService couponWaresService;
+
+    private final RabbitTemplate rabbitTemplate;
 
     @Override
     public PageData<Coupon> pages(String name, Integer pageNum, Integer pageSize) {
@@ -65,10 +78,12 @@ public class CouponServiceImpl extends BaseServiceImpl<CouponMapper, Coupon> imp
         }
         if (coupon.getWaresType() == 0) {
             this.save(coupon);
+            this.setCouponExpireDate(coupon);
             return 0;
         }
         this.save(coupon);
         this.saveCouponWares(coupon);
+        this.setCouponExpireDate(coupon);
         return 0;
     }
 
@@ -78,6 +93,7 @@ public class CouponServiceImpl extends BaseServiceImpl<CouponMapper, Coupon> imp
         boolean deleteFlag = existCoupon.getWaresType() != coupon.getWaresType();
         if (!deleteFlag && coupon.getWaresType() == 0) {
             this.updateById(coupon);
+            this.setCouponExpireDate(coupon);
             return 0;
         }
         if (coupon.getWaresType() == 1 && CollectionUtils.isEmpty(coupon.getWaresIds())) {
@@ -88,6 +104,7 @@ public class CouponServiceImpl extends BaseServiceImpl<CouponMapper, Coupon> imp
         }});
         this.updateById(coupon);
         this.saveCouponWares(coupon);
+        this.setCouponExpireDate(coupon);
         return 0;
     }
 
@@ -110,6 +127,41 @@ public class CouponServiceImpl extends BaseServiceImpl<CouponMapper, Coupon> imp
         existCoupon.setDeleted(true);
         this.updateById(existCoupon);
     }
+
+    @Override
+    public void couponExpire(Long couponId, Integer version) {
+        Coupon existCoupon = this.getById(couponId);
+        if (existCoupon == null) {
+            return;
+        }
+        if (existCoupon.getVersion() != (version + 1)) {
+            log.error("CouponServiceImpl:: coupon expire version error , couponId = {} , version id = {}", couponId, version);
+            return;
+        }
+
+        existCoupon.setUsed(false);
+        this.updateById(existCoupon);
+    }
+
+    private void setCouponExpireDate(Coupon coupon) {
+        // 永不过期
+        if (coupon.getEffective() <= 0) {
+            return;
+        }
+        DateTime expireTime = DateUtil.offsetDay(DateTime.now(), coupon.getEffective());
+        String message = JsonUtils.obj2json(DelayMessageDto.builder().current(new Date()).code(EventCodeEnum.coupon_expire)
+                .data(JsonUtils.obj2json(CouponDelayedDto.builder().couponId(coupon.getId()).version(coupon.getVersion()).build())).build());
+        if (!StringUtils.hasLength(message)) {
+            return;
+        }
+        //发出优惠券过期延时
+        rabbitTemplate.convertAndSend(DELAYED_EXCHANGE_NAME, DELAYED_ROUTING_KEY, message,
+                correlationData -> {
+                    correlationData.getMessageProperties().setDelay(Long.valueOf(expireTime.getTime()).intValue());
+                    return correlationData;
+                });
+    }
+
 
     private void saveCouponWares(Coupon coupon) {
         List<CouponWares> couponWaresList = Lists.newArrayList();

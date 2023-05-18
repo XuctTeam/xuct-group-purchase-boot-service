@@ -67,4 +67,12 @@ public interface CouponService extends IBaseService<CouponMapper, Coupon> {
     void deleteCoupon(final Long couponId);
 
 
+    /**
+     * 优惠券过期
+     *
+     * @param couponId
+     */
+    void couponExpire(final Long couponId , final Integer version);
+
+
 }

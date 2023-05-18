@@ -21,5 +21,11 @@ package cn.com.xuct.group.purchase.constants;
 public enum  EventCodeEnum {
 
 
-    wares_expire;
+    wares_expire,
+
+    coupon_expire
+
+
+
+    ;
 }

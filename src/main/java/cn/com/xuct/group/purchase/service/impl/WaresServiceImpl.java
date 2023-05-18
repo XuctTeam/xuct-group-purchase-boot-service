@@ -140,7 +140,9 @@ public class WaresServiceImpl extends BaseServiceImpl<WaresMapper, Wares> implem
         /* 2. 增加商品过期时间 */
         String message = JsonUtils.obj2json(DelayMessageDto.builder().current(new Date()).code(EventCodeEnum.wares_expire)
                 .data(JsonUtils.obj2json(WaresDelayedDto.builder().waresId(wares.getId()).version(wares.getVersion()).build())).build());
-
+        if (!StringUtils.hasLength(message)) {
+            return -2;
+        }
         log.info("WaresServiceImpl:: send wares delay message = {}", message);
         rabbitTemplate.convertAndSend(DELAYED_EXCHANGE_NAME, DELAYED_ROUTING_KEY, message,
                 correlationData -> {
@@ -172,10 +174,12 @@ public class WaresServiceImpl extends BaseServiceImpl<WaresMapper, Wares> implem
         if (DateUtil.isSameDay(wares.getStartTime(), startTime) && DateUtil.isSameDay(wares.getEndTime(), endTime)) {
             return 0;
         }
-
         String message = JsonUtils.obj2json(DelayMessageDto.builder().current(new Date()).code(EventCodeEnum.wares_expire)
                 .data(JsonUtils.obj2json(WaresDelayedDto.builder().waresId(wares.getId()).version(wares.getVersion()).build())).build());
         log.info("WaresServiceImpl:: send wares delay message = {}", message);
+        if (!StringUtils.hasLength(message)) {
+            return -2;
+        }
         rabbitTemplate.convertAndSend(DELAYED_EXCHANGE_NAME, DELAYED_ROUTING_KEY, message,
                 correlationData -> {
                     correlationData.getMessageProperties().setDelay(Long.valueOf(wares.getEndTime().getTime() - DateUtil.current()).intValue());

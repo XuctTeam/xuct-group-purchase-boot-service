@@ -13,6 +13,7 @@ package cn.com.xuct.group.purchase.entity;
 import cn.com.xuct.group.purchase.base.dao.SuperEntity;
 import com.baomidou.mybatisplus.annotation.TableField;
 import com.baomidou.mybatisplus.annotation.TableName;
+import com.baomidou.mybatisplus.annotation.Version;
 import io.swagger.v3.oas.annotations.media.Schema;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
@@ -52,6 +53,9 @@ public class Coupon extends SuperEntity<Coupon> {
 
     @Schema(description = "是否删除")
     private boolean deleted;
+
+    @Version
+    private Integer version;
 
 
     @Schema(description = "可使用商品")

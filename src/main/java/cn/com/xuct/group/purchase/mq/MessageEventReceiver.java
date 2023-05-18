@@ -10,8 +10,10 @@
  */
 package cn.com.xuct.group.purchase.mq;
 
+import cn.com.xuct.group.purchase.service.CouponService;
 import cn.com.xuct.group.purchase.service.WaresService;
 import cn.com.xuct.group.purchase.utils.JsonUtils;
+import cn.com.xuct.group.purchase.vo.dto.CouponDelayedDto;
 import cn.com.xuct.group.purchase.vo.dto.WaresDelayedDto;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -34,6 +36,7 @@ public class MessageEventReceiver {
 
     private final WaresService waresService;
 
+    private final CouponService couponService;
 
     /**
      * 监听过期消息
@@ -44,16 +47,43 @@ public class MessageEventReceiver {
     public void receiveMessage(MessageEvent event) {
         switch (event.getCode()) {
             case wares_expire -> this.waresExpire(event.getData());
+            case coupon_expire -> this.couponExpire(event.getData());
             default -> log.error("MessageEventReceiver:: message not support , code = {}", event.getCode());
         }
     }
 
-
+    /**
+     * 商品过期
+     *
+     * @param data
+     * @return:
+     * @since: 1.0.0
+     * @Author:Derek xu
+     * @Date: 2023/5/18 9:30
+     */
     private <T> void waresExpire(T data) {
+
         WaresDelayedDto waresDelayedDto = JsonUtils.json2pojo(String.valueOf(data), WaresDelayedDto.class);
         if (waresDelayedDto == null) {
             return;
         }
         waresService.waresExpire(waresDelayedDto.getWaresId(), waresDelayedDto.getVersion());
+    }
+
+    /**
+     * 优惠券过期
+     *
+     * @param data
+     * @return:
+     * @since: 1.0.0
+     * @Author:Derek xu
+     * @Date: 2023/5/18 9:30
+     */
+    private <T> void couponExpire(T data) {
+        CouponDelayedDto couponDelayedDto = JsonUtils.json2pojo(String.valueOf(data), CouponDelayedDto.class);
+        if (couponDelayedDto == null) {
+            return;
+        }
+        couponService.couponExpire(couponDelayedDto.getCouponId(), couponDelayedDto.getVersion());
     }
 }
