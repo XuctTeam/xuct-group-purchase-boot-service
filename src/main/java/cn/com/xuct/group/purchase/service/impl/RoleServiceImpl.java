@@ -21,16 +21,17 @@ import cn.com.xuct.group.purchase.entity.RoleResource;
 import cn.com.xuct.group.purchase.entity.User;
 import cn.com.xuct.group.purchase.mapper.RoleMapper;
 import cn.com.xuct.group.purchase.mapper.UserMapper;
+import cn.com.xuct.group.purchase.mapstruct.IAdminMenuConvert;
+import cn.com.xuct.group.purchase.mapstruct.IAdminSelectedConvert;
 import cn.com.xuct.group.purchase.service.RoleResourceService;
 import cn.com.xuct.group.purchase.service.RoleService;
 import cn.com.xuct.group.purchase.vo.dto.ResourceButtonDto;
 import cn.com.xuct.group.purchase.vo.result.admin.AdminMenuResult;
-import cn.com.xuct.group.purchase.vo.result.admin.AdminRoleSelectResult;
+import cn.com.xuct.group.purchase.vo.result.admin.AdminSelectedResult;
 import com.google.common.collect.Lists;
 import com.google.common.collect.Maps;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.beans.BeanUtils;
 import org.springframework.cache.annotation.Cacheable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -142,14 +143,9 @@ public class RoleServiceImpl extends BaseServiceImpl<RoleMapper, Role> implement
     }
 
     @Override
-    public List<AdminRoleSelectResult> getRoleSelect() {
+    public List<AdminSelectedResult> getRoleSelect() {
         List<Role> roles = this.findRoleList();
-        return roles.stream().map(x -> {
-            AdminRoleSelectResult result = new AdminRoleSelectResult();
-            result.setLabel(x.getName());
-            result.setValue(String.valueOf(x.getId()));
-            return result;
-        }).collect(Collectors.toList());
+        return roles.stream().map(IAdminSelectedConvert.INSTANCE::roleToSelected).collect(Collectors.toList());
     }
 
     @Override
@@ -195,17 +191,6 @@ public class RoleServiceImpl extends BaseServiceImpl<RoleMapper, Role> implement
      * @Date: 2023/5/10 12:02
      */
     private AdminMenuResult getMenuResult(Resource item) {
-        AdminMenuResult result = new AdminMenuResult();
-        BeanUtils.copyProperties(item, result);
-        result.setName(item.getPathName());
-        AdminMenuResult.Meta meta = new AdminMenuResult.Meta();
-        meta.setIcon(item.getIcon());
-        meta.setTitle(item.getTitle());
-        BeanUtils.copyProperties(item, meta);
-        result.setMeta(meta);
-        result.setChildren(Lists.newArrayList());
-        return result;
+        return IAdminMenuConvert.INSTANCE.resource2Menu(item);
     }
-
-
 }

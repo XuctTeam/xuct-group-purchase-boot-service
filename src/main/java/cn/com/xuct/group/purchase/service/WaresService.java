@@ -15,6 +15,7 @@ import cn.com.xuct.group.purchase.base.vo.PageData;
 import cn.com.xuct.group.purchase.entity.Wares;
 import cn.com.xuct.group.purchase.mapper.WaresMapper;
 import cn.com.xuct.group.purchase.vo.result.WaresResult;
+import cn.com.xuct.group.purchase.vo.result.admin.AdminSelectedResult;
 
 import java.util.List;
 import java.util.Map;
@@ -107,4 +108,11 @@ public interface WaresService extends IBaseService<WaresMapper, Wares> {
      * @param version
      */
     void waresExpire(final Long waresId, final Integer version);
+
+    /**
+     * 获取商品下拉列表
+     *
+     * @return
+     */
+    List<AdminSelectedResult> getWaresSelected();
 }

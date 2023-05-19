@@ -11,13 +11,14 @@
 package cn.com.xuct.group.purchase.vo.dto;
 
 import cn.com.xuct.group.purchase.constants.EventCodeEnum;
+import cn.com.xuct.group.purchase.utils.JsonUtils;
 import lombok.Builder;
 import lombok.Data;
 
 import java.util.Date;
 
 /**
- * 〈一句话功能简述〉<br> 
+ * 〈一句话功能简述〉<br>
  * 〈〉
  *
  * @author Derek Xu
@@ -26,7 +27,7 @@ import java.util.Date;
  */
 @Data
 @Builder
-public class DelayMessageDto<T> {
+public class DelayMessage<T> {
 
     private Date current;
 
@@ -35,4 +36,9 @@ public class DelayMessageDto<T> {
 
 
     private T data;
+
+
+    public static <T> String ofMessage(EventCodeEnum code, T data) {
+        return JsonUtils.obj2json(DelayMessage.builder().current(new Date()).code(code).data(data));
+    }
 }

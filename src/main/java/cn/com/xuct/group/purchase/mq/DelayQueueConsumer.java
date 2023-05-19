@@ -12,7 +12,7 @@ package cn.com.xuct.group.purchase.mq;
 
 import cn.com.xuct.group.purchase.utils.JsonUtils;
 import cn.com.xuct.group.purchase.utils.SpringContextUtils;
-import cn.com.xuct.group.purchase.vo.dto.DelayMessageDto;
+import cn.com.xuct.group.purchase.vo.dto.DelayMessage;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.amqp.core.Message;
 import org.springframework.amqp.rabbit.annotation.RabbitListener;
@@ -43,12 +43,12 @@ public class DelayQueueConsumer {
             log.error("DelayQueueConsumer:: get delay message error");
             return;
         }
-        DelayMessageDto delayMessageDto = JsonUtils.json2pojo(msg, DelayMessageDto.class);
-        if (delayMessageDto == null) {
+        DelayMessage delayMessage = JsonUtils.json2pojo(msg, DelayMessage.class);
+        if (delayMessage == null) {
             log.error("DelayQueueConsumer:: to bean error...");
             return;
         }
-        MessageEvent<Object> event = new MessageEvent<>(this, delayMessageDto.getCode(), delayMessageDto.getData());
+        MessageEvent<Object> event = new MessageEvent<>(this, delayMessage.getCode(), delayMessage.getData());
         SpringContextUtils.publishEvent(event);
     }
 }

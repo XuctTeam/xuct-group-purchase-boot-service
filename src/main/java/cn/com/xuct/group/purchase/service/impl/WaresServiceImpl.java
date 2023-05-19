@@ -20,12 +20,14 @@ import cn.com.xuct.group.purchase.constants.EventCodeEnum;
 import cn.com.xuct.group.purchase.constants.RedisCacheConstants;
 import cn.com.xuct.group.purchase.entity.Wares;
 import cn.com.xuct.group.purchase.mapper.WaresMapper;
+import cn.com.xuct.group.purchase.mapstruct.IAdminSelectedConvert;
+import cn.com.xuct.group.purchase.mapstruct.IDelayedConvert;
 import cn.com.xuct.group.purchase.service.WaresService;
 import cn.com.xuct.group.purchase.utils.JsonUtils;
-import cn.com.xuct.group.purchase.vo.dto.DelayMessageDto;
-import cn.com.xuct.group.purchase.vo.dto.WaresDelayedDto;
+import cn.com.xuct.group.purchase.vo.dto.DelayMessage;
 import cn.com.xuct.group.purchase.vo.dto.WaresInventoryDto;
 import cn.com.xuct.group.purchase.vo.result.WaresResult;
+import cn.com.xuct.group.purchase.vo.result.admin.AdminSelectedResult;
 import cn.hutool.core.date.DateTime;
 import cn.hutool.core.date.DateUtil;
 import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
@@ -42,6 +44,7 @@ import org.springframework.util.StringUtils;
 import java.util.Date;
 import java.util.List;
 import java.util.Map;
+import java.util.stream.Collectors;
 
 import static cn.com.xuct.group.purchase.config.DelayedQueueConfiguration.DELAYED_EXCHANGE_NAME;
 import static cn.com.xuct.group.purchase.config.DelayedQueueConfiguration.DELAYED_ROUTING_KEY;
@@ -138,8 +141,7 @@ public class WaresServiceImpl extends BaseServiceImpl<WaresMapper, Wares> implem
         /* 保存商品库存 */
         redisTemplate.opsForValue().increment(RedisCacheConstants.WARES_INVENTORY_REDIS_KEY.concat(String.valueOf(wares.getId())), wares.getInventory());
         /* 2. 增加商品过期时间 */
-        String message = JsonUtils.obj2json(DelayMessageDto.builder().current(new Date()).code(EventCodeEnum.wares_expire)
-                .data(JsonUtils.obj2json(WaresDelayedDto.builder().waresId(wares.getId()).version(wares.getVersion()).build())).build());
+        String message = DelayMessage.ofMessage(EventCodeEnum.wares_expire, JsonUtils.obj2json(IDelayedConvert.INSTANCE.wares2Delayed(wares)));
         if (!StringUtils.hasLength(message)) {
             return -2;
         }
@@ -174,8 +176,7 @@ public class WaresServiceImpl extends BaseServiceImpl<WaresMapper, Wares> implem
         if (DateUtil.isSameDay(wares.getStartTime(), startTime) && DateUtil.isSameDay(wares.getEndTime(), endTime)) {
             return 0;
         }
-        String message = JsonUtils.obj2json(DelayMessageDto.builder().current(new Date()).code(EventCodeEnum.wares_expire)
-                .data(JsonUtils.obj2json(WaresDelayedDto.builder().waresId(wares.getId()).version(wares.getVersion()).build())).build());
+        String message = DelayMessage.ofMessage(EventCodeEnum.wares_expire, JsonUtils.obj2json(IDelayedConvert.INSTANCE.wares2Delayed(wares)));
         log.info("WaresServiceImpl:: send wares delay message = {}", message);
         if (!StringUtils.hasLength(message)) {
             return -2;
@@ -210,5 +211,11 @@ public class WaresServiceImpl extends BaseServiceImpl<WaresMapper, Wares> implem
         }
         wares.setStatus(0);
         this.updateById(wares);
+    }
+
+    @Override
+    public List<AdminSelectedResult> getWaresSelected() {
+        List<Wares> wares = this.find(Column.of("deleted", false));
+        return wares.stream().map(IAdminSelectedConvert.INSTANCE::waresToSelected).collect(Collectors.toList());
     }
 }

@@ -17,6 +17,7 @@ import cn.com.xuct.group.purchase.constants.OptConstants;
 import cn.com.xuct.group.purchase.entity.Wares;
 import cn.com.xuct.group.purchase.service.WaresService;
 import cn.com.xuct.group.purchase.vo.param.admin.AdminWaresStatusParam;
+import cn.com.xuct.group.purchase.vo.result.admin.AdminSelectedResult;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.Parameter;
 import io.swagger.v3.oas.annotations.Parameters;
@@ -24,6 +25,8 @@ import io.swagger.v3.oas.annotations.tags.Tag;
 import lombok.RequiredArgsConstructor;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
+
+import java.util.List;
 
 /**
  * 〈一句话功能简述〉<br>
@@ -49,25 +52,9 @@ public class AdminWaresController {
             @Parameter(name = "name", description = "商品名称"),
             @Parameter(name = "status", description = "操作状态")
     })
-    public R<PageData<Wares>> list(@RequestParam(value = "name", required = false) String name, @RequestParam(value = "status", required = false) Integer status, @RequestParam("pageNum") Integer pageNum, @RequestParam("pageSize") Integer pageSize) {
+    public R<PageData<Wares>> list(@RequestParam(value = "name", required = false) String name, @RequestParam(value = "status", required = false) Integer status,
+                                   @RequestParam("pageNum") Integer pageNum, @RequestParam("pageSize") Integer pageSize) {
         return R.data(waresService.pageWares(name, status, pageNum, pageSize));
-    }
-
-
-    @Operation(summary = "【商品】修改商品状态", description = "修改商品状态")
-    @PostMapping("/change/status")
-    @Log(modul = "【商品】修改商品状态", type = OptConstants.UPDATE, desc = "修改商品状态")
-    public R<String> changeWaresStatus(@RequestBody @Validated AdminWaresStatusParam param) {
-        waresService.changeWaresStatus(param.getId(), param.getStatus());
-        return R.status(true);
-    }
-
-    @Operation(summary = "【商品】删除商品", description = "删除商品")
-    @Log(modul = "【商品】删除商品", type = OptConstants.DELETE, desc = "删除商品")
-    @DeleteMapping("/{id}")
-    public R<String> deleteWares(@PathVariable("id") Long id) {
-        waresService.deleteWares(id);
-        return R.status(true);
     }
 
     @Operation(summary = "【商品】新增商品", description = "新增商品")
@@ -91,5 +78,27 @@ public class AdminWaresController {
             case -2 -> R.fail("商品未找到");
             default -> R.status(true);
         };
+    }
+
+    @Operation(summary = "【商品】修改商品状态", description = "修改商品状态")
+    @PostMapping("/change/status")
+    @Log(modul = "【商品】修改商品状态", type = OptConstants.UPDATE, desc = "修改商品状态")
+    public R<String> changeWaresStatus(@RequestBody @Validated AdminWaresStatusParam param) {
+        waresService.changeWaresStatus(param.getId(), param.getStatus());
+        return R.status(true);
+    }
+
+    @Operation(summary = "【商品】删除商品", description = "删除商品")
+    @Log(modul = "【商品】删除商品", type = OptConstants.DELETE, desc = "删除商品")
+    @DeleteMapping("/{id}")
+    public R<String> deleteWares(@PathVariable("id") Long id) {
+        waresService.deleteWares(id);
+        return R.status(true);
+    }
+
+    @Operation(summary = "【商品】获取商品下拉列表", description = "获取商品下拉列表")
+    @GetMapping("/selected")
+    public R<List<AdminSelectedResult>> getWaresSelected() {
+        return R.data(waresService.getWaresSelected());
     }
 }

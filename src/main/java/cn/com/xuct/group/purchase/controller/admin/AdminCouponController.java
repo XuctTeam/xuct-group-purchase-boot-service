@@ -25,6 +25,8 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 
+import java.util.List;
+
 /**
  * 〈一句话功能简述〉<br>
  * 〈〉
@@ -88,5 +90,12 @@ public class AdminCouponController {
     public R<String> deleteCoupon(@PathVariable("id") Long id) {
         couponService.deleteCoupon(id);
         return R.status(true);
+    }
+
+    @Operation(summary = "【优惠券】获取优惠券指定商品", description = "获取优惠券指定商品")
+    @GetMapping("/wares")
+    @Parameter(name = "id", description = "优惠券ID", required = true)
+    public R<List<String>> getCouponWaresId(@RequestParam("id") Long id) {
+        return R.data(couponService.getCouponWaresId(id));
     }
 }

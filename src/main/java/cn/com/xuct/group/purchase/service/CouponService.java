@@ -15,6 +15,8 @@ import cn.com.xuct.group.purchase.base.vo.PageData;
 import cn.com.xuct.group.purchase.entity.Coupon;
 import cn.com.xuct.group.purchase.mapper.CouponMapper;
 
+import java.util.List;
+
 /**
  * 〈一句话功能简述〉<br>
  * 〈〉
@@ -72,7 +74,15 @@ public interface CouponService extends IBaseService<CouponMapper, Coupon> {
      *
      * @param couponId
      */
-    void couponExpire(final Long couponId , final Integer version);
+    void couponExpire(final Long couponId, final Integer version);
+
+    /**
+     * 查询优惠券绑定商品
+     *
+     * @param couponId
+     * @return
+     */
+    List<String> getCouponWaresId(final Long couponId);
 
 
 }

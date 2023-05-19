@@ -20,11 +20,11 @@ import cn.com.xuct.group.purchase.constants.EventCodeEnum;
 import cn.com.xuct.group.purchase.entity.Coupon;
 import cn.com.xuct.group.purchase.entity.CouponWares;
 import cn.com.xuct.group.purchase.mapper.CouponMapper;
+import cn.com.xuct.group.purchase.mapstruct.IDelayedConvert;
 import cn.com.xuct.group.purchase.service.CouponService;
 import cn.com.xuct.group.purchase.service.CouponWaresService;
 import cn.com.xuct.group.purchase.utils.JsonUtils;
-import cn.com.xuct.group.purchase.vo.dto.CouponDelayedDto;
-import cn.com.xuct.group.purchase.vo.dto.DelayMessageDto;
+import cn.com.xuct.group.purchase.vo.dto.DelayMessage;
 import cn.hutool.core.date.DateTime;
 import cn.hutool.core.date.DateUtil;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
@@ -32,14 +32,15 @@ import com.google.common.collect.Lists;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.amqp.rabbit.core.RabbitTemplate;
+import org.springframework.beans.BeanUtils;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.util.CollectionUtils;
 import org.springframework.util.StringUtils;
 
-import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
+import java.util.stream.Collectors;
 
 import static cn.com.xuct.group.purchase.config.DelayedQueueConfiguration.DELAYED_EXCHANGE_NAME;
 import static cn.com.xuct.group.purchase.config.DelayedQueueConfiguration.DELAYED_ROUTING_KEY;
@@ -90,21 +91,22 @@ public class CouponServiceImpl extends BaseServiceImpl<CouponMapper, Coupon> imp
     @Override
     public int editCoupon(Coupon coupon) {
         Coupon existCoupon = this.getById(coupon.getId());
-        boolean deleteFlag = existCoupon.getWaresType() != coupon.getWaresType();
-        if (!deleteFlag && coupon.getWaresType() == 0) {
-            this.updateById(coupon);
-            this.setCouponExpireDate(coupon);
-            return 0;
+        if (existCoupon == null) {
+            return -1;
         }
         if (coupon.getWaresType() == 1 && CollectionUtils.isEmpty(coupon.getWaresIds())) {
             return -1;
         }
+        BeanUtils.copyProperties(coupon, existCoupon);
         couponWaresService.removeByMap(new HashMap<>() {{
             put("coupon_id", coupon.getId());
         }});
-        this.updateById(coupon);
-        this.saveCouponWares(coupon);
-        this.setCouponExpireDate(coupon);
+
+        this.updateById(existCoupon);
+        if (existCoupon.getWaresType() == 1) {
+            this.saveCouponWares(existCoupon);
+        }
+        this.setCouponExpireDate(existCoupon);
         return 0;
     }
 
@@ -143,14 +145,19 @@ public class CouponServiceImpl extends BaseServiceImpl<CouponMapper, Coupon> imp
         this.updateById(existCoupon);
     }
 
+    @Override
+    public List<String> getCouponWaresId(Long couponId) {
+        return couponWaresService.find(Column.of("coupon_id", couponId))
+                .stream().map(CouponWares::getWaresId).map(String::valueOf).collect(Collectors.toList());
+    }
+
     private void setCouponExpireDate(Coupon coupon) {
         // 永不过期
         if (coupon.getEffective() <= 0) {
             return;
         }
         DateTime expireTime = DateUtil.offsetDay(DateTime.now(), coupon.getEffective());
-        String message = JsonUtils.obj2json(DelayMessageDto.builder().current(new Date()).code(EventCodeEnum.coupon_expire)
-                .data(JsonUtils.obj2json(CouponDelayedDto.builder().couponId(coupon.getId()).version(coupon.getVersion()).build())).build());
+        String message = DelayMessage.ofMessage(EventCodeEnum.coupon_expire, JsonUtils.obj2json(IDelayedConvert.INSTANCE.coupon2Delayed(coupon)));
         if (!StringUtils.hasLength(message)) {
             return;
         }

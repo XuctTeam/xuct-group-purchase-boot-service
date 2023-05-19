@@ -14,11 +14,11 @@ import cn.com.xuct.group.purchase.annotation.Log;
 import cn.com.xuct.group.purchase.base.res.R;
 import cn.com.xuct.group.purchase.constants.OptConstants;
 import cn.com.xuct.group.purchase.entity.User;
+import cn.com.xuct.group.purchase.mapstruct.ILoginResultConvert;
 import cn.com.xuct.group.purchase.service.UserService;
 import cn.com.xuct.group.purchase.vo.param.admin.AdminLoginParam;
 import cn.com.xuct.group.purchase.vo.result.LoginResult;
 import cn.dev33.satoken.annotation.SaIgnore;
-import cn.dev33.satoken.stp.SaTokenInfo;
 import cn.dev33.satoken.stp.StpUtil;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;
@@ -61,10 +61,7 @@ public class AdminLoginController {
         StpUtil.checkDisable(user.getId());
         // 第1步，先登录上
         StpUtil.login(user.getId());
-        // 第2步，获取 Token  相关参数
-        SaTokenInfo tokenInfo = StpUtil.getTokenInfo();
-        user.cleanData();
-        return R.data(LoginResult.builder().user(user).tokenName(tokenInfo.getTokenName()).tokenValue(tokenInfo.getTokenValue()).build());
+        return R.data(ILoginResultConvert.INSTANCE.userToken2LoginResult(user, StpUtil.getTokenInfo()));
     }
 
 

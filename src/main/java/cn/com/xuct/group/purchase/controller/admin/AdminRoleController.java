@@ -17,7 +17,7 @@ import cn.com.xuct.group.purchase.constants.RoleCodeEnum;
 import cn.com.xuct.group.purchase.entity.Role;
 import cn.com.xuct.group.purchase.service.RoleService;
 import cn.com.xuct.group.purchase.vo.param.RoleResourceIdsParam;
-import cn.com.xuct.group.purchase.vo.result.admin.AdminRoleSelectResult;
+import cn.com.xuct.group.purchase.vo.result.admin.AdminSelectedResult;
 import cn.dev33.satoken.annotation.SaCheckRole;
 import cn.dev33.satoken.annotation.SaMode;
 import io.swagger.v3.oas.annotations.Operation;
@@ -78,7 +78,7 @@ public class AdminRoleController {
 
     @Operation(summary = "【角色】获取角色下拉选择", description = "获取角色下拉选择")
     @GetMapping("/selected")
-    public R<List<AdminRoleSelectResult>> getRoleSelect() {
+    public R<List<AdminSelectedResult>> getRoleSelect() {
         return R.data(roleService.getRoleSelect());
     }
 

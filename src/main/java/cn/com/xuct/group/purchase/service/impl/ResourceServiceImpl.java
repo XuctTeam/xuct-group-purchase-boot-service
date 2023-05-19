@@ -16,6 +16,7 @@ import cn.com.xuct.group.purchase.base.vo.Column;
 import cn.com.xuct.group.purchase.constants.CategoryConstants;
 import cn.com.xuct.group.purchase.entity.Resource;
 import cn.com.xuct.group.purchase.mapper.ResourceMapper;
+import cn.com.xuct.group.purchase.mapstruct.IAdminMenuConvert;
 import cn.com.xuct.group.purchase.service.ResourceService;
 import cn.com.xuct.group.purchase.service.RoleService;
 import cn.com.xuct.group.purchase.vo.result.admin.AdminMenuResult;
@@ -145,12 +146,7 @@ public class ResourceServiceImpl extends BaseServiceImpl<ResourceMapper, Resourc
      * @Date: 2023/5/10 12:01
      */
     private AdminMenuTreeResult getTreeMenuResult(Resource resource) {
-        AdminMenuTreeResult result = new AdminMenuTreeResult();
-        result.setId(resource.getId());
-        result.setLabel(resource.getTitle());
-        result.setValue(String.valueOf(resource.getId()));
-        result.setSort(resource.getSort());
-        return result;
+       return IAdminMenuConvert.INSTANCE.resource2TreeMenu(resource);
     }
 
 

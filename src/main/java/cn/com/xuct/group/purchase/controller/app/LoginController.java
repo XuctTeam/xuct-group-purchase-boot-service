@@ -14,6 +14,7 @@ import cn.binarywang.wx.miniapp.bean.WxMaJscode2SessionResult;
 import cn.com.xuct.group.purchase.base.res.R;
 import cn.com.xuct.group.purchase.config.WxMaConfiguration;
 import cn.com.xuct.group.purchase.entity.Member;
+import cn.com.xuct.group.purchase.mapstruct.ILoginResultConvert;
 import cn.com.xuct.group.purchase.service.MemberService;
 import cn.com.xuct.group.purchase.vo.param.WxCodeParam;
 import cn.com.xuct.group.purchase.vo.result.LoginResult;
@@ -57,10 +58,8 @@ public class LoginController {
         Member member = memberService.findByOpenId(session.getOpenid());
         // 第1步，先登录上
         StpUtil.login(member.getId());
-        // 第2步，获取 Token  相关参数
-        SaTokenInfo tokenInfo = StpUtil.getTokenInfo();
-        member.cleanData();
-        return R.data(LoginResult.builder().member(member).tokenName(tokenInfo.getTokenName()).tokenValue(tokenInfo.getTokenValue()).build());
+        return R.data(ILoginResultConvert.INSTANCE.memberToken2LoginResult(member, StpUtil.getTokenInfo()));
+
     }
 
     @SaIgnore

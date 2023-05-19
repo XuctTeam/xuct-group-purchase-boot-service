@@ -24,7 +24,6 @@ import java.io.Serializable;
  * @since 1.0.0
  */
 @Data
-@Builder
 public class WaresDelayedDto implements Serializable {
 
     private Integer version;

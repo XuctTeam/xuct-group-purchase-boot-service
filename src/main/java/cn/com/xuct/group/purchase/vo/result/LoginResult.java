@@ -12,10 +12,7 @@ package cn.com.xuct.group.purchase.vo.result;
 
 import cn.com.xuct.group.purchase.entity.Member;
 import cn.com.xuct.group.purchase.entity.User;
-import lombok.AllArgsConstructor;
-import lombok.Builder;
 import lombok.Data;
-import lombok.NoArgsConstructor;
 
 import java.io.Serializable;
 
@@ -28,9 +25,6 @@ import java.io.Serializable;
  * @since 1.0.0
  */
 @Data
-@NoArgsConstructor
-@AllArgsConstructor
-@Builder
 public class LoginResult implements Serializable {
 
 

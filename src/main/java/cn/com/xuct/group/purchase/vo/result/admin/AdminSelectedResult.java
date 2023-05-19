@@ -1,8 +1,8 @@
 /**
  * Copyright (C), 2015-2023, 263企业通信
- * FileName: AdminRoleSelectResult
+ * FileName: AdminWaresSelectedResult
  * Author:   Derek Xu
- * Date:     2023/5/15 9:06
+ * Date:     2023/5/19 9:10
  * Description:
  * History:
  * <author>          <time>          <version>          <desc>
@@ -12,16 +12,18 @@ package cn.com.xuct.group.purchase.vo.result.admin;
 
 import lombok.Data;
 
+import java.io.Serializable;
+
 /**
- * 〈一句话功能简述〉<br> 
+ * 〈一句话功能简述〉<br>
  * 〈〉
  *
  * @author Derek Xu
- * @create 2023/5/15
+ * @create 2023/5/19
  * @since 1.0.0
  */
 @Data
-public class AdminRoleSelectResult {
+public class AdminSelectedResult implements Serializable {
 
     private String label;
 
