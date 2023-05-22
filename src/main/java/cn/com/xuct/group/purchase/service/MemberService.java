@@ -11,10 +11,14 @@
 package cn.com.xuct.group.purchase.service;
 
 import cn.com.xuct.group.purchase.base.service.IBaseService;
+import cn.com.xuct.group.purchase.base.vo.PageData;
 import cn.com.xuct.group.purchase.entity.Member;
 import cn.com.xuct.group.purchase.entity.User;
 import cn.com.xuct.group.purchase.mapper.MemberMapper;
 import cn.com.xuct.group.purchase.vo.result.MemberSumResult;
+import org.springframework.data.relational.core.sql.In;
+
+import java.util.List;
 
 /**
  * 〈一句话功能简述〉<br>
@@ -69,6 +73,27 @@ public interface MemberService extends IBaseService<MemberMapper, Member> {
      * @return
      */
     MemberSumResult memberSum(final Long memberId);
+
+
+    /**
+     * 分页查询会员
+     *
+     * @param nickname
+     * @param status
+     * @param createTime
+     * @param pageNum
+     * @param pageSize
+     * @return
+     */
+    PageData<Member> list(final String nickname, final Integer status, final List<String> createTime, final Integer pageNum, final Integer pageSize);
+
+    /**
+     * 修改会员状态
+     *
+     * @param memberId
+     * @param status
+     */
+    void changeMemberStatus(final Long memberId, final Integer status);
 
 
 }

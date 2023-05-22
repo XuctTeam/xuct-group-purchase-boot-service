@@ -43,7 +43,7 @@ public interface MemberOrderMapper extends BaseMapper<MemberOrder> {
      * @param refundStatus
      * @return
      */
-    IPage<MemberOrder> list(@Param("memberId") Long memberId, @Param("status") Integer status, Page<MemberOrder> page, @Param("refundStatus") Integer refundStatus);
+    IPage<MemberOrder> findMemberOrder(@Param("memberId") Long memberId, @Param("status") Integer status, Page<MemberOrder> page, @Param("refundStatus") Integer refundStatus);
 
 
     /**
@@ -52,7 +52,7 @@ public interface MemberOrderMapper extends BaseMapper<MemberOrder> {
      * @param memberId
      * @param status
      * @param page
-     * @param refund       是否是售后搜索
+     * @param refund        是否是售后搜索
      * @param wordOrderId
      * @param wordWaresName
      * @return
@@ -75,4 +75,11 @@ public interface MemberOrderMapper extends BaseMapper<MemberOrder> {
      * @return
      */
     List<MemberOrder> deleteList(@Param("memberId") Long memberId);
+
+    /**
+     * 查询所有订单
+     *
+     * @return
+     */
+    IPage<OrderResult> findAllMemberOrder(Page<MemberOrder> page);
 }

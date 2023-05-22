@@ -32,7 +32,7 @@ public interface MemberCouponService extends IBaseService<MemberCouponMapper, Me
      * @param memberId
      * @return
      */
-    List<MemberCoupon> list(final Long memberId , final Integer status);
+    List<MemberCoupon> list(final Long memberId, final Integer status);
 
     /**
      * 可用的优惠券列表
@@ -57,4 +57,14 @@ public interface MemberCouponService extends IBaseService<MemberCouponMapper, Me
      * @return
      */
     MemberCoupon getUserCoupon(final Long memberId, final Long id);
+
+    /**
+     * 添加会员优惠券
+     *
+     * @param memberId
+     * @param couponId
+     * @param times
+     * @return
+     */
+    int addMemberCoupon(final Long memberId, final Long couponId, final List<String> times);
 }

@@ -54,6 +54,10 @@ public class Coupon extends SuperEntity<Coupon> {
     @Schema(description = "是否删除")
     private boolean deleted;
 
+    @Schema(description = "会员可领取数量")
+    private Integer memberHasMax;
+
+
     @Version
     private Integer version;
 

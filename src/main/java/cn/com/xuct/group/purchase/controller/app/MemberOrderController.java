@@ -102,7 +102,7 @@ public class MemberOrderController {
         if (refundStatus != null && refundStatus == 0) {
             refundStatus = null;
         }
-        return R.data(memberOrderService.convert(memberOrderService.list(StpUtil.getLoginIdAsLong(), status, pageNo, pageSize, refundStatus)));
+        return R.data(memberOrderService.convert(memberOrderService.findMemberOrder(StpUtil.getLoginIdAsLong(), status, pageNo, pageSize, refundStatus)));
     }
 
     @Operation(summary = "【订单】搜索列表", description = "搜索列表")

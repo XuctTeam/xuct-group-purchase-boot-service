@@ -17,6 +17,7 @@ import cn.com.xuct.group.purchase.constants.OptConstants;
 import cn.com.xuct.group.purchase.entity.Coupon;
 import cn.com.xuct.group.purchase.service.CouponService;
 import cn.com.xuct.group.purchase.vo.param.admin.AdminCouponChangeStatusParam;
+import cn.com.xuct.group.purchase.vo.result.admin.AdminSelectedResult;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.Parameter;
 import io.swagger.v3.oas.annotations.Parameters;
@@ -97,5 +98,11 @@ public class AdminCouponController {
     @Parameter(name = "id", description = "优惠券ID", required = true)
     public R<List<String>> getCouponWaresId(@RequestParam("id") Long id) {
         return R.data(couponService.getCouponWaresId(id));
+    }
+
+    @Operation(summary = "【优惠券】获取优惠券下拉选择", description = "获取优惠券下拉选择")
+    @GetMapping("/selected")
+    public R<List<AdminSelectedResult>> getCouponSelected(){
+        return R.data(couponService.getCouponSelected());
     }
 }

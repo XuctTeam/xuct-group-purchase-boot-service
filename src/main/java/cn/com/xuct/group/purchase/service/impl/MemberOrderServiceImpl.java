@@ -12,6 +12,7 @@ package cn.com.xuct.group.purchase.service.impl;
 
 import cn.com.xuct.group.purchase.base.service.BaseServiceImpl;
 import cn.com.xuct.group.purchase.base.vo.Column;
+import cn.com.xuct.group.purchase.base.vo.PageData;
 import cn.com.xuct.group.purchase.constants.RedisCacheConstants;
 import cn.com.xuct.group.purchase.entity.*;
 import cn.com.xuct.group.purchase.mapper.MemberOrderMapper;
@@ -129,8 +130,8 @@ public class MemberOrderServiceImpl extends BaseServiceImpl<MemberOrderMapper, M
     }
 
     @Override
-    public IPage<MemberOrder> list(Long memberId, Integer status, int pageNo, int pageSize, final Integer refundStatus) {
-        return ((MemberOrderMapper) this.getBaseMapper()).list(memberId, status, Page.of(pageNo, pageSize), refundStatus);
+    public IPage<MemberOrder> findMemberOrder(Long memberId, Integer status, int pageNo, int pageSize, final Integer refundStatus) {
+        return ((MemberOrderMapper) this.getBaseMapper()).findMemberOrder(memberId, status, Page.of(pageNo, pageSize), refundStatus);
     }
 
     @Override
@@ -278,6 +279,12 @@ public class MemberOrderServiceImpl extends BaseServiceImpl<MemberOrderMapper, M
     @Override
     public List<MemberOrder> deleteList(Long memberId) {
         return ((MemberOrderMapper) this.getBaseMapper()).deleteList(memberId);
+    }
+
+    @Override
+    public PageData<OrderResult> findAllMemberOrder(int page, int pageSize) {
+        IPage result = ((MemberOrderMapper) this.getBaseMapper()).findAllMemberOrder(Page.of(page, pageSize));
+        return this.convert(result);
     }
 
     private Integer checkIntegral(Integer integral, final Long memberId) {

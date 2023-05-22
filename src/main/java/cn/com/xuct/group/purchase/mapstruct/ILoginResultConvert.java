@@ -42,7 +42,6 @@ public interface ILoginResultConvert {
             @Mapping(source = "member.phone", target = "member.phone"),
             @Mapping(source = "member.integral", target = "member.integral"),
             @Mapping(source = "member.nickname", target = "member.nickname"),
-            @Mapping(source = "member.roleCode", target = "member.roleCode"),
             @Mapping(source = "member.createTime", target = "member.createTime"),
             @Mapping(source = "saTokenInfo.tokenName", target = "tokenName"),
             @Mapping(source = "saTokenInfo.tokenValue", target = "tokenValue"),

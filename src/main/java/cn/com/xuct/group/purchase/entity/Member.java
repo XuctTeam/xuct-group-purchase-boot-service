@@ -41,7 +41,7 @@ public class Member extends SuperEntity<Member> {
 
 
     /**
-     * 状态 0正常 1冻结 2删除
+     * 状态 0正常 1冻结
      */
     private Integer status;
 
@@ -60,11 +60,6 @@ public class Member extends SuperEntity<Member> {
      */
     @TableField("nick_name")
     private String nickname;
-
-
-    @TableField(exist = false)
-    private String roleCode;
-
 
     public void cleanData() {
         super.setCreateTime(null);

@@ -56,6 +56,10 @@ public class LoginController {
             return R.fail("查询session失败");
         }
         Member member = memberService.findByOpenId(session.getOpenid());
+        /* 被冻结 */
+        if (member.getStatus() == 1) {
+            return R.fail("账号已被冻结");
+        }
         // 第1步，先登录上
         StpUtil.login(member.getId());
         return R.data(ILoginResultConvert.INSTANCE.memberToken2LoginResult(member, StpUtil.getTokenInfo()));

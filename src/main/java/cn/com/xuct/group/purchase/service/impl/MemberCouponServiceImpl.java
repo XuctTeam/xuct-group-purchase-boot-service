@@ -11,12 +11,18 @@
 package cn.com.xuct.group.purchase.service.impl;
 
 import cn.com.xuct.group.purchase.base.service.BaseServiceImpl;
+import cn.com.xuct.group.purchase.base.vo.Column;
 import cn.com.xuct.group.purchase.entity.Coupon;
 import cn.com.xuct.group.purchase.entity.MemberCoupon;
+import cn.com.xuct.group.purchase.mapper.CouponMapper;
 import cn.com.xuct.group.purchase.mapper.MemberCouponMapper;
 import cn.com.xuct.group.purchase.service.MemberCouponService;
+import cn.hutool.core.date.DatePattern;
+import cn.hutool.core.date.DateTime;
 import cn.hutool.core.date.DateUtil;
 import com.github.yulichang.wrapper.MPJLambdaWrapper;
+import com.google.common.collect.Lists;
+import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
 import java.util.Date;
@@ -31,7 +37,10 @@ import java.util.List;
  * @since 1.0.0
  */
 @Service
+@RequiredArgsConstructor
 public class MemberCouponServiceImpl extends BaseServiceImpl<MemberCouponMapper, MemberCoupon> implements MemberCouponService {
+
+    private final CouponMapper couponMapper;
 
     @Override
     public List<MemberCoupon> list(Long memberId, final Integer status) {
@@ -64,6 +73,25 @@ public class MemberCouponServiceImpl extends BaseServiceImpl<MemberCouponMapper,
     @Override
     public MemberCoupon getUserCoupon(final Long memberId, Long id) {
         return super.getBaseMapper().selectOne(this.buildQuery(memberId).eq(MemberCoupon::getId, id));
+    }
+
+    @Override
+    public int addMemberCoupon(Long memberId, Long couponId, List<String> times) {
+        Coupon coupon = couponMapper.selectById(couponId);
+        if (coupon == null || coupon.isDeleted()) {
+            return -1;
+        }
+        long count = this.count(Lists.newArrayList(Column.of("member_id", memberId), Column.of("coupon_id", couponId)));
+        if (count > coupon.getMemberHasMax()) {
+            return -2;
+        }
+        MemberCoupon memberCoupon = new MemberCoupon();
+        memberCoupon.setMemberId(memberId);
+        memberCoupon.setCouponId(couponId);
+        memberCoupon.setBeginTime(DateUtil.parse(times.get(0)));
+        memberCoupon.setEndTime(DateUtil.parse(times.get(1)));
+        this.save(memberCoupon);
+        return 0;
     }
 
     private MPJLambdaWrapper<MemberCoupon> buildQuery(final Long memberId) {

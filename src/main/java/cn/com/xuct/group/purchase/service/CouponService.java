@@ -14,6 +14,7 @@ import cn.com.xuct.group.purchase.base.service.IBaseService;
 import cn.com.xuct.group.purchase.base.vo.PageData;
 import cn.com.xuct.group.purchase.entity.Coupon;
 import cn.com.xuct.group.purchase.mapper.CouponMapper;
+import cn.com.xuct.group.purchase.vo.result.admin.AdminSelectedResult;
 
 import java.util.List;
 
@@ -83,6 +84,13 @@ public interface CouponService extends IBaseService<CouponMapper, Coupon> {
      * @return
      */
     List<String> getCouponWaresId(final Long couponId);
+
+    /**
+     * 查询未删除的优惠券
+     *
+     * @return
+     */
+    List<AdminSelectedResult> getCouponSelected();
 
 
 }

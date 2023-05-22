@@ -10,6 +10,7 @@
  */
 package cn.com.xuct.group.purchase.mapstruct;
 
+import cn.com.xuct.group.purchase.entity.Coupon;
 import cn.com.xuct.group.purchase.entity.Role;
 import cn.com.xuct.group.purchase.entity.Wares;
 import cn.com.xuct.group.purchase.vo.result.admin.AdminSelectedResult;
@@ -38,5 +39,10 @@ public interface IAdminSelectedConvert {
     @Mapping(source = "id", target = "value")
     @Mapping(source = "name", target = "label")
     AdminSelectedResult roleToSelected(Role role);
+
+
+    @Mapping(source = "id", target = "value")
+    @Mapping(source = "name", target = "label")
+    AdminSelectedResult couponToSelected(Coupon coupon);
 
 }

@@ -20,11 +20,13 @@ import cn.com.xuct.group.purchase.constants.EventCodeEnum;
 import cn.com.xuct.group.purchase.entity.Coupon;
 import cn.com.xuct.group.purchase.entity.CouponWares;
 import cn.com.xuct.group.purchase.mapper.CouponMapper;
+import cn.com.xuct.group.purchase.mapstruct.IAdminSelectedConvert;
 import cn.com.xuct.group.purchase.mapstruct.IDelayedConvert;
 import cn.com.xuct.group.purchase.service.CouponService;
 import cn.com.xuct.group.purchase.service.CouponWaresService;
 import cn.com.xuct.group.purchase.utils.JsonUtils;
 import cn.com.xuct.group.purchase.vo.dto.DelayMessage;
+import cn.com.xuct.group.purchase.vo.result.admin.AdminSelectedResult;
 import cn.hutool.core.date.DateTime;
 import cn.hutool.core.date.DateUtil;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
@@ -149,6 +151,12 @@ public class CouponServiceImpl extends BaseServiceImpl<CouponMapper, Coupon> imp
     public List<String> getCouponWaresId(Long couponId) {
         return couponWaresService.find(Column.of("coupon_id", couponId))
                 .stream().map(CouponWares::getWaresId).map(String::valueOf).collect(Collectors.toList());
+    }
+
+    @Override
+    public List<AdminSelectedResult> getCouponSelected() {
+        return this.find(Lists.newArrayList(Column.of("used", false), Column.of("deleted", false)))
+                .stream().map(IAdminSelectedConvert.INSTANCE::couponToSelected).collect(Collectors.toList());
     }
 
     private void setCouponExpireDate(Coupon coupon) {

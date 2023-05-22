@@ -11,6 +11,7 @@
 package cn.com.xuct.group.purchase.service;
 
 import cn.com.xuct.group.purchase.base.service.IBaseService;
+import cn.com.xuct.group.purchase.base.vo.PageData;
 import cn.com.xuct.group.purchase.entity.MemberOrder;
 import cn.com.xuct.group.purchase.entity.MemberOrderItem;
 import cn.com.xuct.group.purchase.mapper.MemberOrderMapper;
@@ -77,7 +78,7 @@ public interface MemberOrderService extends IBaseService<MemberOrderMapper, Memb
      * @param word         搜索关键词
      * @return
      */
-    IPage<MemberOrder> list(final Long memberId, final Integer status, int pageNo, int pageSize, final Integer refundStatus);
+    IPage<MemberOrder> findMemberOrder(final Long memberId, final Integer status, int pageNo, int pageSize, final Integer refundStatus);
 
 
     /**
@@ -179,5 +180,14 @@ public interface MemberOrderService extends IBaseService<MemberOrderMapper, Memb
      * @return
      */
     List<MemberOrder> deleteList(final Long memberId);
+
+    /**
+     * 分页查询订单列表
+     *
+     * @param page
+     * @param pageSize
+     * @return
+     */
+    PageData<OrderResult> findAllMemberOrder(int page, int pageSize);
 
 }

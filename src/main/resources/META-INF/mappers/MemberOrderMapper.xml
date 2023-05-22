@@ -36,7 +36,7 @@
         <result column="address_user_name" property="address.userName"/>
     </resultMap>
 
-    <select id="list" resultMap="baseResultMap">
+    <select id="findMemberOrder" resultMap="baseResultMap">
         select id , create_time , deliver_time , serve_time , status , wares_num , rush , refund_status
         from bu_member_order
         where 1 =1
@@ -134,5 +134,34 @@
         where 1 =1
           and member_id = #{memberId}
           and deleted = true
+    </select>
+
+    <select id="findAllMemberOrder" resultMap="detailMap">
+        select o.id,
+               o.create_time,
+               o.deliver_time,
+               o.serve_time,
+               o.status,
+               o.wares_num,
+               o.address_id,
+               o.integral,
+               o.rush,
+               o.refund_status,
+               o.refund_type,
+               o.refund_reason,
+               o.refund_images,
+               o.refund_time,
+               o.user_coupon_id,
+               o.address_id    as address_a_id,
+               a.province_name as address_province_name,
+               a.city_name     as address_city_name,
+               a.county_name   as address_county_name,
+               a.tel_number    as address_tel_number,
+               a.detail_info   as address_detail_info,
+               a.user_name     as address_user_name
+        from bu_member_order o
+                 left join sys_member_address a on o.address_id = a.id
+        where 1 = 1
+          and deleted = false
     </select>
 </mapper>

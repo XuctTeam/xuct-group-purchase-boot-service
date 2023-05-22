@@ -10,19 +10,31 @@
  */
 package cn.com.xuct.group.purchase.service.impl;
 
+import cn.com.xuct.group.purchase.base.enums.ColumnEnum;
+import cn.com.xuct.group.purchase.base.enums.SortEnum;
 import cn.com.xuct.group.purchase.base.service.BaseServiceImpl;
 import cn.com.xuct.group.purchase.base.vo.Column;
+import cn.com.xuct.group.purchase.base.vo.PageData;
+import cn.com.xuct.group.purchase.base.vo.Sort;
 import cn.com.xuct.group.purchase.constants.RedisCacheConstants;
 import cn.com.xuct.group.purchase.entity.Member;
 import cn.com.xuct.group.purchase.mapper.MemberMapper;
 import cn.com.xuct.group.purchase.service.MemberService;
 import cn.com.xuct.group.purchase.vo.result.MemberSumResult;
+import cn.hutool.core.date.DateTime;
+import cn.hutool.core.date.DateUtil;
+import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
+import com.google.common.collect.Lists;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.cache.annotation.CacheEvict;
 import org.springframework.cache.annotation.CachePut;
 import org.springframework.cache.annotation.Cacheable;
 import org.springframework.stereotype.Service;
+import org.springframework.util.CollectionUtils;
 import org.springframework.util.StringUtils;
+
+import java.util.List;
 
 /**
  * 〈一句话功能简述〉<br>
@@ -86,5 +98,32 @@ public class MemberServiceImpl extends BaseServiceImpl<MemberMapper, Member> imp
     @Override
     public MemberSumResult memberSum(final Long memberId) {
         return ((MemberMapper) this.getBaseMapper()).memberSum(memberId);
+    }
+
+    @Override
+    public PageData<Member> list(String nickname, final Integer status, final List<String> createTime, Integer pageNum, Integer pageSize) {
+        List<Column> columnList = Lists.newArrayList();
+        if (StringUtils.hasLength(nickname)) {
+            columnList.add(Column.of("nick_name", nickname, ColumnEnum.like));
+        }
+        if (status != null) {
+            columnList.add(Column.of("status", status));
+        }
+        if (!CollectionUtils.isEmpty(createTime)) {
+            DateTime[] createTimes = {DateUtil.parseDate(createTime.get(0)), DateUtil.parseDate(createTime.get(1))};
+            columnList.add(Column.of("create_time", createTimes, ColumnEnum.between));
+        }
+        return this.convert(this.pages(Page.of(pageNum, pageSize), columnList, Sort.of("id", SortEnum.asc)));
+    }
+
+    @Override
+    @CacheEvict(cacheNames = RedisCacheConstants.MEMBER_CACHE_ABLE_CACHE_NAME, key = "#memberId")
+    public void changeMemberStatus(Long memberId, Integer status) {
+        Member member = this.getById(memberId);
+        if (member == null) {
+            return;
+        }
+        member.setStatus(status);
+        this.updateById(member);
     }
 }
