@@ -19,6 +19,7 @@ import cn.com.xuct.group.purchase.service.MemberCouponService;
 import cn.com.xuct.group.purchase.service.MemberService;
 import cn.com.xuct.group.purchase.vo.param.admin.AdminMemberCouponParam;
 import cn.com.xuct.group.purchase.vo.param.admin.AdminMemberStatusParam;
+import cn.dev33.satoken.annotation.SaCheckPermission;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.Parameter;
 import io.swagger.v3.oas.annotations.Parameters;
@@ -72,6 +73,7 @@ public class AdminMemberController {
         return R.status(true);
     }
 
+    @SaCheckPermission("members:coupon:push")
     @Operation(summary = "【会员】发放优惠券", description = "发放优惠券")
     @Log(modul = "【会员】发放优惠券", type = OptConstants.INSERT, desc = "发放优惠券")
     @PostMapping("/coupon")

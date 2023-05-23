@@ -282,9 +282,9 @@ public class MemberOrderServiceImpl extends BaseServiceImpl<MemberOrderMapper, M
     }
 
     @Override
-    public PageData<OrderResult> findAllMemberOrder(int page, int pageSize) {
-        IPage result = ((MemberOrderMapper) this.getBaseMapper()).findAllMemberOrder(Page.of(page, pageSize));
-        return this.convert(result);
+    public PageData<OrderResult> findAllMemberOrder(final Integer status, final List<String> createTime, int page, int pageSize) {
+        IPage<OrderResult> result = ((MemberOrderMapper) this.getBaseMapper()).findAllMemberOrder(status, createTime, Page.of(page, pageSize));
+        return new PageData<OrderResult>().put(result);
     }
 
     private Integer checkIntegral(Integer integral, final Long memberId) {

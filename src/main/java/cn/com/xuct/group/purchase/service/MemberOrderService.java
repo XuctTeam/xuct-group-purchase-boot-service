@@ -184,10 +184,12 @@ public interface MemberOrderService extends IBaseService<MemberOrderMapper, Memb
     /**
      * 分页查询订单列表
      *
+     * @param status
+     * @param createTime
      * @param page
      * @param pageSize
      * @return
      */
-    PageData<OrderResult> findAllMemberOrder(int page, int pageSize);
+    PageData<OrderResult> findAllMemberOrder(final Integer status, final List<String> createTime, final int page, final int pageSize);
 
 }

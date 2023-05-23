@@ -18,6 +18,8 @@ import cn.com.xuct.group.purchase.entity.Coupon;
 import cn.com.xuct.group.purchase.service.CouponService;
 import cn.com.xuct.group.purchase.vo.param.admin.AdminCouponChangeStatusParam;
 import cn.com.xuct.group.purchase.vo.result.admin.AdminSelectedResult;
+import cn.dev33.satoken.annotation.SaCheckPermission;
+import cn.dev33.satoken.annotation.SaMode;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.Parameter;
 import io.swagger.v3.oas.annotations.Parameters;
@@ -55,6 +57,7 @@ public class AdminCouponController {
         return R.data(couponService.pages(name, pageNum, pageSize));
     }
 
+    @SaCheckPermission("coupon:manage:add")
     @Operation(summary = "【优惠券】新增优惠券", description = "新增优惠券")
     @Log(modul = "【优惠券】新增优惠券", type = OptConstants.INSERT, desc = "新增分类")
     @PostMapping("")
@@ -66,6 +69,7 @@ public class AdminCouponController {
         return R.status(true);
     }
 
+    @SaCheckPermission("coupon:manage:edit")
     @Operation(summary = "【优惠券】编辑优惠券", description = "编辑优惠券")
     @Log(modul = "【优惠券】编辑优惠券", type = OptConstants.UPDATE, desc = "编辑优惠券")
     @PutMapping("")
@@ -85,6 +89,7 @@ public class AdminCouponController {
         return R.status(true);
     }
 
+    @SaCheckPermission("coupon:manage:del")
     @Operation(summary = "【优惠券】删除优惠券", description = "删除优惠券")
     @Log(modul = "【优惠券】删除优惠券", type = OptConstants.UPDATE, desc = "删除优惠券")
     @DeleteMapping("/{id}")
@@ -93,6 +98,7 @@ public class AdminCouponController {
         return R.status(true);
     }
 
+    @SaCheckPermission(value = {"coupon:manage:add", "coupon:manage:edit"}, mode = SaMode.OR)
     @Operation(summary = "【优惠券】获取优惠券指定商品", description = "获取优惠券指定商品")
     @GetMapping("/wares")
     @Parameter(name = "id", description = "优惠券ID", required = true)
@@ -102,7 +108,7 @@ public class AdminCouponController {
 
     @Operation(summary = "【优惠券】获取优惠券下拉选择", description = "获取优惠券下拉选择")
     @GetMapping("/selected")
-    public R<List<AdminSelectedResult>> getCouponSelected(){
+    public R<List<AdminSelectedResult>> getCouponSelected() {
         return R.data(couponService.getCouponSelected());
     }
 }

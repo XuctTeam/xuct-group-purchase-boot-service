@@ -16,6 +16,7 @@ import cn.com.xuct.group.purchase.constants.OptConstants;
 import cn.com.xuct.group.purchase.entity.Banner;
 import cn.com.xuct.group.purchase.service.BannerService;
 import cn.com.xuct.group.purchase.vo.param.admin.AdminBannerStatusParam;
+import cn.dev33.satoken.annotation.SaCheckPermission;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.Parameter;
 import io.swagger.v3.oas.annotations.Parameters;
@@ -52,6 +53,7 @@ public class AdminBannerController {
         return R.data(bannerService.list(title, status));
     }
 
+    @SaCheckPermission("banner:manage:add")
     @Operation(summary = "【轮播图】新增轮播图", description = "新增轮播图")
     @Log(modul = "【轮播图】新增轮播图", type = OptConstants.INSERT, desc = "新增轮播图")
     @PostMapping("")
@@ -60,6 +62,7 @@ public class AdminBannerController {
         return R.status(true);
     }
 
+    @SaCheckPermission("banner:manage:edit")
     @Operation(summary = "【轮播图】 编辑轮播图", description = "编辑轮播图")
     @Log(modul = "【轮播图】编辑轮播图", type = OptConstants.UPDATE, desc = "编辑轮播图")
     @PutMapping("")
@@ -76,6 +79,7 @@ public class AdminBannerController {
         return R.status(bannerService.changeBannerStatus(param.getId(), param.getStatus()));
     }
 
+    @SaCheckPermission("banner:manage:del")
     @Operation(summary = "【轮播图】 删除轮播图", description = "删除轮播图")
     @Log(modul = "【轮播图】删除轮播图", type = OptConstants.DELETE, desc = "删除轮播图")
     @DeleteMapping("/{id}")

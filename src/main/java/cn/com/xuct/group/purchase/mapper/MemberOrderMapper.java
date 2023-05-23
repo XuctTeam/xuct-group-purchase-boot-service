@@ -81,5 +81,5 @@ public interface MemberOrderMapper extends BaseMapper<MemberOrder> {
      *
      * @return
      */
-    IPage<OrderResult> findAllMemberOrder(Page<MemberOrder> page);
+    IPage<OrderResult> findAllMemberOrder(@Param("status") Integer status, @Param("createTime") List<String> createTime, Page<MemberOrder> page);
 }

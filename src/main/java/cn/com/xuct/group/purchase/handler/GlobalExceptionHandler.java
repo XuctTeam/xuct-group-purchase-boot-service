@@ -15,6 +15,7 @@ import cn.com.xuct.group.purchase.base.res.SvrResCode;
 import cn.com.xuct.group.purchase.exception.SvrException;
 import cn.dev33.satoken.exception.DisableServiceException;
 import cn.dev33.satoken.exception.NotLoginException;
+import cn.dev33.satoken.exception.NotPermissionException;
 import lombok.extern.slf4j.Slf4j;
 import me.chanjar.weixin.common.error.WxErrorException;
 import org.springframework.http.HttpStatus;
@@ -60,12 +61,20 @@ public class GlobalExceptionHandler {
         return R.success("未登录");
     }
 
-    @ResponseStatus(HttpStatus.OK)
+    @ResponseStatus(HttpStatus.FAILED_DEPENDENCY)
     @ResponseBody
     @ExceptionHandler(value = DisableServiceException.class)
     public R<String> notLoginException(DisableServiceException e) {
         log.error("账号被禁用！原因是：{}", e.getMessage());
         return R.fail("账号被禁用");
+    }
+
+    @ResponseStatus(HttpStatus.FORBIDDEN)
+    @ResponseBody
+    @ExceptionHandler(value = NotPermissionException.class)
+    public R<String> notLoginException(NotPermissionException e) {
+        log.error("权限异常！原因是：{}", e.getMessage());
+        return R.fail("暂时没有权限");
     }
 
     @ResponseStatus(HttpStatus.INTERNAL_SERVER_ERROR)

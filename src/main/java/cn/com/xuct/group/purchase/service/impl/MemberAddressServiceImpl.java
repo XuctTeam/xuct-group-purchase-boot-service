@@ -48,8 +48,6 @@ public class MemberAddressServiceImpl extends BaseServiceImpl<MemberAddressMappe
             qr.and(i -> i.like("user_name", searchValue).or().like("tel_number", searchValue));
         }
         qr.orderByDesc("first_choose");
-
-
         return this.getBaseMapper().selectList(qr);
     }
 

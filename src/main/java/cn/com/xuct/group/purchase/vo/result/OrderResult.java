@@ -10,6 +10,7 @@
  */
 package cn.com.xuct.group.purchase.vo.result;
 
+import cn.com.xuct.group.purchase.entity.Member;
 import cn.com.xuct.group.purchase.entity.MemberAddress;
 import cn.com.xuct.group.purchase.entity.MemberCoupon;
 import cn.com.xuct.group.purchase.entity.MemberOrder;
@@ -36,4 +37,7 @@ public class OrderResult extends MemberOrder implements Serializable {
 
     @Schema(description = "优惠券")
     private MemberCoupon coupon;
+
+    @Schema(description = "用户信息")
+    private Member member;
 }

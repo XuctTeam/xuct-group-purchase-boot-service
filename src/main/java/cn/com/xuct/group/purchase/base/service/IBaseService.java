@@ -160,7 +160,6 @@ public interface IBaseService<M extends BaseMapper<T>, T extends SuperEntity> ex
      */
     IPage<T> pages(IPage<T> page, List<Column> columns, Sort sort);
 
-
     /**
      * 转换返回数据
      *
