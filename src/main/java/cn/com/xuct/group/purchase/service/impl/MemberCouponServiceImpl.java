@@ -96,7 +96,7 @@ public class MemberCouponServiceImpl extends BaseServiceImpl<MemberCouponMapper,
 
     private MPJLambdaWrapper<MemberCoupon> buildQuery(final Long memberId) {
         return new MPJLambdaWrapper<MemberCoupon>()
-                .selectAll(MemberCoupon.class)//查询user表全部字段
+                .selectAll(MemberCoupon.class)
                 .selectAs(Coupon::getPrice, MemberCoupon::getCouponPrice)
                 .selectAs(Coupon::getFullPrice, MemberCoupon::getCouponFullPrice)
                 .selectAs(Coupon::getName, MemberCoupon::getCouponName)

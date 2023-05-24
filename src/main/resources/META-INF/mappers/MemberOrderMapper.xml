@@ -35,6 +35,8 @@
         <result column="address_user_name" property="address.userName"/>
         <result column="address_user_name" property="address.userName"/>
         <result column="member_nick_name" property="member.nickname"/>
+        <result column="member_avatar" property="member.avatar"/>
+        <result column="member_open_id" property="member.openId"/>
     </resultMap>
 
     <select id="findMemberOrder" resultMap="baseResultMap">
@@ -112,8 +114,12 @@
                a.tel_number    as address_tel_number,
                a.detail_info   as address_detail_info,
                a.user_name     as address_user_name,
+               m.nick_name     as member_nick_name,
+               m.avatar        as member_avatar,
+               m.open_id       as member_open_id
         from bu_member_order o
                  left join sys_member_address a on o.address_id = a.id
+                 left join sys_member m on o.member_id = m.id
         where 1 = 1
           and o.id = #{orderId}
     </select>

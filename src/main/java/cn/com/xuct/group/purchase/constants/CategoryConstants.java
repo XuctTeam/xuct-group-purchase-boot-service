@@ -10,8 +10,10 @@
  */
 package cn.com.xuct.group.purchase.constants;
 
+import cn.dev33.satoken.exception.NotPermissionException;
+
 /**
- * 〈一句话功能简述〉<br> 
+ * 〈一句话功能简述〉<br>
  * 〈〉
  *
  * @author Derek Xu
@@ -21,5 +23,4 @@ package cn.com.xuct.group.purchase.constants;
 public interface CategoryConstants {
 
     String BUTTON = "3";
-
 }

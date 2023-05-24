@@ -15,12 +15,16 @@ import cn.com.xuct.group.purchase.base.service.BaseServiceImpl;
 import cn.com.xuct.group.purchase.base.vo.Column;
 import cn.com.xuct.group.purchase.constants.CategoryConstants;
 import cn.com.xuct.group.purchase.entity.Resource;
+import cn.com.xuct.group.purchase.entity.Role;
+import cn.com.xuct.group.purchase.entity.RoleResource;
+import cn.com.xuct.group.purchase.entity.User;
 import cn.com.xuct.group.purchase.mapper.ResourceMapper;
 import cn.com.xuct.group.purchase.mapstruct.IAdminMenuConvert;
 import cn.com.xuct.group.purchase.service.ResourceService;
 import cn.com.xuct.group.purchase.service.RoleService;
 import cn.com.xuct.group.purchase.vo.result.admin.AdminMenuResult;
 import cn.com.xuct.group.purchase.vo.result.admin.AdminMenuTreeResult;
+import com.github.yulichang.wrapper.MPJLambdaWrapper;
 import com.google.common.collect.Lists;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -47,6 +51,7 @@ public class ResourceServiceImpl extends BaseServiceImpl<ResourceMapper, Resourc
     private final RoleService roleService;
 
     @Override
+    @SuppressWarnings("all")
     public boolean addOrUpdateResource(Resource resource) {
         /* 顶级菜单不允许添加按钮 */
         if (resource.getParentId() == -1 && CategoryConstants.BUTTON.equals(resource.getCategory())) {
@@ -77,6 +82,17 @@ public class ResourceServiceImpl extends BaseServiceImpl<ResourceMapper, Resourc
         /* 删除角色绑定资源 */
         roleService.deleteRoleResourceByResourceIds(idsList);
         return this.removeByIds(idsList);
+    }
+
+    @Override
+    public List<Resource> findUserPermissionList(Long roleId) {
+        MPJLambdaWrapper<Resource> qr = new MPJLambdaWrapper<Resource>()
+                .selectAll(Resource.class)
+                .leftJoin(RoleResource.class, RoleResource::getResourceId, Resource::getId)
+                .eq(RoleResource::getRoleId, roleId)
+                .eq(Resource::getCategory, CategoryConstants.BUTTON);
+        return this.list(qr);
+
     }
 
     @Override
@@ -146,7 +162,7 @@ public class ResourceServiceImpl extends BaseServiceImpl<ResourceMapper, Resourc
      * @Date: 2023/5/10 12:01
      */
     private AdminMenuTreeResult getTreeMenuResult(Resource resource) {
-       return IAdminMenuConvert.INSTANCE.resource2TreeMenu(resource);
+        return IAdminMenuConvert.INSTANCE.resource2TreeMenu(resource);
     }
 
 
@@ -165,5 +181,4 @@ public class ResourceServiceImpl extends BaseServiceImpl<ResourceMapper, Resourc
         }
         idList.addAll(resources.stream().map(Resource::getId).toList());
     }
-
 }

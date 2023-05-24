@@ -1,6 +1,6 @@
 /**
  * Copyright (C), 2015-2023, 263企业通信
- * FileName: UserOrderServiceImpl
+ * FileName: MemberOrderServiceImpl
  * Author:   Derek Xu
  * Date:     2023/4/7 14:17
  * Description:
@@ -13,14 +13,18 @@ package cn.com.xuct.group.purchase.service.impl;
 import cn.com.xuct.group.purchase.base.service.BaseServiceImpl;
 import cn.com.xuct.group.purchase.base.vo.Column;
 import cn.com.xuct.group.purchase.base.vo.PageData;
+import cn.com.xuct.group.purchase.constants.EventCodeEnum;
 import cn.com.xuct.group.purchase.constants.RedisCacheConstants;
 import cn.com.xuct.group.purchase.entity.*;
 import cn.com.xuct.group.purchase.mapper.MemberOrderMapper;
 import cn.com.xuct.group.purchase.service.*;
 import cn.com.xuct.group.purchase.utils.JsonUtils;
+import cn.com.xuct.group.purchase.vo.dto.DelayMessage;
+import cn.com.xuct.group.purchase.vo.dto.OrderReceiveDelayedDto;
 import cn.com.xuct.group.purchase.vo.result.CartResult;
 import cn.com.xuct.group.purchase.vo.result.OrderResult;
 import cn.com.xuct.group.purchase.vo.result.OrderSumResult;
+import cn.hutool.core.date.DateTime;
 import cn.hutool.core.date.DateUtil;
 import cn.hutool.core.lang.Validator;
 import com.baomidou.mybatisplus.core.metadata.IPage;
@@ -29,6 +33,7 @@ import com.google.common.collect.Maps;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.assertj.core.util.Lists;
+import org.springframework.amqp.rabbit.core.RabbitTemplate;
 import org.springframework.beans.BeanUtils;
 import org.springframework.data.redis.core.StringRedisTemplate;
 import org.springframework.stereotype.Service;
@@ -41,6 +46,8 @@ import java.util.List;
 import java.util.Map;
 import java.util.stream.Collectors;
 
+import static cn.com.xuct.group.purchase.config.DelayedQueueConfiguration.DELAYED_EXCHANGE_NAME;
+import static cn.com.xuct.group.purchase.config.DelayedQueueConfiguration.DELAYED_ROUTING_KEY;
 import static cn.com.xuct.group.purchase.constants.RConstants.*;
 
 /**
@@ -61,8 +68,8 @@ public class MemberOrderServiceImpl extends BaseServiceImpl<MemberOrderMapper, M
     private final MemberService memberService;
     private final MemberWaresEvaluateService memberWaresEvaluateService;
     private final MemberCouponService memberCouponService;
-
     private final StringRedisTemplate redisTemplate;
+    private final RabbitTemplate rabbitTemplate;
 
     @Override
     public OrderSumResult sumCount(Long memberId) {
@@ -90,7 +97,7 @@ public class MemberOrderServiceImpl extends BaseServiceImpl<MemberOrderMapper, M
     @Override
     @Transactional(rollbackFor = Exception.class)
     public String saveOrder(final Long memberId, final String scene, final Long addressId, Long couponId, Integer integral, final String remarks, List<Long> waresIds) {
-        log.info("UserOrderServiceImpl:: save order , member id = {} , address id = {} , couponId id = {} , integral = {} , waresIds = {}", memberId, addressId, couponId, integral, JsonUtils.obj2json(waresIds));
+        log.info("MemberOrderServiceImpl:: save order , member id = {} , address id = {} , couponId id = {} , integral = {} , waresIds = {}", memberId, addressId, couponId, integral, JsonUtils.obj2json(waresIds));
         //全部积分
         integral = this.checkIntegral(integral, memberId);
         switch (integral) {
@@ -135,7 +142,7 @@ public class MemberOrderServiceImpl extends BaseServiceImpl<MemberOrderMapper, M
     }
 
     @Override
-    public OrderResult getDetail(Long memberId, Long orderId) {
+    public OrderResult getDetail(Long orderId, Long memberId) {
         OrderResult order = ((MemberOrderMapper) this.getBaseMapper()).getOrderDetail(orderId);
         if (order == null) {
             return null;
@@ -143,7 +150,7 @@ public class MemberOrderServiceImpl extends BaseServiceImpl<MemberOrderMapper, M
         if (order.getUserCouponId() == null) {
             return order;
         }
-        order.setCoupon(memberCouponService.getUserCoupon(memberId, order.getUserCouponId()));
+        order.setCoupon(memberCouponService.getUserCoupon(memberId != null ? memberId : order.getMemberId(), order.getUserCouponId()));
         return order;
     }
 
@@ -217,7 +224,7 @@ public class MemberOrderServiceImpl extends BaseServiceImpl<MemberOrderMapper, M
     public void rushOrder(Long memberId, Long orderId) {
         MemberOrder memberOrder = this.getById(orderId);
         if (memberOrder == null || String.valueOf(orderId).equals(String.valueOf(memberOrder.getMemberId()))) {
-            log.error("UserOrderServiceImpl:: rush order error , order id = {}", orderId);
+            log.error("MemberOrderServiceImpl:: rush order error , order id = {}", orderId);
             return;
         }
         memberOrder.setRush(true);
@@ -228,7 +235,7 @@ public class MemberOrderServiceImpl extends BaseServiceImpl<MemberOrderMapper, M
     public void receiveOrder(Long memberId, Long orderId) {
         MemberOrder memberOrder = this.getById(orderId);
         if (memberOrder == null || String.valueOf(orderId).equals(String.valueOf(memberOrder.getMemberId()))) {
-            log.error("UserOrderServiceImpl:: receiver order error , order id = {}", orderId);
+            log.error("MemberOrderServiceImpl:: receiver order error , order id = {}", orderId);
             return;
         }
         memberOrder.setStatus(4);
@@ -239,7 +246,7 @@ public class MemberOrderServiceImpl extends BaseServiceImpl<MemberOrderMapper, M
     public void deleteOrder(Long memberId, Long orderId) {
         MemberOrder memberOrder = this.getById(orderId);
         if (memberOrder == null || String.valueOf(orderId).equals(String.valueOf(memberOrder.getMemberId()))) {
-            log.error("UserOrderServiceImpl:: delete order error , order id = {}", orderId);
+            log.error("MemberOrderServiceImpl:: delete order error , order id = {}", orderId);
             return;
         }
         memberOrder.setDeleted(true);
@@ -257,7 +264,7 @@ public class MemberOrderServiceImpl extends BaseServiceImpl<MemberOrderMapper, M
     public void evaluateWares(Long memberId, Long orderItemId, String rate, String evaluateImages, String remarks) {
         MemberOrderItem item = memberOrderItemService.getById(orderItemId);
         if (item == null) {
-            log.error("UserOrderServiceImpl:: save evaluate error , order item id = {}", orderItemId);
+            log.error("MemberOrderServiceImpl:: save evaluate error , order item id = {}", orderItemId);
             return;
         }
         MemberWaresEvaluate evaluate = new MemberWaresEvaluate();
@@ -285,6 +292,37 @@ public class MemberOrderServiceImpl extends BaseServiceImpl<MemberOrderMapper, M
     public PageData<OrderResult> findAllMemberOrder(final Integer status, final List<String> createTime, int page, int pageSize) {
         IPage<OrderResult> result = ((MemberOrderMapper) this.getBaseMapper()).findAllMemberOrder(status, createTime, Page.of(page, pageSize));
         return new PageData<OrderResult>().put(result);
+    }
+
+    @Override
+    public void deliverOrder(Long orderId) {
+        MemberOrder memberOrder = this.getById(orderId);
+        if (memberOrder == null) {
+            log.error("MemberOrderServiceImpl:: deliver order error , order id = {}", orderId);
+            return;
+        }
+        memberOrder.setStatus(3);
+        memberOrder.setDeliverTime(DateTime.now().toJdkDate());
+        String message = DelayMessage.ofMessage(EventCodeEnum.order_receiver_expire, JsonUtils.obj2json(OrderReceiveDelayedDto.builder().orderId(orderId).build()));
+        log.info("MemberOrderServiceImpl:: send order delay message = {}", message);
+        rabbitTemplate.convertAndSend(DELAYED_EXCHANGE_NAME, DELAYED_ROUTING_KEY, message,
+                correlationData -> {
+                    correlationData.getMessageProperties().setDelay(Long.valueOf(1000L * 60 * 60 * 24 * ORDER_RECEIVE_DELAY).intValue());
+                    return correlationData;
+                });
+        this.updateById(memberOrder);
+    }
+
+    @Override
+    public void receiveOrderByExpireTime(Long orderId) {
+        MemberOrder memberOrder = this.getById(orderId);
+        if (memberOrder == null) {
+            log.error("MemberOrderServiceImpl:: receive order error , order id = {}", orderId);
+            return;
+        }
+        memberOrder.setStatus(4);
+        memberOrder.setSuccessTime(DateTime.now().toJdkDate());
+        this.updateById(memberOrder);
     }
 
     private Integer checkIntegral(Integer integral, final Long memberId) {
@@ -337,31 +375,40 @@ public class MemberOrderServiceImpl extends BaseServiceImpl<MemberOrderMapper, M
     private String saveCartWaresOrder(final Long memberId, final Long addressId, final Long couponId, final Integer integral, final String remarks, List<Long> waresIds) {
         List<CartResult> cartResult = memberWaresCartService.cartList(memberId, waresIds);
         if (CollectionUtils.isEmpty(cartResult)) {
-            log.error("UserOrderServiceImpl:: user id = {} , cart ids empty , wares ids = {}", memberId, cartResult);
+            log.error("MemberOrderServiceImpl:: user id = {} , cart ids empty , wares ids = {}", memberId, cartResult);
             return CART_EMPTY;
         }
         Map<Long, Integer> inventoryMap = Maps.newHashMap();
+        String redisInventoryKey = null;
         boolean canCreate = true;
         for (CartResult waresCart : cartResult) {
-            Long inventory = redisTemplate.opsForValue().increment(RedisCacheConstants.WARES_INVENTORY_REDIS_KEY.concat(String.valueOf(waresCart.getWaresId())), -waresCart.getNum());
-            inventoryMap.put(waresCart.getWaresId(), waresCart.getNum());
-            if (inventory == null || inventory <= 0) {
+            redisInventoryKey = RedisCacheConstants.WARES_INVENTORY_REDIS_KEY.concat(String.valueOf(waresCart.getWaresId()));
+            String waresInventoryNum = redisTemplate.opsForValue().get(redisInventoryKey);
+            if (waresInventoryNum == null || Long.parseLong(waresInventoryNum) < waresCart.getNum()) {
                 canCreate = false;
                 break;
             }
+            Long inventory = redisTemplate.opsForValue().increment(redisInventoryKey, -waresCart.getNum());
+            if (inventory == null) {
+                canCreate = false;
+                break;
+            }
+            if (inventory < 0) {
+                redisTemplate.opsForValue().increment(redisInventoryKey, waresCart.getNum());
+                canCreate = false;
+                break;
+            }
+            inventoryMap.put(waresCart.getWaresId(), waresCart.getNum());
         }
         if (!canCreate) {
-            log.info("UserOrderServiceImpl:: wares not enough , wares maps = {}", JsonUtils.mapToJson(inventoryMap));
-            for (Long waresId : inventoryMap.keySet()) {
-                redisTemplate.opsForValue().increment(RedisCacheConstants.WARES_INVENTORY_REDIS_KEY.concat(String.valueOf(waresId)), inventoryMap.get(waresId));
-            }
+            log.info("MemberOrderServiceImpl:: wares not enough , wares maps = {}", JsonUtils.mapToJson(inventoryMap));
             return NOT_ENOUGH;
         }
         Long orderId = null;
         try {
             orderId = this.save(memberId, FROM_CART, addressId, couponId, integral, remarks, cartResult);
         } catch (Exception ee) {
-            log.error("UserOrderServiceImpl:: save order error , msg = {}", ee.getMessage());
+            log.error("MemberOrderServiceImpl:: save order error , msg = {}", ee.getMessage());
             for (Long waresId : inventoryMap.keySet()) {
                 redisTemplate.opsForValue().increment(RedisCacheConstants.WARES_INVENTORY_REDIS_KEY.concat(String.valueOf(waresId)), inventoryMap.get(waresId));
             }
@@ -386,9 +433,17 @@ public class MemberOrderServiceImpl extends BaseServiceImpl<MemberOrderMapper, M
      * @Date: 2023/4/16 15:47
      */
     private String saveBuyingOutrightOrder(final Long memberId, final Long addressId, final Long couponId, Integer integral, final String remarks, final Long waresId) {
-        Long inventory = redisTemplate.opsForValue().increment(RedisCacheConstants.WARES_INVENTORY_REDIS_KEY.concat(String.valueOf(waresId)), -1);
-        if (inventory == null || inventory <= 0) {
-            redisTemplate.opsForValue().increment(RedisCacheConstants.WARES_INVENTORY_REDIS_KEY.concat(String.valueOf(waresId)), 1);
+        String redisInventoryKey = RedisCacheConstants.WARES_INVENTORY_REDIS_KEY.concat(String.valueOf(waresId));
+        String waresInventoryNum = redisTemplate.opsForValue().get(redisInventoryKey);
+        if (waresInventoryNum == null || Long.parseLong(waresInventoryNum) < 1) {
+            return NOT_ENOUGH;
+        }
+        Long inventory = redisTemplate.opsForValue().increment(redisInventoryKey, -1);
+        if (inventory == null) {
+            return NOT_ENOUGH;
+        }
+        if (inventory < 0) {
+            redisTemplate.opsForValue().increment(redisInventoryKey, 1);
             return NOT_ENOUGH;
         }
         CartResult cartResult = new CartResult();
@@ -398,7 +453,7 @@ public class MemberOrderServiceImpl extends BaseServiceImpl<MemberOrderMapper, M
         try {
             orderId = this.save(memberId, FROM_WARES, addressId, couponId, integral, remarks, Lists.newArrayList(cartResult));
         } catch (Exception ee) {
-            log.error("UserOrderServiceImpl:: save buying out order error , user id = {}", memberId);
+            log.error("MemberOrderServiceImpl:: save buying out order error , user id = {}", memberId);
             redisTemplate.opsForValue().increment(RedisCacheConstants.WARES_INVENTORY_REDIS_KEY.concat(String.valueOf(waresId)), 1);
             return ERROR;
         }

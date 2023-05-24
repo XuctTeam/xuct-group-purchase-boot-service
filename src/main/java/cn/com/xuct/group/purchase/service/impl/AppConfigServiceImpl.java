@@ -16,6 +16,7 @@ import cn.com.xuct.group.purchase.constants.RedisCacheConstants;
 import cn.com.xuct.group.purchase.entity.AppConfig;
 import cn.com.xuct.group.purchase.mapper.AppConfigMapper;
 import cn.com.xuct.group.purchase.service.AppConfigService;
+import org.springframework.cache.annotation.CachePut;
 import org.springframework.cache.annotation.Cacheable;
 import org.springframework.stereotype.Service;
 
@@ -34,5 +35,13 @@ public class AppConfigServiceImpl extends BaseServiceImpl<AppConfigMapper, AppCo
     @Cacheable(cacheNames = RedisCacheConstants.APP_CACHE_CONFIG_NAME, key = "#type", unless = "#result == null")
     public AppConfig get(Integer type) {
         return this.get(Column.of("type", type));
+    }
+
+    @Override
+    @SuppressWarnings("all")
+    @CachePut(cacheNames = RedisCacheConstants.APP_CACHE_CONFIG_NAME, key = "#appConfig.type", unless = "#result == null")
+    public AppConfig saveAppConfig(AppConfig appConfig) {
+        this.saveOrUpdate(appConfig);
+        return appConfig;
     }
 }

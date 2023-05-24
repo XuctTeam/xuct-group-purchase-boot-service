@@ -36,19 +36,34 @@ public interface ResourceService extends IBaseService<ResourceMapper, Resource> 
      */
     List<AdminMenuTreeResult> menuTreeList(final Integer showBtn);
 
-
+    /**
+     * 菜单列表
+     *
+     * @return
+     */
     List<AdminMenuResult> menuList();
 
     /**
+     * 添加或修改资源
+     *
      * @param resource
      */
     boolean addOrUpdateResource(Resource resource);
 
     /**
-     * shanc
+     * 删除资源
      *
      * @param resourceId
      * @return
      */
     boolean deleteResource(final Long resourceId);
+
+
+    /**
+     * 根据角色id查询资源
+     *
+     * @param roleId
+     * @return
+     */
+    List<Resource> findUserPermissionList(final Long roleId);
 }

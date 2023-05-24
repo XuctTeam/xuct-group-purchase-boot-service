@@ -17,6 +17,7 @@ import cn.com.xuct.group.purchase.constants.OptConstants;
 import cn.com.xuct.group.purchase.service.MemberOrderService;
 import cn.com.xuct.group.purchase.vo.result.OrderResult;
 import cn.dev33.satoken.annotation.SaCheckPermission;
+import cn.hutool.db.sql.Order;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.Parameter;
 import io.swagger.v3.oas.annotations.Parameters;
@@ -58,11 +59,18 @@ public class AdminMemberOrderController {
         return R.data(memberOrderService.findAllMemberOrder(status, createTime, pageNum, pageSize));
     }
 
+    @Operation(summary = "【订单】获取详情", description = "获取详情")
+    @GetMapping("/{id}")
+    public R<OrderResult> detail(@PathVariable(name = "id") Long id) {
+        return R.data(memberOrderService.getDetail(id, null));
+    }
+
     @SaCheckPermission("members:order:deliver")
     @Operation(summary = "【订单】发货", description = "发货")
     @Log(modul = "【订单】发货", type = OptConstants.UPDATE, desc = "发货")
     @PutMapping("/deliver/{id}")
     public R<String> deliverOrder(@PathVariable(name = "id") Long id) {
+        memberOrderService.deliverOrder(id);
         return R.success("发货成功");
     }
 }

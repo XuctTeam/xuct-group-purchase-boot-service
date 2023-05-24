@@ -26,4 +26,11 @@ public interface AppConfigService extends IBaseService<AppConfigMapper , AppConf
 
 
     AppConfig get(final Integer type);
+
+    /**
+     *
+     * @param type
+     * @return
+     */
+    AppConfig saveAppConfig(final AppConfig appConfig);
 }

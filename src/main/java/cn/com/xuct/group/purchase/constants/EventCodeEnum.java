@@ -23,8 +23,9 @@ public enum  EventCodeEnum {
 
     wares_expire,
 
-    coupon_expire
+    coupon_expire,
 
+    order_receiver_expire
 
 
     ;

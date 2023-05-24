@@ -36,8 +36,10 @@ public interface MemberOrderService extends IBaseService<MemberOrderMapper, Memb
 
     final String FROM_WARES = "wares";
 
+    final Integer ORDER_RECEIVE_DELAY = 15;
+
     /**
-     * 订单总数统计
+     * 【会员】订单总数统计
      *
      * @param memberId
      * @return
@@ -55,7 +57,7 @@ public interface MemberOrderService extends IBaseService<MemberOrderMapper, Memb
     List<CartResult> getConfirmOrderDetail(final Long memberId, final String scene, List<Long> waresIds);
 
     /**
-     * 保存订单
+     * 【会员】保存订单
      *
      * @param memberId
      * @param scene     cart 购物车 wares 立即购买
@@ -68,7 +70,7 @@ public interface MemberOrderService extends IBaseService<MemberOrderMapper, Memb
     String saveOrder(final Long memberId, final String scene, final Long addressId, Long couponId, Integer integral, final String remarks, List<Long> waresIds);
 
     /**
-     * 订单分页查询
+     * 【会员】订单分页查询
      *
      * @param memberId
      * @param status       状态
@@ -82,7 +84,7 @@ public interface MemberOrderService extends IBaseService<MemberOrderMapper, Memb
 
 
     /**
-     * 根据关键词搜索订单
+     * 【会员】根据关键词搜索订单
      *
      * @param memberId
      * @param pageNo
@@ -101,10 +103,10 @@ public interface MemberOrderService extends IBaseService<MemberOrderMapper, Memb
      * @param orderId
      * @return
      */
-    OrderResult getDetail(final Long memberId, final Long orderId);
+    OrderResult getDetail(final Long orderId, final Long memberId);
 
     /**
-     * 申请取消订单
+     * 【会员】申请取消订单
      *
      * @param memberId
      * @param orderId
@@ -115,7 +117,7 @@ public interface MemberOrderService extends IBaseService<MemberOrderMapper, Memb
 
 
     /**
-     * 取消申请退单
+     * 【会员】取消申请退单
      *
      * @param memberId
      * @param orderId
@@ -123,7 +125,7 @@ public interface MemberOrderService extends IBaseService<MemberOrderMapper, Memb
     String cancelRefundOrder(final Long memberId, final Long orderId);
 
     /**
-     * 取消订单
+     * 【会员】取消订单
      *
      * @param memberId
      * @param orderId
@@ -131,7 +133,7 @@ public interface MemberOrderService extends IBaseService<MemberOrderMapper, Memb
     String cancelOrder(final Long memberId, final Long orderId);
 
     /**
-     * 催单
+     * 【会员】催单
      *
      * @param memberId
      * @param orderId
@@ -139,7 +141,7 @@ public interface MemberOrderService extends IBaseService<MemberOrderMapper, Memb
     void rushOrder(final Long memberId, final Long orderId);
 
     /**
-     * 收货
+     * 【会员】收货
      *
      * @param memberId
      * @param orderId
@@ -147,7 +149,7 @@ public interface MemberOrderService extends IBaseService<MemberOrderMapper, Memb
     void receiveOrder(final Long memberId, final Long orderId);
 
     /**
-     * 删除订单
+     * 【会员】删除订单
      *
      * @param memberId
      * @param orderId
@@ -163,7 +165,7 @@ public interface MemberOrderService extends IBaseService<MemberOrderMapper, Memb
     List<MemberOrderItem> evaluateList(final Long memberId);
 
     /**
-     * 保存评价
+     * 【会员】保存评价
      *
      * @param memberId
      * @param orderItemId
@@ -174,7 +176,7 @@ public interface MemberOrderService extends IBaseService<MemberOrderMapper, Memb
     void evaluateWares(final Long memberId, final Long orderItemId, final String rate, final String evaluateImages, final String remarks);
 
     /**
-     * 查询删除列表
+     * 【会员】查询删除列表
      *
      * @param memberId
      * @return
@@ -182,7 +184,7 @@ public interface MemberOrderService extends IBaseService<MemberOrderMapper, Memb
     List<MemberOrder> deleteList(final Long memberId);
 
     /**
-     * 分页查询订单列表
+     * 【管理员】分页查询订单列表
      *
      * @param status
      * @param createTime
@@ -191,5 +193,19 @@ public interface MemberOrderService extends IBaseService<MemberOrderMapper, Memb
      * @return
      */
     PageData<OrderResult> findAllMemberOrder(final Integer status, final List<String> createTime, final int page, final int pageSize);
+
+    /**
+     * 【管理员】发货
+     *
+     * @param orderId
+     */
+    void deliverOrder(final Long orderId);
+
+    /**
+     * 【管理员】订单收货过期
+     *
+     * @param orderId
+     */
+    void receiveOrderByExpireTime(final Long orderId);
 
 }

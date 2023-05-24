@@ -124,7 +124,7 @@ public class MemberOrderController {
             @Parameter(name = "orderId", description = "订单ID"),
     })
     public R<OrderResult> getDetail(@RequestParam("orderId") String orderId) {
-        return R.data(memberOrderService.getDetail(StpUtil.getLoginIdAsLong(), Long.valueOf(orderId)));
+        return R.data(memberOrderService.getDetail(Long.valueOf(orderId), StpUtil.getLoginIdAsLong()));
     }
 
     @Operation(summary = "【订单】退单上传图片", description = "退单上传图片")

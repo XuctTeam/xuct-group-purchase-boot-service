@@ -10,8 +10,10 @@
  */
 package cn.com.xuct.group.purchase.service.impl;
 
+import cn.com.xuct.group.purchase.entity.Resource;
 import cn.com.xuct.group.purchase.entity.Role;
 import cn.com.xuct.group.purchase.entity.User;
+import cn.com.xuct.group.purchase.service.ResourceService;
 import cn.com.xuct.group.purchase.service.RoleService;
 import cn.com.xuct.group.purchase.service.UserService;
 import cn.dev33.satoken.stp.StpInterface;
@@ -21,6 +23,7 @@ import org.assertj.core.util.Lists;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
+import java.util.stream.Collectors;
 
 /**
  * 〈一句话功能简述〉<br>
@@ -39,14 +42,21 @@ public class StpInterfaceImpl implements StpInterface {
 
     private final UserService userService;
 
+    private final ResourceService resourceService;
+
     @Override
-    public List<String> getPermissionList(Object o, String s) {
-        return Lists.newArrayList();
+    public List<String> getPermissionList(Object loginId, String loginType) {
+        User user = this.getUserById(loginId);
+        if (user == null) {
+            return Lists.newArrayList();
+        }
+        List<Resource> resources = resourceService.findUserPermissionList(user.getRoleId());
+        return resources.stream().map(Resource::getPerm).collect(Collectors.toList());
     }
 
     @Override
     public List<String> getRoleList(Object loginId, String loginType) {
-        User user = userService.getById(Long.valueOf(String.valueOf(loginId)));
+        User user = this.getUserById(loginId);
         if (user == null) {
             return Lists.newArrayList();
         }
@@ -55,5 +65,9 @@ public class StpInterfaceImpl implements StpInterface {
             return Lists.newArrayList();
         }
         return Lists.newArrayList(role.getCode());
+    }
+
+    private User getUserById(final Object userId) {
+        return userService.getById(Long.valueOf(String.valueOf(userId)));
     }
 }
