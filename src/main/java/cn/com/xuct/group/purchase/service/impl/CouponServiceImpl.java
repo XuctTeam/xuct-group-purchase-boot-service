@@ -65,7 +65,7 @@ public class CouponServiceImpl extends BaseServiceImpl<CouponMapper, Coupon> imp
     private final RabbitTemplate rabbitTemplate;
 
     @Override
-    public PageData<Coupon> pages(String name, Integer pageNum, Integer pageSize) {
+    public PageData<Coupon> findPageList(String name, Integer pageNum, Integer pageSize) {
         List<Column> columnList = Lists.newArrayList();
         if (StringUtils.hasLength(name)) {
             columnList.add(Column.of("name", name, ColumnEnum.like));

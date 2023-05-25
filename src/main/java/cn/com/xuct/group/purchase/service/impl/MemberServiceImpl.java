@@ -101,7 +101,7 @@ public class MemberServiceImpl extends BaseServiceImpl<MemberMapper, Member> imp
     }
 
     @Override
-    public PageData<Member> list(String nickname, final Integer status, final List<String> createTime, Integer pageNum, Integer pageSize) {
+    public PageData<Member> findPageList(String nickname, final Integer status, final List<String> createTime, Integer pageNum, Integer pageSize) {
         List<Column> columnList = Lists.newArrayList();
         if (StringUtils.hasLength(nickname)) {
             columnList.add(Column.of("nick_name", nickname, ColumnEnum.like));

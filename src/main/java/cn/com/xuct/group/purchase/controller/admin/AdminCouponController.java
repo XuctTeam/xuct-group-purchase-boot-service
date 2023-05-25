@@ -53,8 +53,8 @@ public class AdminCouponController {
             @Parameter(name = "pageSize", description = "每页条数", required = true),
             @Parameter(name = "name", description = "优惠券名称")
     })
-    public R<PageData<Coupon>> pages(@RequestParam(value = "name", required = false) String name, @RequestParam("pageNum") Integer pageNum, @RequestParam("pageSize") Integer pageSize) {
-        return R.data(couponService.pages(name, pageNum, pageSize));
+    public R<PageData<Coupon>> findPageList(@RequestParam(value = "name", required = false) String name, @RequestParam("pageNum") Integer pageNum, @RequestParam("pageSize") Integer pageSize) {
+        return R.data(couponService.findPageList(name, pageNum, pageSize));
     }
 
     @SaCheckPermission("coupon:manage:add")

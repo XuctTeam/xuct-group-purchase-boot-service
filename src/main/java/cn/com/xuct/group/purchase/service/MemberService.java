@@ -85,7 +85,7 @@ public interface MemberService extends IBaseService<MemberMapper, Member> {
      * @param pageSize
      * @return
      */
-    PageData<Member> list(final String nickname, final Integer status, final List<String> createTime, final Integer pageNum, final Integer pageSize);
+    PageData<Member> findPageList(final String nickname, final Integer status, final List<String> createTime, final Integer pageNum, final Integer pageSize);
 
     /**
      * 修改会员状态

@@ -62,7 +62,7 @@ public class AdminMemberController {
                                     @RequestParam(value = "status" , required = false)Integer status,
                                     @RequestParam("pageNum") Integer pageNum, @RequestParam("pageSize") Integer pageSize) {
 
-        return R.data(memberService.list(nickname, status , createTime, pageNum, pageSize));
+        return R.data(memberService.findPageList(nickname, status , createTime, pageNum, pageSize));
     }
 
     @Operation(summary = "【会员】修改状态", description = "修改状态")

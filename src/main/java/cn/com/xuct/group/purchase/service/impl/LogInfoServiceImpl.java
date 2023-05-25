@@ -43,7 +43,7 @@ import java.util.List;
 public class LogInfoServiceImpl extends BaseServiceImpl<LogInfoMapper, LogInfo> implements LogInfoService {
 
     @Override
-    public PageData<LogInfo> pagesList(final String module, final List<String> createTime, final Integer pageNo, final Integer pageSize) {
+    public PageData<LogInfo> findPageList(final String module, final List<String> createTime, final Integer pageNo, final Integer pageSize) {
         List<Column> columnList = Lists.newArrayList();
         if (StringUtils.hasLength(module)) {
             columnList.add(Column.of("module", module, ColumnEnum.like));

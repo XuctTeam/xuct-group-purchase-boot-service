@@ -36,5 +36,5 @@ public interface LogInfoService extends IBaseService<LogInfoMapper, LogInfo> {
      * @param pageSize
      * @return
      */
-    PageData<LogInfo> pagesList(final String module, final List<String> createTime, final Integer pageNo, final Integer pageSize);
+    PageData<LogInfo> findPageList(final String module, final List<String> createTime, final Integer pageNo, final Integer pageSize);
 }

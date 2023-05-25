@@ -11,6 +11,7 @@
 package cn.com.xuct.group.purchase.entity;
 
 import cn.com.xuct.group.purchase.base.dao.SuperEntity;
+import com.baomidou.mybatisplus.annotation.TableField;
 import com.baomidou.mybatisplus.annotation.TableName;
 import io.swagger.v3.oas.annotations.media.Schema;
 import lombok.Data;
@@ -53,4 +54,14 @@ public class MemberOpinion extends SuperEntity<MemberOpinion> {
 
     @Schema(description = "反馈内容")
     private String feedback;
+
+    @Schema(description = "会员昵称")
+    @TableField(exist = false)
+    private String memberName;
+
+    
+    @Schema(description = "会员头像")
+    @TableField(exist = false)
+    private String memberAvatar;
+
 }

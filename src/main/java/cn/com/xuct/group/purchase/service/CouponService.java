@@ -36,7 +36,7 @@ public interface CouponService extends IBaseService<CouponMapper, Coupon> {
      * @param pageSize
      * @return
      */
-    PageData<Coupon> pages(final String name, final Integer pageNum, final Integer pageSize);
+    PageData<Coupon> findPageList(final String name, final Integer pageNum, final Integer pageSize);
 
     /**
      * 添加优惠券
