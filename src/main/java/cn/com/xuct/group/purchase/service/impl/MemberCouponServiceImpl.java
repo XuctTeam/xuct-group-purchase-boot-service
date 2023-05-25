@@ -63,10 +63,10 @@ public class MemberCouponServiceImpl extends BaseServiceImpl<MemberCouponMapper,
     }
 
     @Override
-    public void updateUserCouponUsed(Long couponId) {
+    public void updateUserCouponUsed(Long couponId , boolean used) {
         MemberCoupon memberCoupon = new MemberCoupon();
         memberCoupon.setId(couponId);
-        memberCoupon.setUsed(true);
+        memberCoupon.setUsed(used);
         this.updateById(memberCoupon);
     }
 

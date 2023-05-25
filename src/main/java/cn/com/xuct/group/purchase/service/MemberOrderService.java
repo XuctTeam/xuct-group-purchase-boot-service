@@ -208,4 +208,24 @@ public interface MemberOrderService extends IBaseService<MemberOrderMapper, Memb
      */
     void receiveOrderByExpireTime(final Long orderId);
 
+    /**
+     * 【管理员】售后订单
+     *
+     * @param nickname
+     * @param createTime
+     * @param page
+     * @param pageSize
+     * @return
+     */
+    PageData<OrderResult> findAllMemberRefundOrder(String nickname , final List<String> createTime, final int page, final int pageSize);
+
+    /**
+     * 【管理员】审核售后订单
+     * @param orderId
+     * @param status
+     * @param reason
+     * @return
+     */
+    int auditRefundOrder(final Long orderId, final Integer status, final String reason);
+
 }

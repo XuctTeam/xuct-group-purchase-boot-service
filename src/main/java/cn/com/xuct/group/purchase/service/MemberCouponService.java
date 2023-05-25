@@ -47,8 +47,9 @@ public interface MemberCouponService extends IBaseService<MemberCouponMapper, Me
      * 更新优惠券
      *
      * @param id
+     * @param used 是否使用 true 是 false 否
      */
-    void updateUserCouponUsed(final Long id);
+    void updateUserCouponUsed(final Long id, final boolean used);
 
     /**
      * 查询详情

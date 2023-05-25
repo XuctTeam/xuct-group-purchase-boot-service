@@ -325,6 +325,44 @@ public class MemberOrderServiceImpl extends BaseServiceImpl<MemberOrderMapper, M
         this.updateById(memberOrder);
     }
 
+    @Override
+    public PageData<OrderResult> findAllMemberRefundOrder(String nickname, List<String> createTime, int page, int pageSize) {
+        IPage<OrderResult> result = ((MemberOrderMapper) this.getBaseMapper()).findAllMemberRefundOrder(nickname, createTime, Page.of(page, pageSize));
+        return new PageData<OrderResult>().put(result);
+    }
+
+    @Override
+    public int auditRefundOrder(Long orderId, Integer status, String reason) {
+        MemberOrder memberOrder = this.getById(orderId);
+        if (memberOrder == null) {
+            log.error("MemberOrderServiceImpl:: audit refund order error , order id = {}", orderId);
+            return -1;
+        }
+        if (memberOrder.getRefundStatus() != 1) {
+            log.error("MemberOrderServiceImpl:: audit refund order error , order id = {}", orderId);
+            return -2;
+        }
+        memberOrder.setRefundAuditReason(reason);
+        memberOrder.setRefundAuditTime(DateTime.now().toJdkDate());
+        if (status == 0) {
+            memberOrder.setRefundStatus(3);
+            this.updateById(memberOrder);
+            return 0;
+        }
+        /* 1.积分返还 */
+        if (memberOrder.getIntegral() > 0) {
+            memberService.updateUserIntegral(memberOrder.getMemberId(), memberOrder.getIntegral());
+        }
+        /* 2.优惠券返还 */
+        if (memberOrder.getUserCouponId() != null) {
+            memberCouponService.updateUserCouponUsed(memberOrder.getUserCouponId(), false);
+        }
+        /* TODO 3.商品库存返还 */
+        memberOrder.setRefundStatus(2);
+        this.updateById(memberOrder);
+        return 0;
+    }
+
     private Integer checkIntegral(Integer integral, final Long memberId) {
         if (integral == 0) {
             return integral;
@@ -485,7 +523,7 @@ public class MemberOrderServiceImpl extends BaseServiceImpl<MemberOrderMapper, M
         memberOrder.setTotalPrice(0L);
         memberOrder.setStatus(2);
         memberOrder.setUserCouponId(couponId);
-        /*1. 保存订单*/
+        /* 1.保存订单 */
         this.save(memberOrder);
         List<MemberOrderItem> memberOrderItems = Lists.newArrayList();
         Map<Long, Integer> inventoryMap = Maps.newHashMap();
@@ -499,19 +537,19 @@ public class MemberOrderServiceImpl extends BaseServiceImpl<MemberOrderMapper, M
             inventoryMap.put(cart.getWaresId(), cart.getNum());
             memberOrderItems.add(memberOrderItem);
         });
-        /*2. 保存订单项*/
+        /* 2.保存订单项 */
         memberOrderItemService.saveBatch(memberOrderItems);
-        /*3. 减少库存*/
+        /* 3.减少库存 */
         waresService.updateWaresInventory(inventoryMap);
-        /*4. 删除购物车商品*/
+        /* 4.删除购物车商品 */
         if (scene.equals(FROM_CART)) {
             memberWaresCartService.deleteCartWares(cartResult.stream().map(CartResult::getWaresId).collect(Collectors.toList()), memberId);
         }
-        /*5. 更新优惠券 */
+        /* 5.更新优惠券 */
         if (couponId != null) {
-            memberCouponService.updateUserCouponUsed(couponId);
+            memberCouponService.updateUserCouponUsed(couponId, true);
         }
-        /*6. 更新用户积分*/
+        /* 6.更新用户积分 */
         if (integral > 0) {
             memberService.updateUserIntegral(memberId, -integral);
         }

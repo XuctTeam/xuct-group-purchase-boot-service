@@ -97,6 +97,12 @@ public class MemberOrder extends SuperEntity<MemberOrder> {
     @Schema(description = "退单时间")
     private Date refundTime;
 
+    @Schema(description = "退款审核原因")
+    private String refundAuditReason;
+
+    @Schema(description = "退款审核时间")
+    private Date refundAuditTime;
+
     @Schema(description = "是否删除")
     private boolean deleted = false;
 

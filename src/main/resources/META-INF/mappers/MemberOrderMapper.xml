@@ -39,6 +39,37 @@
         <result column="member_open_id" property="member.openId"/>
     </resultMap>
 
+    <sql id="Base_Column_List">
+            o.id,
+               o.create_time,
+               o.deliver_time,
+               o.serve_time,
+               o.status,
+               o.wares_num,
+               o.address_id,
+               o.integral,
+               o.rush,
+               o.refund_status,
+               o.refund_type,
+               o.refund_reason,
+               o.refund_images,
+               o.refund_time,
+               o.user_coupon_id,
+               o.refund_audit_reason,
+               o.refund_audit_time,
+               o.address_id    as address_a_id,
+               a.province_name as address_province_name,
+               a.city_name     as address_city_name,
+               a.county_name   as address_county_name,
+               a.tel_number    as address_tel_number,
+               a.detail_info   as address_detail_info,
+               a.user_name     as address_user_name,
+               m.nick_name     as member_nick_name,
+               m.avatar        as member_avatar,
+               m.open_id       as member_open_id
+    </sql>
+
+
     <select id="findMemberOrder" resultMap="baseResultMap">
         select id , create_time , deliver_time , serve_time , status , wares_num , rush , refund_status
         from bu_member_order
@@ -92,31 +123,8 @@
     </select>
 
     <select id="getOrderDetail" resultMap="detailMap">
-        select o.id,
-               o.create_time,
-               o.deliver_time,
-               o.serve_time,
-               o.status,
-               o.wares_num,
-               o.address_id,
-               o.integral,
-               o.rush,
-               o.refund_status,
-               o.refund_type,
-               o.refund_reason,
-               o.refund_images,
-               o.refund_time,
-               o.user_coupon_id,
-               o.address_id    as address_a_id,
-               a.province_name as address_province_name,
-               a.city_name     as address_city_name,
-               a.county_name   as address_county_name,
-               a.tel_number    as address_tel_number,
-               a.detail_info   as address_detail_info,
-               a.user_name     as address_user_name,
-               m.nick_name     as member_nick_name,
-               m.avatar        as member_avatar,
-               m.open_id       as member_open_id
+        select
+            <include refid="Base_Column_List"/>
         from bu_member_order o
                  left join sys_member_address a on o.address_id = a.id
                  left join sys_member m on o.member_id = m.id
@@ -144,29 +152,8 @@
     </select>
 
     <select id="findAllMemberOrder" resultMap="detailMap">
-        select o.id,
-               o.create_time,
-               o.deliver_time,
-               o.serve_time,
-               o.status,
-               o.wares_num,
-               o.address_id,
-               o.integral,
-               o.rush,
-               o.refund_status,
-               o.refund_type,
-               o.refund_reason,
-               o.refund_images,
-               o.refund_time,
-               o.user_coupon_id,
-               o.address_id    as address_a_id,
-               a.province_name as address_province_name,
-               a.city_name     as address_city_name,
-               a.county_name   as address_county_name,
-               a.tel_number    as address_tel_number,
-               a.detail_info   as address_detail_info,
-               a.user_name     as address_user_name,
-               m.nick_name     as member_nick_name
+        select
+            <include refid="Base_Column_List"/>
         from bu_member_order o
                  left join sys_member_address a on o.address_id = a.id
                  left join sys_member m on o.member_id = m.id
@@ -182,5 +169,24 @@
           and o.deleted = false
           and o.refund_status in (0 , 3)
         order by o.status asc, o.rush desc, o.create_time desc
+    </select>
+
+    <select id="findAllMemberRefundOrder" resultMap="detailMap">
+        select
+            <include refid="Base_Column_List"/>
+        from bu_member_order o
+        left join sys_member_address a on o.address_id = a.id
+        left join sys_member m on o.member_id = m.id
+        where 1 = 1
+        <if test="createTime.size() > 0 " >
+            and o.create_time &gt;= str_to_date(#{createTime[0]},'%Y-%m-%d %H:%i:%s')
+            and o.create_time &lt;= str_to_date(#{createTime[1]},'%Y-%m-%d %H:%i:%s')
+        </if>
+        <if test="nickname != null" >
+            and m.nick_name like concat('%',#{nickname,jdbcType=VARCHAR},'%')
+        </if>
+          and o.refund_status in (1 , 2)
+          and o.deleted = false
+           order by o.refund_status asc , o.create_time asc
     </select>
 </mapper>

@@ -15,6 +15,7 @@ import cn.com.xuct.group.purchase.base.res.R;
 import cn.com.xuct.group.purchase.base.vo.PageData;
 import cn.com.xuct.group.purchase.constants.OptConstants;
 import cn.com.xuct.group.purchase.service.MemberOrderService;
+import cn.com.xuct.group.purchase.vo.param.admin.AdminAuditRefundOrderParam;
 import cn.com.xuct.group.purchase.vo.result.OrderResult;
 import cn.dev33.satoken.annotation.SaCheckPermission;
 import cn.hutool.db.sql.Order;
@@ -23,6 +24,7 @@ import io.swagger.v3.oas.annotations.Parameter;
 import io.swagger.v3.oas.annotations.Parameters;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import lombok.RequiredArgsConstructor;
+import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
@@ -72,5 +74,32 @@ public class AdminMemberOrderController {
     public R<String> deliverOrder(@PathVariable(name = "id") Long id) {
         memberOrderService.deliverOrder(id);
         return R.success("发货成功");
+    }
+
+    @Operation(summary = "【订单】售后订单", description = "售后订单")
+    @Parameters(value = {
+            @Parameter(name = "pageNum", description = "当前页", required = true),
+            @Parameter(name = "pageSize", description = "每页条数", required = true),
+            @Parameter(name = "nickname", description = "昵称"),
+            @Parameter(name = "createTime", description = "注册时间"),
+
+    })
+    @GetMapping("/refund/list")
+    public R<PageData<OrderResult>> refundPage(@RequestParam(name = "nickname", required = false) String nickname, @RequestParam("createTime[]") List<String> createTime, @RequestParam(value = "pageNum", defaultValue = "1") Integer pageNum,
+                                               @RequestParam(value = "pageSize", defaultValue = "10") Integer pageSize) {
+        return R.data(memberOrderService.findAllMemberRefundOrder(nickname, createTime, pageNum, pageSize));
+    }
+
+    @SaCheckPermission("services:refund:audit")
+    @Operation(summary = "【订单】审核退单", description = "审核退单")
+    @Log(modul = "【订单】审核退单", type = OptConstants.UPDATE, desc = "审核退单")
+    @PutMapping("/refund/audit")
+    public R<String> auditRefundOrder(@RequestBody @Validated AdminAuditRefundOrderParam param) {
+        int result = memberOrderService.auditRefundOrder(param.getId(), param.getFeedback(), param.getContent());
+        return switch (result) {
+            case -1 -> R.fail("订单不存在");
+            case -2 -> R.fail("订单状态不正确");
+            default -> R.success("审核成功");
+        };
     }
 }

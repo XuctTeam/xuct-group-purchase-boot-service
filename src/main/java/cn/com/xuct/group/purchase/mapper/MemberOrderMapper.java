@@ -82,4 +82,15 @@ public interface MemberOrderMapper extends BaseMapper<MemberOrder> {
      * @return
      */
     IPage<OrderResult> findAllMemberOrder(@Param("status") Integer status, @Param("createTime") List<String> createTime, Page<MemberOrder> page);
+
+
+    /**
+     * 查询所有售后订单
+     *
+     * @param nickname
+     * @param createTime
+     * @param page
+     * @return
+     */
+    IPage<OrderResult> findAllMemberRefundOrder(@Param("nickname") String nickname, @Param("createTime") List<String> createTime, Page<MemberOrder> page);
 }
