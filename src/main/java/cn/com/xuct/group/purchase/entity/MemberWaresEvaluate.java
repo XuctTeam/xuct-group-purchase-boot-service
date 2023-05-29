@@ -11,6 +11,7 @@
 package cn.com.xuct.group.purchase.entity;
 
 import cn.com.xuct.group.purchase.base.dao.SuperEntity;
+import com.baomidou.mybatisplus.annotation.TableField;
 import com.baomidou.mybatisplus.annotation.TableName;
 import io.swagger.v3.oas.annotations.media.Schema;
 import lombok.Data;
@@ -46,4 +47,20 @@ public class MemberWaresEvaluate extends SuperEntity<MemberWaresEvaluate> {
 
     @Schema(description = "描述")
     private String remarks;
+
+    @Schema(description = "评价商品名称")
+    @TableField(exist = false)
+    private String waresName;
+
+    @Schema(description = "评价商品首页图片")
+    @TableField(exist = false)
+    private String waresFirstDrawing;
+
+    @Schema(description = "评价人名称")
+    @TableField(exist = false)
+    private String memberName;
+
+    @Schema(description = "评价人头像")
+    @TableField(exist = false)
+    private String memberAvatar;
 }

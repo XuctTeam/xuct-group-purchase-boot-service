@@ -14,7 +14,9 @@ import cn.com.xuct.group.purchase.annotation.Log;
 import cn.com.xuct.group.purchase.base.res.R;
 import cn.com.xuct.group.purchase.base.vo.PageData;
 import cn.com.xuct.group.purchase.constants.OptConstants;
+import cn.com.xuct.group.purchase.entity.MemberWaresEvaluate;
 import cn.com.xuct.group.purchase.entity.Wares;
+import cn.com.xuct.group.purchase.service.MemberWaresEvaluateService;
 import cn.com.xuct.group.purchase.service.WaresService;
 import cn.com.xuct.group.purchase.vo.param.admin.AdminWaresStatusParam;
 import cn.com.xuct.group.purchase.vo.result.admin.AdminSelectedResult;
@@ -43,6 +45,8 @@ import java.util.List;
 public class AdminWaresController {
 
     private final WaresService waresService;
+
+    private final MemberWaresEvaluateService memberWaresEvaluateService;
 
     @Operation(summary = "【商品】商品列表", description = "商品列表")
     @GetMapping("")
@@ -100,5 +104,19 @@ public class AdminWaresController {
     @GetMapping("/selected")
     public R<List<AdminSelectedResult>> getWaresSelected() {
         return R.data(waresService.getWaresSelected());
+    }
+
+
+    @Operation(summary = "【商品】商品评价列表", description = "商品评价列表")
+    @Parameters(value = {
+            @Parameter(name = "pageNum", description = "当前页", required = true),
+            @Parameter(name = "pageSize", description = "每页条数", required = true),
+            @Parameter(name = "waresName", description = "商品名称"),
+            @Parameter(name = "memberName", description = "会员名称")
+    })
+    @GetMapping("/evaluate/list")
+    public R<PageData<MemberWaresEvaluate>> findPageWaresEvaluateList(@RequestParam(value = "waresName", required = false) String waresName, @RequestParam(value = "memberName", required = false) String memberName,
+                                                                      @RequestParam("pageNum") Integer pageNum, @RequestParam("pageSize") Integer pageSize) {
+        return R.data(memberWaresEvaluateService.findPageWaresEvaluateList(waresName, memberName, pageNum, pageSize));
     }
 }

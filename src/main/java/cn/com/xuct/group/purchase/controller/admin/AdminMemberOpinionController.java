@@ -10,8 +10,10 @@
  */
 package cn.com.xuct.group.purchase.controller.admin;
 
+import cn.com.xuct.group.purchase.annotation.Log;
 import cn.com.xuct.group.purchase.base.res.R;
 import cn.com.xuct.group.purchase.base.vo.PageData;
+import cn.com.xuct.group.purchase.constants.OptConstants;
 import cn.com.xuct.group.purchase.entity.MemberOpinion;
 import cn.com.xuct.group.purchase.service.MemberOpinionService;
 import io.swagger.v3.oas.annotations.Operation;
@@ -19,10 +21,8 @@ import io.swagger.v3.oas.annotations.Parameter;
 import io.swagger.v3.oas.annotations.Parameters;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import lombok.RequiredArgsConstructor;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestParam;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.validation.annotation.Validated;
+import org.springframework.web.bind.annotation.*;
 
 /**
  * 〈一句话功能简述〉<br>
@@ -52,5 +52,14 @@ public class AdminMemberOpinionController {
                                                @RequestParam(value = "status", required = false) Integer status,
                                                @RequestParam("pageNum") Integer pageNum, @RequestParam("pageSize") Integer pageSize) {
         return R.data(memberOpinionService.findPageList(nickname, status, pageNum, pageSize));
+    }
+
+
+    @Operation(summary = "【意见反馈】意见反馈", description = "意见反馈")
+    @Log(modul = "【意见反馈】意见反馈", type = OptConstants.UPDATE, desc = "意见反馈")
+    @PutMapping("")
+    public R<String> saveFeedback(@RequestBody @Validated MemberOpinion opinion){
+        memberOpinionService.saveFeedback(opinion);
+        return R.status(true);
     }
 }

@@ -11,11 +11,12 @@
 package cn.com.xuct.group.purchase.service;
 
 import cn.com.xuct.group.purchase.base.service.IBaseService;
+import cn.com.xuct.group.purchase.base.vo.PageData;
 import cn.com.xuct.group.purchase.entity.MemberWaresEvaluate;
 import cn.com.xuct.group.purchase.mapper.MemberWaresEvaluateMapper;
 
 /**
- * 〈一句话功能简述〉<br> 
+ * 〈一句话功能简述〉<br>
  * 〈〉
  *
  * @author Derek Xu
@@ -24,4 +25,15 @@ import cn.com.xuct.group.purchase.mapper.MemberWaresEvaluateMapper;
  */
 public interface MemberWaresEvaluateService extends IBaseService<MemberWaresEvaluateMapper, MemberWaresEvaluate> {
 
+    /**
+     * 【管理员】评价商品列表
+     *
+     * @param waresName
+     * @param memberName
+     * @param page
+     * @param size
+     * @return
+     */
+
+    PageData<MemberWaresEvaluate> findPageWaresEvaluateList(final String waresName, final String memberName, final Integer page, final Integer size);
 }

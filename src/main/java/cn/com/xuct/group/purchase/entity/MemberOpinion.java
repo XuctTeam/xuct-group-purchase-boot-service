@@ -18,6 +18,7 @@ import lombok.Data;
 import lombok.EqualsAndHashCode;
 
 import javax.validation.constraints.NotNull;
+import java.util.Date;
 
 /**
  * 〈一句话功能简述〉<br>
@@ -50,7 +51,7 @@ public class MemberOpinion extends SuperEntity<MemberOpinion> {
     private boolean status;
 
     @Schema(description = "反馈时间")
-    private String feedbackTime;
+    private Date feedbackTime;
 
     @Schema(description = "反馈内容")
     private String feedback;

@@ -45,4 +45,12 @@ public interface MemberOpinionService extends IBaseService<MemberOpinionMapper, 
      * @return
      */
     PageData<MemberOpinion> findPageList(final String nickname, final Integer status, final Integer pageNum, final Integer pageSize);
+
+
+    /**
+     * 【管理员】反馈
+     *
+     * @param opinion
+     */
+    void saveFeedback(final MemberOpinion opinion);
 }

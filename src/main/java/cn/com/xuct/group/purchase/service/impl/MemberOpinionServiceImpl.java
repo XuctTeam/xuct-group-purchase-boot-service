@@ -23,6 +23,7 @@ import cn.com.xuct.group.purchase.entity.User;
 import cn.com.xuct.group.purchase.mapper.MemberOpinionMapper;
 import cn.com.xuct.group.purchase.mapper.MemberWaresCartMapper;
 import cn.com.xuct.group.purchase.service.MemberOpinionService;
+import cn.hutool.core.date.DateTime;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.github.yulichang.wrapper.MPJLambdaWrapper;
 import com.google.common.collect.Lists;
@@ -61,5 +62,12 @@ public class MemberOpinionServiceImpl extends BaseServiceImpl<MemberOpinionMappe
             qr.eq(MemberOpinion::isStatus, status == 0);
         }
         return this.convert(super.getBaseMapper().selectPage(Page.of(pageNum, pageSize), qr));
+    }
+
+    @Override
+    public void saveFeedback(MemberOpinion opinion) {
+        opinion.setFeedbackTime(DateTime.now().toJdkDate());
+        opinion.setStatus(true);
+        this.updateById(opinion);
     }
 }
