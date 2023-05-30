@@ -119,4 +119,12 @@ public class AdminWaresController {
                                                                       @RequestParam("pageNum") Integer pageNum, @RequestParam("pageSize") Integer pageSize) {
         return R.data(memberWaresEvaluateService.findPageWaresEvaluateList(waresName, memberName, pageNum, pageSize));
     }
+
+    @Operation(summary = "【商品】商品评价删除", description = "商品评价删除")
+    @DeleteMapping("/evaluate/{id}")
+    @Log(modul = "【商品】商品评价删除", type = OptConstants.DELETE, desc = "商品评价删除")
+    public R<String> deleteWaresEvaluate(@PathVariable("id") Long id) {
+        memberWaresEvaluateService.removeById(id);
+        return R.status(true);
+    }
 }
