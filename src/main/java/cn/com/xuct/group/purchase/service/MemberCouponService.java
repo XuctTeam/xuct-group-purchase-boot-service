@@ -40,7 +40,7 @@ public interface MemberCouponService extends IBaseService<MemberCouponMapper, Me
      * @param memberId
      * @return
      */
-    List<MemberCoupon> canUsed(final Long memberId);
+    List<MemberCoupon> canUsed(final Long memberId , final List<Long> waresIds);
 
 
     /**

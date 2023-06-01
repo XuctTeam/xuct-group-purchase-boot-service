@@ -58,4 +58,8 @@ public class MemberCoupon extends SuperEntity<MemberCoupon> {
     @TableField(exist = false)
     @Schema(description = "优惠券名字")
     private String couponName;
+
+    @TableField(exist = false)
+    @Schema(description = "优惠券类型")
+    private int couponWaresType;
 }

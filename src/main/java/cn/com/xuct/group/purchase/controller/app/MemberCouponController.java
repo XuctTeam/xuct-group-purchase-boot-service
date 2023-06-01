@@ -56,7 +56,7 @@ public class MemberCouponController {
 
     @GetMapping("/can/used")
     @Operation(summary = "【优惠券】可使用的优惠券列表", description = "可使用的优惠券列表")
-    public R<List<MemberCoupon>> canUsed() {
+    public R<List<MemberCoupon>> canUsed(@RequestParam("waresIds")List<Long> wareIds) {
         return R.data(memberCouponService.canUsed(StpUtil.getLoginIdAsLong()));
     }
 }

@@ -12,6 +12,9 @@ package cn.com.xuct.group.purchase.mapper;
 
 import cn.com.xuct.group.purchase.entity.MemberCoupon;
 import com.baomidou.mybatisplus.core.mapper.BaseMapper;
+import org.apache.ibatis.annotations.Param;
+
+import java.util.List;
 
 /**
  * 〈一句话功能简述〉<br> 
@@ -23,4 +26,6 @@ import com.baomidou.mybatisplus.core.mapper.BaseMapper;
  */
 public interface MemberCouponMapper extends BaseMapper<MemberCoupon> {
 
+
+    List<MemberCoupon> findCanUsedCoupon(@Param("memberId")Long memberId , @Param("waresIds") List<Long> wareIds);
 }
