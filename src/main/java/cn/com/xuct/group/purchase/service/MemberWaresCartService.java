@@ -42,7 +42,7 @@ public interface MemberWaresCartService extends IBaseService<MemberWaresCartMapp
      * @param waresIds
      * @return
      */
-    List<CartResult> cartList(final Long memberId  , List<Long> waresIds);
+    List<CartResult> cartList(final Long memberId, List<Long> waresIds);
 
     /**
      * 修改购物车数量
@@ -58,5 +58,5 @@ public interface MemberWaresCartService extends IBaseService<MemberWaresCartMapp
      *
      * @param waresIds
      */
-    void deleteCartWares(final List<Long> waresIds , final Long memberId);
+    void deleteCartWares(final List<Long> waresIds, final Long memberId);
 }

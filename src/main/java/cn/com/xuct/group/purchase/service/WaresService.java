@@ -44,7 +44,7 @@ public interface WaresService extends IBaseService<WaresMapper, Wares> {
      *
      * @return java.lang.List
      */
-    List<Wares> findList();
+    PageData<Wares> findPage(final int pageNum , final int pageSize);
 
     /**
      * 根据商品ID更新库存

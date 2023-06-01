@@ -30,5 +30,5 @@ public class AddCartParam implements Serializable {
 
     @Schema(description = "商品ID")
     @NotNull
-    private Long gid;
+    private Long waresId;
 }

@@ -12,6 +12,7 @@ package cn.com.xuct.group.purchase.controller.app;
 
 import cn.com.xuct.group.purchase.base.res.R;
 import cn.com.xuct.group.purchase.base.vo.Column;
+import cn.com.xuct.group.purchase.base.vo.PageData;
 import cn.com.xuct.group.purchase.entity.Wares;
 import cn.com.xuct.group.purchase.service.*;
 import cn.com.xuct.group.purchase.vo.param.AddCartParam;
@@ -59,8 +60,8 @@ public class WaresController {
     @SaIgnore
     @GetMapping("/list")
     @Operation(summary = "【商品】列表", description = "查询商品列表")
-    public R<List<Wares>> list() {
-        return R.data(waresService.findList());
+    public R<PageData<Wares>> list(@RequestParam("pageNum")Integer pageNum , @RequestParam("pageSize")Integer pageSize) {
+        return R.data(waresService.findPage(pageNum , pageSize));
     }
 
     @SaIgnore
@@ -69,8 +70,8 @@ public class WaresController {
     @Parameters(value = {
             @Parameter(name = "id", description = "商品ID"),
     })
-    public R<WaresResult> get(@RequestParam("id") Long id) {
-        return R.data(waresService.getWareInfo(id, StpUtil.isLogin() ? StpUtil.getLoginIdAsLong() : null));
+    public R<WaresResult> get(@RequestParam("waresId") Long waresId) {
+        return R.data(waresService.getWareInfo(waresId, StpUtil.isLogin() ? StpUtil.getLoginIdAsLong() : null));
     }
 
     @SaIgnore
@@ -91,7 +92,7 @@ public class WaresController {
     @PostMapping("/cart/add")
     @Operation(summary = "【购物车】添加购物车", description = "添加购物车")
     public R<String> addCart(@RequestBody @Validated AddCartParam addCartParam) {
-        memberWaresCartService.addCart(addCartParam.getGid(), StpUtil.getLoginIdAsLong());
+        memberWaresCartService.addCart(addCartParam.getWaresId(), StpUtil.getLoginIdAsLong());
         return R.status(true);
     }
 

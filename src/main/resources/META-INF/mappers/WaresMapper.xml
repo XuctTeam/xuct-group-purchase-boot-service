@@ -19,7 +19,7 @@
         left join (
             select count(1) as sellCount , i.wares_id from bu_member_order_item i
                 inner join bu_member_order o on i.order_id = o.id
-                    where wares_id = #{gid}
+                    where wares_id = #{wareId}
                 and o.deleted = false and o.refund_status in (0, 3) and o.status = 4
         ) s on g.id = s.wares_id
         where g.id = #{wareId}
