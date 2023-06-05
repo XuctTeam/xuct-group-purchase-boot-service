@@ -20,6 +20,7 @@ import cn.com.xuct.group.purchase.vo.param.CartManyWaresParam;
 import cn.com.xuct.group.purchase.vo.param.UpdateCartNumParam;
 import cn.com.xuct.group.purchase.vo.param.WaresParam;
 import cn.com.xuct.group.purchase.vo.result.CartResult;
+import cn.com.xuct.group.purchase.vo.result.MemberBrowseWaresResult;
 import cn.com.xuct.group.purchase.vo.result.MemberWaresResult;
 import cn.com.xuct.group.purchase.vo.result.WaresResult;
 import cn.dev33.satoken.annotation.SaIgnore;
@@ -60,8 +61,14 @@ public class WaresController {
     @SaIgnore
     @GetMapping("/list")
     @Operation(summary = "【商品】列表", description = "查询商品列表")
-    public R<PageData<Wares>> list(@RequestParam("pageNum")Integer pageNum , @RequestParam("pageSize")Integer pageSize) {
-        return R.data(waresService.findPage(pageNum , pageSize));
+    @Parameters(value = {
+            @Parameter(name = "pageNum", description = "当前页码" , required = true),
+            @Parameter(name = "pageSize", description = "分页大小" , required = true),
+            @Parameter(name = "categoryId", description = "分类ID")
+    })
+    public R<PageData<Wares>> list(@RequestParam("pageNum")Integer pageNum , @RequestParam("pageSize")Integer pageSize ,
+                                   @RequestParam(value = "categoryId" , required = false)String categoryId) {
+        return R.data(waresService.findPage(pageNum , pageSize , categoryId));
     }
 
     @SaIgnore
@@ -131,7 +138,7 @@ public class WaresController {
 
     @Operation(summary = "【用户】我的浏览", description = "我的浏览")
     @GetMapping("/user/browse")
-    public R<List<Wares>> findUserBrowse() {
+    public R<List<MemberBrowseWaresResult>> findUserBrowse() {
         return R.data(memberBrowseService.list(StpUtil.getLoginIdAsLong()));
     }
 
@@ -139,9 +146,9 @@ public class WaresController {
     @Parameters(value = {
             @Parameter(name = "waresId", description = "商品ID"),
     })
-    @DeleteMapping("/user/browse/{waresId}")
-    public R<String> deleteUserBrowse(@PathVariable("waresId") Long waresId) {
-        memberBrowseService.delete(StpUtil.getLoginIdAsLong(), waresId);
+    @DeleteMapping("/user/browse/{id}")
+    public R<String> deleteUserBrowse(@PathVariable("id") Long id) {
+        memberBrowseService.delete(StpUtil.getLoginIdAsLong(), id);
         return R.status(true);
     }
 }

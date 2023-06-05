@@ -44,7 +44,7 @@ spring:
     # 用户名
     username: group
     # 密码
-    password: group!@#$%^
+    password: ENC(wBJ46ge8zLzaXxH4FghHiUOSQT7cSxmvVXhQR2A9zKGK1WVFiLV7YCrnLLgZ9pmy)
 
 mybatis-plus:
   mapper-locations:  classpath:/META-INF/mappers/*.xml
@@ -91,4 +91,4 @@ cos:
 
 default:
   props:
-    user-password: 123456
+    user-password: ENC(v1k5XO70LYut2mvjYdX0NxNeWKlLWH/b5LDkLqqaoJtfYmprMxaO1mqDt8SSpTR8)

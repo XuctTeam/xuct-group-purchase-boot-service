@@ -35,4 +35,9 @@ public interface RedisCacheConstants {
 
 
     String APP_CACHE_CONFIG_NAME = "group::purchase::app::config";
+
+    /**
+     * 登录验证码
+     */
+    String ADMIN_LOGIN_CAPTCHA_KEY = "group::purchase::login::captcha:";
 }

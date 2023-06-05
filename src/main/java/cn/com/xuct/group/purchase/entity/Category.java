@@ -32,6 +32,8 @@ public class Category extends SuperEntity<Category> {
     @Schema(description = "名称")
     private String name;
 
+    @Schema(description = "图片")
+    private String image;
 
     @Schema(description = "排序")
     private Integer sort;

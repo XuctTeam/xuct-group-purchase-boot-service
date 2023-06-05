@@ -15,6 +15,8 @@ import cn.com.xuct.group.purchase.entity.MemberBrowse;
 import cn.com.xuct.group.purchase.entity.Wares;
 import cn.com.xuct.group.purchase.mapper.MemberBrowseMapper;
 import cn.com.xuct.group.purchase.service.MemberBrowseService;
+import cn.com.xuct.group.purchase.vo.result.MemberBrowseWaresResult;
+import cn.hutool.core.util.ObjectUtil;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 
@@ -40,15 +42,17 @@ public class MemberBrowseServiceImpl extends BaseServiceImpl<MemberBrowseMapper,
     }
 
     @Override
-    public List<Wares> list(Long memberId) {
+    public List<MemberBrowseWaresResult> list(Long memberId) {
         return ((MemberBrowseMapper) this.getBaseMapper()).list(memberId);
     }
 
     @Override
-    public void delete(Long memberId, Long waresId) {
-        this.removeByMap(new HashMap<>() {{
-            put("member_id", memberId);
-            put("wares_id", waresId);
-        }});
+    public void delete(Long memberId, Long id) {
+        MemberBrowse browse = this.getById(id);
+        if (browse == null || ObjectUtil.equal(id, browse.getMemberId())) {
+            log.error("浏览记录不存在");
+            return;
+        }
+        this.removeById(id);
     }
 }

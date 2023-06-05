@@ -17,7 +17,7 @@ import javax.validation.constraints.NotNull;
 import java.io.Serializable;
 
 /**
- * 〈一句话功能简述〉<br> 
+ * 〈一句话功能简述〉<br>
  * 〈〉
  *
  * @author Derek Xu
@@ -34,5 +34,13 @@ public class AdminLoginParam implements Serializable {
     @Schema(description = "密码")
     @NotNull
     private String password;
+
+    @Schema(description = "随机字符串")
+    @NotNull
+    private String randomStr;
+
+    @Schema(description = "验证码")
+    @NotNull
+    private String code;
 
 }

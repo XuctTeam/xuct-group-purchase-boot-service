@@ -39,10 +39,6 @@ public class OrderParam implements Serializable {
     @Schema(description = "优惠券ID")
     private Long couponId;
 
-    @NotNull
-    @Schema(description = "使用积分")
-    private Integer integral;
-
 
     @Schema(description = "备注")
     private String remarks;

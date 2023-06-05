@@ -32,6 +32,7 @@ import org.springframework.util.CollectionUtils;
 
 import java.util.Date;
 import java.util.List;
+import java.util.Map;
 import java.util.stream.Collectors;
 
 /**
@@ -53,32 +54,40 @@ public class MemberCouponServiceImpl extends BaseServiceImpl<MemberCouponMapper,
         Date now = DateUtil.parseDate(DateUtil.now());
         MPJLambdaWrapper<MemberCoupon> wrapper = this.buildQuery(memberId);
         switch (status) {
-            case 1 ->
-                    wrapper.le(MemberCoupon::getBeginTime, now).ge(MemberCoupon::getEndTime, now).eq(MemberCoupon::isUsed, false);
-            case 2 -> wrapper.eq(MemberCoupon::isUsed, false);
+            case 1 , 2 ->
+                    wrapper.le(MemberCoupon::getBeginTime, now).ge(MemberCoupon::getEndTime, now).eq(MemberCoupon::isUsed, status != 1);
             default -> wrapper.lt(MemberCoupon::getEndTime, now).eq(MemberCoupon::isUsed, false);
         }
         return super.getBaseMapper().selectList(wrapper.orderByAsc(Coupon::getPrice));
     }
 
     @Override
-    public List<MemberCoupon> canUsed(Long memberId, List<Long> waresIds) {
+    public List<MemberCoupon> canUsed(Long memberId) {
         Date now = DateUtil.parseDate(DateUtil.now());
-        MPJLambdaWrapper<MemberCoupon> wrapper = this.buildQuery(memberId).le(MemberCoupon::getBeginTime, now).ge(MemberCoupon::getEndTime, now)
-        //.orderByAsc(MemberCoupon::isUsed).orderByAsc(Coupon::getPrice);
+        MPJLambdaWrapper<MemberCoupon> wrapper = this.buildQuery(memberId).le(MemberCoupon::getBeginTime, now).ge(MemberCoupon::getEndTime, now);
         List<MemberCoupon> memberCoupons = super.getBaseMapper().selectList(wrapper);
         if (CollectionUtils.isEmpty(memberCoupons)) {
             return Lists.newArrayList();
         }
         List<MemberCoupon> allCoupons = memberCoupons.stream().filter(item -> item.getCouponWaresType() == 0).collect(Collectors.toList());
-        List<Long> waresCouponsIds = memberCoupons.stream().filter(item -> item.getCouponWaresType() == 1).map(MemberCoupon::getCouponId).collect(Collectors.toList());
-        if (CollectionUtils.isEmpty(waresCouponsIds)) {
+        List<MemberCoupon> waresCoupons = memberCoupons.stream().filter(item -> item.getCouponWaresType() == 1).toList();
+        if (CollectionUtils.isEmpty(waresCoupons)) {
             return allCoupons;
         }
-        QueryWrapper<CouponWares> couponWaresQueryWrapper = couponWaresService.getQuery();
-        couponWaresQueryWrapper.in("coupon_id", waresCouponsIds);
-        //TODO
-        return null;
+        QueryWrapper<CouponWares> cqr = couponWaresService.getQuery().in("coupon_id", waresCoupons.stream().map(MemberCoupon::getCouponId).collect(Collectors.toList()));
+        List<CouponWares> couponWares = couponWaresService.list(cqr);
+        if (CollectionUtils.isEmpty(couponWares)) {
+            return allCoupons;
+        }
+        Map<Long, List<CouponWares>> collect = couponWares.stream().collect(Collectors.groupingBy(CouponWares::getCouponId));
+
+        waresCoupons.forEach(item -> {
+            if (collect.containsKey(item.getCouponId())) {
+                item.setCouponWaresList(collect.get(item.getCouponId()));
+            }
+        });
+        allCoupons.addAll(waresCoupons);
+        return allCoupons;
     }
 
     @Override

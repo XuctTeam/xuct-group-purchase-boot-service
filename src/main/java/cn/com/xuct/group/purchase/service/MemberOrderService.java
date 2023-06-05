@@ -67,7 +67,7 @@ public interface MemberOrderService extends IBaseService<MemberOrderMapper, Memb
      * @param remarks
      * @param waresIds
      */
-    String saveOrder(final Long memberId, final String scene, final Long addressId, Long couponId, Integer integral, final String remarks, List<Long> waresIds);
+    String saveOrder(final Long memberId, final String scene, final Long addressId, Long couponId, final String remarks, List<Long> waresIds);
 
     /**
      * 【会员】订单分页查询

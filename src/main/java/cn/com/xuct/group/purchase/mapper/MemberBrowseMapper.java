@@ -12,6 +12,7 @@ package cn.com.xuct.group.purchase.mapper;
 
 import cn.com.xuct.group.purchase.entity.MemberBrowse;
 import cn.com.xuct.group.purchase.entity.Wares;
+import cn.com.xuct.group.purchase.vo.result.MemberBrowseWaresResult;
 import com.baomidou.mybatisplus.core.mapper.BaseMapper;
 import org.apache.ibatis.annotations.Param;
 
@@ -30,5 +31,5 @@ public interface MemberBrowseMapper extends BaseMapper<MemberBrowse> {
 
     void addUserBrowse(@Param("memberId")final Long memberId , @Param("waresId")Long waresId);
 
-    List<Wares> list(@Param("memberId")final Long memberId);
+    List<MemberBrowseWaresResult> list(@Param("memberId")final Long memberId);
 }

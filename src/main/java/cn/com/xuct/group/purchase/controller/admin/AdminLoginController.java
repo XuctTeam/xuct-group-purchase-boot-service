@@ -13,6 +13,7 @@ package cn.com.xuct.group.purchase.controller.admin;
 import cn.com.xuct.group.purchase.annotation.Log;
 import cn.com.xuct.group.purchase.base.res.R;
 import cn.com.xuct.group.purchase.constants.OptConstants;
+import cn.com.xuct.group.purchase.constants.RedisCacheConstants;
 import cn.com.xuct.group.purchase.entity.User;
 import cn.com.xuct.group.purchase.mapstruct.ILoginResultConvert;
 import cn.com.xuct.group.purchase.service.UserService;
@@ -23,11 +24,15 @@ import cn.dev33.satoken.stp.StpUtil;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import lombok.RequiredArgsConstructor;
+import org.springframework.data.redis.core.StringRedisTemplate;
+import org.springframework.util.StringUtils;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
+
+import java.util.Objects;
 
 /**
  * 〈一句话功能简述〉<br>
@@ -44,12 +49,17 @@ import org.springframework.web.bind.annotation.RestController;
 public class AdminLoginController {
 
     private final UserService userService;
+    private final StringRedisTemplate stringRedisTemplate;
 
     @SaIgnore
     @PostMapping("")
     @Operation(summary = "【登录】后台管理登录", description = "后台管理登录")
     @Log(modul = "【登录】后台管理登录", type = OptConstants.SELECT, desc = "后台管理登录")
     public R<LoginResult> login(@RequestBody @Validated AdminLoginParam param) {
+        String redisCode = stringRedisTemplate.opsForValue().get(RedisCacheConstants.ADMIN_LOGIN_CAPTCHA_KEY.concat(param.getRandomStr()));
+        if (!StringUtils.hasLength(redisCode) || !Objects.equals(redisCode, param.getCode())) {
+            return R.fail("验证码错误！");
+        }
         User user = userService.findByUsername(param.getUsername());
         if (user == null) {
             return R.fail("用户不存在！");

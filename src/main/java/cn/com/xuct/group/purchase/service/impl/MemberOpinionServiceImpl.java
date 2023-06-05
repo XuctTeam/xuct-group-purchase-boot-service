@@ -61,6 +61,7 @@ public class MemberOpinionServiceImpl extends BaseServiceImpl<MemberOpinionMappe
         if (status != null) {
             qr.eq(MemberOpinion::isStatus, status == 0);
         }
+        qr.orderByDesc(MemberOpinion::getCreateTime);
         return this.convert(super.getBaseMapper().selectPage(Page.of(pageNum, pageSize), qr));
     }
 

@@ -80,14 +80,9 @@ public interface RConstants {
     String ORDER_NOT_REFUND = "-1006";
 
     /**
-     * 积分不足
-     */
-    String USER_INTEGRAL_NOT_ENOUGH = "-1007";
-
-    /**
      * 优惠券不存在
      */
-    String COUPON_NOT_EXIST = "-1008";
+    String COUPON_NOT_EXIST = "-1007";
 
 
 }

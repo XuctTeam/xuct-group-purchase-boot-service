@@ -43,6 +43,9 @@ public class MemberAddressController {
 
     @GetMapping("/list")
     @Operation(summary = "【用户】获取用户地址", description = "获取用户地址")
+    @Parameters(value = {
+            @Parameter(name = "searchValue", description = "名称或者手机号码")
+    })
     public R<List<MemberAddress>> list(@RequestParam(value = "searchValue", required = false) String searchValue) {
         return R.data(memberAddressService.findList(StpUtil.getLoginIdAsLong(), searchValue));
     }
@@ -59,6 +62,9 @@ public class MemberAddressController {
 
     @GetMapping()
     @Operation(summary = "【用户】查询地址", description = "查询地址")
+    @Parameters(value = {
+            @Parameter(name = "id", description = "地址ID")
+    })
     public R<MemberAddress> get(@RequestParam("id") String id) {
         return R.data(memberAddressService.getById(Long.valueOf(id)));
     }

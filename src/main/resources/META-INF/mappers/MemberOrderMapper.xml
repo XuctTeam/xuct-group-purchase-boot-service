@@ -12,7 +12,6 @@
         <result column="serve_time" property="serveTime"/>
         <result column="wares_num" property="waresNum"/>
         <result column="remarks" property="remarks"/>
-        <result column="integral" property="integral"/>
         <result column="rush" property="rush"/>
         <result column="refund_status" property="refundStatus"/>
         <result column="refund_type" property="refundType"/>
@@ -47,7 +46,6 @@
                o.status,
                o.wares_num,
                o.address_id,
-               o.integral,
                o.rush,
                o.refund_status,
                o.refund_type,

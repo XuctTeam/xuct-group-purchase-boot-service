@@ -18,6 +18,7 @@ import lombok.Data;
 import lombok.EqualsAndHashCode;
 
 import java.util.Date;
+import java.util.List;
 
 /**
  * 〈一句话功能简述〉<br>
@@ -62,4 +63,7 @@ public class MemberCoupon extends SuperEntity<MemberCoupon> {
     @TableField(exist = false)
     @Schema(description = "优惠券类型")
     private int couponWaresType;
+
+    @TableField(exist = false)
+    private List<CouponWares> couponWaresList;
 }

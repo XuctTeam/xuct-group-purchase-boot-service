@@ -85,7 +85,7 @@ public class MemberServiceImpl extends BaseServiceImpl<MemberMapper, Member> imp
 
     @Override
     @CachePut(cacheNames = RedisCacheConstants.MEMBER_CACHE_ABLE_CACHE_NAME, key = "#memberId", unless = "#result == null")
-    public Member updateUserIntegral(Long memberId, Integer integral) {
+    public Member updateUserIntegral(Long memberId, Long integral) {
         Member member = this.getById(memberId);
         if (member == null) {
             return null;

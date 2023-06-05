@@ -12,8 +12,8 @@ package cn.com.xuct.group.purchase.service;
 
 import cn.com.xuct.group.purchase.base.service.IBaseService;
 import cn.com.xuct.group.purchase.entity.MemberBrowse;
-import cn.com.xuct.group.purchase.entity.Wares;
 import cn.com.xuct.group.purchase.mapper.MemberBrowseMapper;
+import cn.com.xuct.group.purchase.vo.result.MemberBrowseWaresResult;
 
 import java.util.List;
 
@@ -41,13 +41,13 @@ public interface MemberBrowseService extends IBaseService<MemberBrowseMapper, Me
      * @param memberId
      * @return
      */
-    List<Wares> list(final Long memberId);
+    List<MemberBrowseWaresResult> list(final Long memberId);
 
     /**
      * 删除浏览记录
      *
      * @param memberId
-     * @param waresId
+     * @param id
      */
-    void delete(final Long memberId, final Long waresId);
+    void delete(final Long memberId, final Long id);
 }

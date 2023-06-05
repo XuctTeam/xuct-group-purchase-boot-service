@@ -73,11 +73,14 @@ public class WaresServiceImpl extends BaseServiceImpl<WaresMapper, Wares> implem
     }
 
     @Override
-    public PageData<Wares> findPage(final int pageNum, final int pageSize) {
+    public PageData<Wares> findPage(final int pageNum, final int pageSize, final String categoryId) {
         QueryWrapper<Wares> qr = this.getQuery();
-        qr.select(Lists.newArrayList("id", "name", "first_drawing", "swiper_images", "tags", "start_time", "end_time", "inventory"));
+        qr.select(Lists.newArrayList("id", "name", "first_drawing", "swiper_images", "tags", "start_time", "end_time", "inventory" , "unit"));
         qr.eq("status", 1);
         qr.eq("deleted", false);
+        if (StringUtils.hasLength(categoryId)) {
+            qr.eq("category_id", categoryId);
+        }
         qr.orderByDesc("create_time");
         return this.convert(this.getBaseMapper().selectPage(Page.of(pageNum, pageSize), qr));
     }

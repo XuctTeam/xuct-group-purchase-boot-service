@@ -13,6 +13,8 @@ package cn.com.xuct.group.purchase.entity;
 import cn.com.xuct.group.purchase.base.dao.SuperEntity;
 import com.baomidou.mybatisplus.annotation.TableField;
 import com.baomidou.mybatisplus.annotation.TableName;
+import com.fasterxml.jackson.databind.annotation.JsonSerialize;
+import com.fasterxml.jackson.databind.ser.std.ToStringSerializer;
 import io.swagger.v3.oas.annotations.media.Schema;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
@@ -33,6 +35,7 @@ import java.util.Date;
 @TableName("sys_member_opinion")
 public class MemberOpinion extends SuperEntity<MemberOpinion> {
 
+    @JsonSerialize(using = ToStringSerializer.class)
     @Schema(description = "用户ID")
     private Long memberId;
 

@@ -42,9 +42,12 @@ public interface WaresService extends IBaseService<WaresMapper, Wares> {
     /**
      * 查询列表
      *
-     * @return java.lang.List
+     * @param pageNum
+     * @param pageSize
+     * @param categoryId        分类ID
+     * @return
      */
-    PageData<Wares> findPage(final int pageNum , final int pageSize);
+    PageData<Wares> findPage(final int pageNum , final int pageSize , final String categoryId);
 
     /**
      * 根据商品ID更新库存

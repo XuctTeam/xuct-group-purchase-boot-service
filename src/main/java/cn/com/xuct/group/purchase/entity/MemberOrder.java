@@ -52,9 +52,6 @@ public class MemberOrder extends SuperEntity<MemberOrder> {
     @Schema(description = "用户优惠券ID")
     private Long userCouponId;
 
-    @Schema(description = "使用积分")
-    private Integer integral;
-
     @Schema(description = "备注")
     private String remarks;
 

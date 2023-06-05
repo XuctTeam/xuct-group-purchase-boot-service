@@ -10,10 +10,19 @@
         insert ignore into bu_member_browse(member_id , wares_id) values(#{memberId} , #{waresId});
     </insert>
 
-    <select id="list" resultType="cn.com.xuct.group.purchase.entity.Wares">
-        select g.id, g.name, g.unit, g.first_drawing, g.start_time, g.end_time, g.inventory
+    <select id="list" resultType="cn.com.xuct.group.purchase.vo.result.MemberBrowseWaresResult">
+        select b.id ,
+               g.id            as wares_id,
+               g.name          as wares_name,
+               g.unit          as wares_unit,
+               g.first_drawing as wares_first_drawing,
+               g.start_time    as wares_start_time,
+               g.end_time as wares_end_time,
+               g.inventory as wares_inventory,
+               b.create_time
         from bu_member_browse b
                  inner join bu_wares g on b.wares_id = g.id
         where b.member_id = #{memberId}
+          order by b.create_time desc
     </select>
 </mapper>

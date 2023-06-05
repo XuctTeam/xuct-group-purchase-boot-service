@@ -96,28 +96,18 @@ public class MemberOrderServiceImpl extends BaseServiceImpl<MemberOrderMapper, M
 
     @Override
     @Transactional(rollbackFor = Exception.class)
-    public String saveOrder(final Long memberId, final String scene, final Long addressId, Long couponId, Integer integral, final String remarks, List<Long> waresIds) {
-        log.info("MemberOrderServiceImpl:: save order , member id = {} , address id = {} , couponId id = {} , integral = {} , waresIds = {}", memberId, addressId, couponId, integral, JsonUtils.obj2json(waresIds));
-        //全部积分
-        integral = this.checkIntegral(integral, memberId);
-        switch (integral) {
-            case -1 -> {
-                return USER_NOT_EXIST;
-            }
-            case -2 -> {
-                return USER_INTEGRAL_NOT_ENOUGH;
-            }
-        }
+    public String saveOrder(final Long memberId, final String scene, final Long addressId, Long couponId, final String remarks, List<Long> waresIds) {
+        log.info("MemberOrderServiceImpl:: save order , member id = {} , address id = {} , couponId id = {} , waresIds = {}", memberId, addressId, couponId, JsonUtils.obj2json(waresIds));
         couponId = this.checkCoupon(couponId, memberId);
         if (couponId != null && (couponId == -1L || couponId == -2L)) {
             return COUPON_NOT_EXIST;
         }
         switch (scene) {
             case FROM_CART -> {
-                return this.saveCartWaresOrder(memberId, addressId, couponId, integral, remarks, waresIds);
+                return this.saveCartWaresOrder(memberId, addressId, couponId, remarks, waresIds);
             }
             case FROM_WARES -> {
-                return this.saveBuyingOutrightOrder(memberId, addressId, couponId, integral, remarks, waresIds.get(0));
+                return this.saveBuyingOutrightOrder(memberId, addressId, couponId, remarks, waresIds.get(0));
             }
             default -> {
                 return ORDER_SCENE_ERROR;
@@ -349,11 +339,7 @@ public class MemberOrderServiceImpl extends BaseServiceImpl<MemberOrderMapper, M
             this.updateById(memberOrder);
             return 0;
         }
-        /* 1.积分返还 */
-        if (memberOrder.getIntegral() > 0) {
-            memberService.updateUserIntegral(memberOrder.getMemberId(), memberOrder.getIntegral());
-        }
-        /* 2.优惠券返还 */
+        /* 1.优惠券返还 */
         if (memberOrder.getUserCouponId() != null) {
             memberCouponService.updateUserCouponUsed(memberOrder.getUserCouponId(), false);
         }
@@ -361,23 +347,6 @@ public class MemberOrderServiceImpl extends BaseServiceImpl<MemberOrderMapper, M
         memberOrder.setRefundStatus(2);
         this.updateById(memberOrder);
         return 0;
-    }
-
-    private Integer checkIntegral(Integer integral, final Long memberId) {
-        if (integral == 0) {
-            return integral;
-        }
-        Member member = memberService.getById(memberId);
-        if (member == null) {
-            return -1;
-        }
-        if (integral != -999 && integral > member.getIntegral()) {
-            return -2;
-        }
-        if (integral == -999) {
-            return member.getIntegral().intValue();
-        }
-        return integral;
     }
 
 
@@ -410,7 +379,7 @@ public class MemberOrderServiceImpl extends BaseServiceImpl<MemberOrderMapper, M
      * @Author:
      * @Date: 2023/4/16 15:58
      */
-    private String saveCartWaresOrder(final Long memberId, final Long addressId, final Long couponId, final Integer integral, final String remarks, List<Long> waresIds) {
+    private String saveCartWaresOrder(final Long memberId, final Long addressId, final Long couponId, final String remarks, List<Long> waresIds) {
         List<CartResult> cartResult = memberWaresCartService.cartList(memberId, waresIds);
         if (CollectionUtils.isEmpty(cartResult)) {
             log.error("MemberOrderServiceImpl:: user id = {} , cart ids empty , wares ids = {}", memberId, cartResult);
@@ -444,7 +413,7 @@ public class MemberOrderServiceImpl extends BaseServiceImpl<MemberOrderMapper, M
         }
         Long orderId = null;
         try {
-            orderId = this.save(memberId, FROM_CART, addressId, couponId, integral, remarks, cartResult);
+            orderId = this.save(memberId, FROM_CART, addressId, couponId, remarks, cartResult);
         } catch (Exception ee) {
             log.error("MemberOrderServiceImpl:: save order error , msg = {}", ee.getMessage());
             for (Long waresId : inventoryMap.keySet()) {
@@ -470,7 +439,7 @@ public class MemberOrderServiceImpl extends BaseServiceImpl<MemberOrderMapper, M
      * @Author:
      * @Date: 2023/4/16 15:47
      */
-    private String saveBuyingOutrightOrder(final Long memberId, final Long addressId, final Long couponId, Integer integral, final String remarks, final Long waresId) {
+    private String saveBuyingOutrightOrder(final Long memberId, final Long addressId, final Long couponId, final String remarks, final Long waresId) {
         String redisInventoryKey = RedisCacheConstants.WARES_INVENTORY_REDIS_KEY.concat(String.valueOf(waresId));
         String waresInventoryNum = redisTemplate.opsForValue().get(redisInventoryKey);
         if (waresInventoryNum == null || Long.parseLong(waresInventoryNum) < 1) {
@@ -489,7 +458,7 @@ public class MemberOrderServiceImpl extends BaseServiceImpl<MemberOrderMapper, M
         cartResult.setWaresId(waresId);
         Long orderId = null;
         try {
-            orderId = this.save(memberId, FROM_WARES, addressId, couponId, integral, remarks, Lists.newArrayList(cartResult));
+            orderId = this.save(memberId, FROM_WARES, addressId, couponId, remarks, Lists.newArrayList(cartResult));
         } catch (Exception ee) {
             log.error("MemberOrderServiceImpl:: save buying out order error , user id = {}", memberId);
             redisTemplate.opsForValue().increment(RedisCacheConstants.WARES_INVENTORY_REDIS_KEY.concat(String.valueOf(waresId)), 1);
@@ -513,11 +482,10 @@ public class MemberOrderServiceImpl extends BaseServiceImpl<MemberOrderMapper, M
      * @Author:
      * @Date: 2023/4/16 15:59
      */
-    private Long save(final Long memberId, final String scene, Long addressId, final Long couponId, Integer integral, String remarks, List<CartResult> cartResult) {
+    private Long save(final Long memberId, final String scene, Long addressId, final Long couponId, String remarks, List<CartResult> cartResult) {
         MemberOrder memberOrder = new MemberOrder();
         memberOrder.setMemberId(memberId);
         memberOrder.setAddressId(addressId);
-        memberOrder.setIntegral(integral);
         memberOrder.setRemarks(remarks);
         memberOrder.setWaresNum(cartResult.stream().map(CartResult::getNum).mapToInt(x -> x).sum());
         memberOrder.setTotalPrice(0L);
@@ -550,8 +518,8 @@ public class MemberOrderServiceImpl extends BaseServiceImpl<MemberOrderMapper, M
             memberCouponService.updateUserCouponUsed(couponId, true);
         }
         /* 6.更新用户积分 */
-        if (integral > 0) {
-            memberService.updateUserIntegral(memberId, -integral);
+        if (memberOrder.getTotalPrice() > 0) {
+            memberService.updateUserIntegral(memberId, memberOrder.getTotalPrice());
         }
         return memberOrder.getId();
     }

@@ -61,7 +61,7 @@ public class AdminUploadController {
         String uri = url.toString();
         try {
             BufferedImage image = ImageIO.read(file.getInputStream());
-            uri = uri.concat("?w=" + image.getWidth()).concat("&h=" + image.getHeight());
+            uri = uri.concat("?width=" + image.getWidth()).concat("&height=" + image.getHeight());
         } catch (IOException e) {
             log.error("AdminUploadController:: get image error , msg = {}", e.getMessage());
         }

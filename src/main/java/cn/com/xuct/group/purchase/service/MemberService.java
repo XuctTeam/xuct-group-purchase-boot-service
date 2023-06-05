@@ -64,7 +64,7 @@ public interface MemberService extends IBaseService<MemberMapper, Member> {
      * @param integral
      * @return
      */
-    Member updateUserIntegral(final Long memberId, final Integer integral);
+    Member updateUserIntegral(final Long memberId, final Long integral);
 
     /**
      * 用户数统计

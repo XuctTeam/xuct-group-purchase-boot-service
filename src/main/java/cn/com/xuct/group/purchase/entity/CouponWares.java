@@ -12,6 +12,8 @@ package cn.com.xuct.group.purchase.entity;
 
 import cn.com.xuct.group.purchase.base.dao.SuperEntity;
 import com.baomidou.mybatisplus.annotation.TableName;
+import com.fasterxml.jackson.databind.annotation.JsonSerialize;
+import com.fasterxml.jackson.databind.ser.std.ToStringSerializer;
 import io.swagger.v3.oas.annotations.media.Schema;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
@@ -29,9 +31,11 @@ import lombok.EqualsAndHashCode;
 @TableName("bu_coupon_wares")
 public class CouponWares extends SuperEntity<CouponWares> {
 
+    @JsonSerialize(using = ToStringSerializer.class)
     @Schema(description = "优惠券ID")
     private Long couponId;
 
+    @JsonSerialize(using = ToStringSerializer.class)
     @Schema(description = "商品ID")
     private Long waresId;
 }
