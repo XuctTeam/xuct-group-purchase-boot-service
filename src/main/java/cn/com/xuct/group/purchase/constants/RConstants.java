@@ -37,8 +37,6 @@ public interface RConstants {
      */
     String DEFAULT_FAILURE_MESSAGE = "操作失败";
 
-    String USER_NOT_EXIST = "-2000";
-
     /**
      * 其他异常
      */
@@ -83,6 +81,11 @@ public interface RConstants {
      * 优惠券不存在
      */
     String COUPON_NOT_EXIST = "-1007";
+
+    /**
+     * 会员不存在
+     */
+    String MEMBER_NOT_EXIST = "-1008";
 
 
 }

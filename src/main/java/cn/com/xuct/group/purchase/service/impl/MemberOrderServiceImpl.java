@@ -10,15 +10,20 @@
  */
 package cn.com.xuct.group.purchase.service.impl;
 
+import cn.binarywang.wx.miniapp.constant.WxMaConstants;
 import cn.com.xuct.group.purchase.base.service.BaseServiceImpl;
 import cn.com.xuct.group.purchase.base.vo.Column;
 import cn.com.xuct.group.purchase.base.vo.PageData;
+import cn.com.xuct.group.purchase.config.WxMaProperties;
 import cn.com.xuct.group.purchase.constants.EventCodeEnum;
 import cn.com.xuct.group.purchase.constants.RedisCacheConstants;
+import cn.com.xuct.group.purchase.constants.WxTemplateTypeEnum;
 import cn.com.xuct.group.purchase.entity.*;
+import cn.com.xuct.group.purchase.event.OrderEvent;
 import cn.com.xuct.group.purchase.mapper.MemberOrderMapper;
 import cn.com.xuct.group.purchase.service.*;
 import cn.com.xuct.group.purchase.utils.JsonUtils;
+import cn.com.xuct.group.purchase.utils.SpringContextUtils;
 import cn.com.xuct.group.purchase.vo.dto.DelayMessage;
 import cn.com.xuct.group.purchase.vo.dto.OrderReceiveDelayedDto;
 import cn.com.xuct.group.purchase.vo.result.CartResult;
@@ -32,6 +37,7 @@ import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.google.common.collect.Maps;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import me.chanjar.weixin.common.error.WxErrorException;
 import org.assertj.core.util.Lists;
 import org.springframework.amqp.rabbit.core.RabbitTemplate;
 import org.springframework.beans.BeanUtils;
@@ -41,9 +47,7 @@ import org.springframework.transaction.annotation.Transactional;
 import org.springframework.util.CollectionUtils;
 import org.springframework.util.StringUtils;
 
-import java.util.Date;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 import java.util.stream.Collectors;
 
 import static cn.com.xuct.group.purchase.config.DelayedQueueConfiguration.DELAYED_EXCHANGE_NAME;
@@ -98,16 +102,20 @@ public class MemberOrderServiceImpl extends BaseServiceImpl<MemberOrderMapper, M
     @Transactional(rollbackFor = Exception.class)
     public String saveOrder(final Long memberId, final String scene, final Long addressId, Long couponId, final String remarks, List<Long> waresIds) {
         log.info("MemberOrderServiceImpl:: save order , member id = {} , address id = {} , couponId id = {} , waresIds = {}", memberId, addressId, couponId, JsonUtils.obj2json(waresIds));
+        Member member = memberService.getById(memberId);
+        if (member == null) {
+            return MEMBER_NOT_EXIST;
+        }
         couponId = this.checkCoupon(couponId, memberId);
         if (couponId != null && (couponId == -1L || couponId == -2L)) {
             return COUPON_NOT_EXIST;
         }
         switch (scene) {
             case FROM_CART -> {
-                return this.saveCartWaresOrder(memberId, addressId, couponId, remarks, waresIds);
+                return this.saveCartWaresOrder(memberId, member.getOpenId(), addressId, couponId, remarks, waresIds);
             }
             case FROM_WARES -> {
-                return this.saveBuyingOutrightOrder(memberId, addressId, couponId, remarks, waresIds.get(0));
+                return this.saveBuyingOutrightOrder(memberId, member.getOpenId(), addressId, couponId, remarks, waresIds.get(0));
             }
             default -> {
                 return ORDER_SCENE_ERROR;
@@ -369,6 +377,7 @@ public class MemberOrderServiceImpl extends BaseServiceImpl<MemberOrderMapper, M
      * 〈保存购物车订单〉
      *
      * @param memberId
+     * @param openId    微信openId
      * @param addressId 收货地址ID
      * @param couponId  优惠券ID
      * @param integral
@@ -379,11 +388,15 @@ public class MemberOrderServiceImpl extends BaseServiceImpl<MemberOrderMapper, M
      * @Author:
      * @Date: 2023/4/16 15:58
      */
-    private String saveCartWaresOrder(final Long memberId, final Long addressId, final Long couponId, final String remarks, List<Long> waresIds) {
+    private String saveCartWaresOrder(final Long memberId, final String openId, final Long addressId, final Long couponId, final String remarks, List<Long> waresIds) {
         List<CartResult> cartResult = memberWaresCartService.cartList(memberId, waresIds);
         if (CollectionUtils.isEmpty(cartResult)) {
             log.error("MemberOrderServiceImpl:: user id = {} , cart ids empty , wares ids = {}", memberId, cartResult);
             return CART_EMPTY;
+        }
+        boolean waresStatus = cartResult.stream().anyMatch(item -> item.isDeleted() || item.getStatus() == 0);
+        if (waresStatus) {
+            return ORDER_WARES_EXPIRE;
         }
         Map<Long, Integer> inventoryMap = Maps.newHashMap();
         String redisInventoryKey = null;
@@ -421,7 +434,17 @@ public class MemberOrderServiceImpl extends BaseServiceImpl<MemberOrderMapper, M
             }
             return ERROR;
         }
-        return String.valueOf(orderId);
+        Member member = memberService.findById(memberId);
+        if (member == null) {
+            log.error("MemberOrderServiceImpl:: save order error , member id = {}", memberId);
+            return ERROR;
+        }
+        String orderIdString = String.valueOf(orderId);
+        /* 发送微信订阅消息 */
+        SpringContextUtils.publishEvent(new OrderEvent(this, orderIdString, openId, "已下单",
+                cartResult.stream().map(CartResult::getName).collect(Collectors.joining(",")),
+                DateUtil.now(), "您的订单已下单，我们会尽快为您送货！"));
+        return orderIdString;
     }
 
     /**
@@ -439,7 +462,11 @@ public class MemberOrderServiceImpl extends BaseServiceImpl<MemberOrderMapper, M
      * @Author:
      * @Date: 2023/4/16 15:47
      */
-    private String saveBuyingOutrightOrder(final Long memberId, final Long addressId, final Long couponId, final String remarks, final Long waresId) {
+    private String saveBuyingOutrightOrder(final Long memberId, final String openId, final Long addressId, final Long couponId, final String remarks, final Long waresId) {
+        Wares wares = waresService.getById(waresId);
+        if (wares == null || wares.isDeleted() || wares.getStatus() == 0) {
+            return ORDER_WARES_EXPIRE;
+        }
         String redisInventoryKey = RedisCacheConstants.WARES_INVENTORY_REDIS_KEY.concat(String.valueOf(waresId));
         String waresInventoryNum = redisTemplate.opsForValue().get(redisInventoryKey);
         if (waresInventoryNum == null || Long.parseLong(waresInventoryNum) < 1) {
@@ -464,7 +491,11 @@ public class MemberOrderServiceImpl extends BaseServiceImpl<MemberOrderMapper, M
             redisTemplate.opsForValue().increment(RedisCacheConstants.WARES_INVENTORY_REDIS_KEY.concat(String.valueOf(waresId)), 1);
             return ERROR;
         }
-        return String.valueOf(orderId);
+
+        /* 发送微信订阅消息 */
+        String orderIdString = String.valueOf(orderId);
+        SpringContextUtils.publishEvent(new OrderEvent(this, orderIdString, openId, "已下单", wares.getName(), DateUtil.now(), "您的订单已下单，我们会尽快为您送货！"));
+        return orderIdString;
     }
 
     /**

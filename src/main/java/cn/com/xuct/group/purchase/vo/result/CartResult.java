@@ -18,7 +18,7 @@ import lombok.Data;
 import java.io.Serializable;
 
 /**
- * 〈一句话功能简述〉<br> 
+ * 〈一句话功能简述〉<br>
  * 〈〉
  *
  * @author Derek Xu
@@ -46,4 +46,10 @@ public class CartResult implements Serializable {
 
     @Schema(description = "库存")
     private Integer inventory;
+
+    @Schema(description = "状态")
+    private Integer status;
+
+    @Schema(description = "是否删除")
+    private boolean deleted;
 }

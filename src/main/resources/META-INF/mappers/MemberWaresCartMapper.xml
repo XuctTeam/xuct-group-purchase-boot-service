@@ -14,7 +14,7 @@
     </insert>
 
     <select id="cartList" resultType="cn.com.xuct.group.purchase.vo.result.CartResult">
-        select ca.num , g.name , g.first_drawing , g.unit, ca.wares_id , g.inventory
+        select ca.num , g.name , g.first_drawing , g.unit, ca.wares_id , g.inventory , g.status , g.deleted
             from bu_wares_member_cart ca
         inner join bu_wares g on ca.wares_id = g.id
             where ca.member_id = #{memberId}

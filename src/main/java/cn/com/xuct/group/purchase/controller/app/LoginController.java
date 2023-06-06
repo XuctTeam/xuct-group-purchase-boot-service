@@ -12,10 +12,10 @@ package cn.com.xuct.group.purchase.controller.app;
 
 import cn.binarywang.wx.miniapp.bean.WxMaJscode2SessionResult;
 import cn.com.xuct.group.purchase.base.res.R;
-import cn.com.xuct.group.purchase.config.WxMaConfiguration;
 import cn.com.xuct.group.purchase.entity.Member;
 import cn.com.xuct.group.purchase.mapstruct.ILoginResultConvert;
 import cn.com.xuct.group.purchase.service.MemberService;
+import cn.com.xuct.group.purchase.service.WxService;
 import cn.com.xuct.group.purchase.vo.param.WxCodeParam;
 import cn.com.xuct.group.purchase.vo.result.LoginResult;
 import cn.dev33.satoken.annotation.SaIgnore;
@@ -43,7 +43,8 @@ import org.springframework.web.bind.annotation.*;
 @RestController
 public class LoginController {
 
-    private final WxMaConfiguration wxMaConfiguration;
+
+    private final WxService wxService;
 
     private final MemberService memberService;
 
@@ -51,7 +52,7 @@ public class LoginController {
     @Operation(summary = "【登录】获取微信Session", description = "根据code获取小程序SessionInfo")
     @PostMapping
     public R<LoginResult> login(@Validated @RequestBody WxCodeParam wxCodeParam) throws WxErrorException {
-        WxMaJscode2SessionResult session = wxMaConfiguration.getMaService().jsCode2SessionInfo(wxCodeParam.getCode());
+        WxMaJscode2SessionResult session =wxService.jsCode2SessionInfo(wxCodeParam.getCode());
         if (session == null || !StringUtils.hasLength(session.getOpenid())) {
             return R.fail("查询session失败");
         }

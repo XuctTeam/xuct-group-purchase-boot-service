@@ -10,6 +10,7 @@
  */
 package cn.com.xuct.group.purchase.config;
 
+import cn.com.xuct.group.purchase.constants.WxTemplateTypeEnum;
 import lombok.Data;
 import org.springframework.boot.context.properties.ConfigurationProperties;
 import org.springframework.util.CollectionUtils;
@@ -29,6 +30,9 @@ import java.util.List;
 public class WxMaProperties {
 
     private List<Config> configs;
+
+
+    private List<Template> templates;
 
 
     @Data
@@ -75,5 +79,15 @@ public class WxMaProperties {
             return null;
         }
         return this.configs.get(0).getAppid();
+    }
+
+    @Data
+    public static class Template {
+
+        private WxTemplateTypeEnum type;
+
+        private String id;
+
+        private String page;
     }
 }

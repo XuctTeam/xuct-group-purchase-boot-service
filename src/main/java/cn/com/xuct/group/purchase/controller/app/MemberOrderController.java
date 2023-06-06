@@ -74,7 +74,8 @@ public class MemberOrderController {
     public R<String> place(@Validated @RequestBody OrderParam param) {
         String result = memberOrderService.saveOrder(StpUtil.getLoginIdAsLong(), param.getScene(), param.getAddressId(), param.getCouponId(), param.getRemarks(), param.getWaresIds());
         return switch (result) {
-            case USER_NOT_EXIST -> R.fail("用户不存在");
+            case MEMBER_NOT_EXIST -> R.fail("用户不存在");
+            case ORDER_WARES_EXPIRE -> R.fail("商品已下架或已过期");
             case CART_EMPTY -> R.fail("购买商品错误！");
             case NOT_ENOUGH -> R.fail("库存不足！");
             case COUPON_NOT_EXIST -> R.fail("优惠券不存在");

@@ -82,6 +82,13 @@ wx:
     configs:
       - appid: wxd1cee317f1b0df7c
         secret: ENC(vCxECXlYDJRYs9Xzhn6VBqeZdjRGeRt6PsJfAxWT0oTpEvhp8tbM6+OEWsLmyU3GSmmrT2Sj/Vv3U/iWhIFDeB7MYT7520qdTUCl4wp5q90=)
+    templates:
+      - type: order
+        id: JupbNY-ycGTPU89BmmQeGASIjPpW-CUkHozeAM7k0cM
+        page: pages/order/order
+      - type: refund
+        id: kh0z7GBwVecPFFRkv6Hz7VU6hbgvYg84sIRQHrSHd6g
+        page: pages/order/order
 
 cos:
   secret-id: AKIDTntnTu66pJZaNwKUP6YlkqiLjtpWyBAu
