@@ -156,24 +156,6 @@ public interface MemberOrderService extends IBaseService<MemberOrderMapper, Memb
      */
     void deleteOrder(final Long memberId, final Long orderId);
 
-    /**
-     * 待评价商品
-     *
-     * @param memberId
-     * @return
-     */
-    List<MemberOrderItem> evaluateList(final Long memberId);
-
-    /**
-     * 【会员】保存评价
-     *
-     * @param memberId
-     * @param orderItemId
-     * @param rate
-     * @param evaluateImages
-     * @param remarks
-     */
-    void evaluateWares(final Long memberId, final Long orderItemId, final String rate, final String evaluateImages, final String remarks);
 
     /**
      * 【会员】查询删除列表

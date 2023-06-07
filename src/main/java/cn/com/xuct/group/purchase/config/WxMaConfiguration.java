@@ -86,7 +86,7 @@ public class WxMaConfiguration {
         RedisTemplateWxRedisOps redisOps = new RedisTemplateWxRedisOps(stringRedisTemplate);
         maServices = configs.stream()
                 .map(a -> {
-                    WxMaRedisBetterConfigImpl config = new WxMaRedisBetterConfigImpl(redisOps, "dva");
+                    WxMaRedisBetterConfigImpl config = new WxMaRedisBetterConfigImpl(redisOps, "group::purchase::wx");
 //                WxMaDefaultConfigImpl config = new WxMaRedisConfigImpl(new JedisPool());
                     // 使用上面的配置时，需要同时引入jedis-lock的依赖，否则会报类无法找到的异常
                     config.setAppid(a.getAppid());

@@ -17,6 +17,7 @@ import cn.com.xuct.group.purchase.constants.FileFolderConstants;
 import cn.com.xuct.group.purchase.constants.RConstants;
 import cn.com.xuct.group.purchase.entity.MemberOrder;
 import cn.com.xuct.group.purchase.entity.MemberOrderItem;
+import cn.com.xuct.group.purchase.entity.MemberWaresEvaluate;
 import cn.com.xuct.group.purchase.service.MemberOrderService;
 import cn.com.xuct.group.purchase.vo.param.*;
 import cn.com.xuct.group.purchase.vo.result.CartResult;
@@ -180,31 +181,6 @@ public class MemberOrderController {
     @DeleteMapping
     public R<String> deleteOrder(@RequestBody @Validated OrderIdParam param) {
         memberOrderService.deleteOrder(StpUtil.getLoginIdAsLong(), Long.valueOf(param.getOrderId()));
-        return R.status(true);
-    }
-
-    @Operation(summary = "【订单】待评价商品", description = "待评价商品")
-    @GetMapping("/evaluate/list")
-    public R<List<MemberOrderItem>> evaluateList() {
-        return R.data(memberOrderService.evaluateList(StpUtil.getLoginIdAsLong()));
-    }
-
-    @Operation(summary = "【订单】评价商品上传图片", description = "评价商品上传图片")
-    @PostMapping("/evaluate/upload")
-    public R<String> uploadEvaluateImage(MultipartFile file) {
-        try {
-            URL url = CosClient.uploadFile(file, FileFolderConstants.EVALUATE.concat(Objects.requireNonNull(file.getOriginalFilename())));
-            return R.data(url.toString());
-        } catch (IOException e) {
-            log.error("UserOrderController:: upload error");
-            return R.fail("上传失败");
-        }
-    }
-
-    @Operation(summary = "【订单】评价商品", description = "评价商品")
-    @PostMapping("/evaluate")
-    public R<String> evaluate(@RequestBody @Validated EvaluateParam param) {
-        memberOrderService.evaluateWares(StpUtil.getLoginIdAsLong(), param.getOrderItemId(), param.getRate(), param.getEvaluateImages(), param.getRemarks());
         return R.status(true);
     }
 

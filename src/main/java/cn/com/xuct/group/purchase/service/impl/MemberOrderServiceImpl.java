@@ -10,14 +10,11 @@
  */
 package cn.com.xuct.group.purchase.service.impl;
 
-import cn.binarywang.wx.miniapp.constant.WxMaConstants;
 import cn.com.xuct.group.purchase.base.service.BaseServiceImpl;
 import cn.com.xuct.group.purchase.base.vo.Column;
 import cn.com.xuct.group.purchase.base.vo.PageData;
-import cn.com.xuct.group.purchase.config.WxMaProperties;
 import cn.com.xuct.group.purchase.constants.EventCodeEnum;
 import cn.com.xuct.group.purchase.constants.RedisCacheConstants;
-import cn.com.xuct.group.purchase.constants.WxTemplateTypeEnum;
 import cn.com.xuct.group.purchase.entity.*;
 import cn.com.xuct.group.purchase.event.OrderEvent;
 import cn.com.xuct.group.purchase.mapper.MemberOrderMapper;
@@ -37,7 +34,6 @@ import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.google.common.collect.Maps;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import me.chanjar.weixin.common.error.WxErrorException;
 import org.assertj.core.util.Lists;
 import org.springframework.amqp.rabbit.core.RabbitTemplate;
 import org.springframework.beans.BeanUtils;
@@ -45,9 +41,10 @@ import org.springframework.data.redis.core.StringRedisTemplate;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.util.CollectionUtils;
-import org.springframework.util.StringUtils;
 
-import java.util.*;
+import java.util.Date;
+import java.util.List;
+import java.util.Map;
 import java.util.stream.Collectors;
 
 import static cn.com.xuct.group.purchase.config.DelayedQueueConfiguration.DELAYED_EXCHANGE_NAME;
@@ -70,7 +67,6 @@ public class MemberOrderServiceImpl extends BaseServiceImpl<MemberOrderMapper, M
     private final MemberOrderItemService memberOrderItemService;
     private final WaresService waresService;
     private final MemberService memberService;
-    private final MemberWaresEvaluateService memberWaresEvaluateService;
     private final MemberCouponService memberCouponService;
     private final StringRedisTemplate redisTemplate;
     private final RabbitTemplate rabbitTemplate;
@@ -252,34 +248,6 @@ public class MemberOrderServiceImpl extends BaseServiceImpl<MemberOrderMapper, M
         this.updateById(memberOrder);
     }
 
-    @Override
-    public List<MemberOrderItem> evaluateList(Long memberId) {
-        return memberOrderItemService.queryEvaluateByMemberId(memberId);
-    }
-
-    @Override
-    @Transactional(rollbackFor = Exception.class)
-    public void evaluateWares(Long memberId, Long orderItemId, String rate, String evaluateImages, String remarks) {
-        MemberOrderItem item = memberOrderItemService.getById(orderItemId);
-        if (item == null) {
-            log.error("MemberOrderServiceImpl:: save evaluate error , order item id = {}", orderItemId);
-            return;
-        }
-        MemberWaresEvaluate evaluate = new MemberWaresEvaluate();
-        evaluate.setMemberId(memberId);
-        evaluate.setOrderItemId(orderItemId);
-        evaluate.setWaresId(item.getWaresId());
-        evaluate.setRate(rate);
-        if (StringUtils.hasLength(evaluateImages)) {
-            evaluate.setEvaluateImages(evaluateImages);
-        }
-        if (StringUtils.hasLength(remarks)) {
-            evaluate.setRemarks(remarks);
-        }
-        memberWaresEvaluateService.save(evaluate);
-        item.setEvaluation(true);
-        memberOrderItemService.updateById(item);
-    }
 
     @Override
     public List<MemberOrder> deleteList(Long memberId) {

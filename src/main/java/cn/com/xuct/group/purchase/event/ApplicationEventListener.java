@@ -14,10 +14,12 @@ import cn.binarywang.wx.miniapp.constant.WxMaConstants;
 import cn.com.xuct.group.purchase.config.WxMaProperties;
 import cn.com.xuct.group.purchase.constants.WxTemplateTypeEnum;
 import cn.com.xuct.group.purchase.service.WxService;
+import cn.com.xuct.group.purchase.utils.JsonUtils;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import me.chanjar.weixin.common.error.WxErrorException;
 import org.springframework.context.event.EventListener;
+import org.springframework.scheduling.annotation.Async;
 import org.springframework.stereotype.Component;
 
 import java.util.HashMap;
@@ -39,15 +41,10 @@ public class ApplicationEventListener {
     private final WxService wxService;
     private final WxMaProperties wxMaProperties;
 
+    @Async
     @EventListener
     public void orderEvent(OrderEvent orderEvent) {
-        System.out.println("订单事件监听器");
-        System.out.println(orderEvent.getOrderId());
-        System.out.println(orderEvent.getOpenId());
-        System.out.println(orderEvent.getStatus());
-        System.out.println(orderEvent.getActionTime());
-        System.out.println(orderEvent.getRemarks());
-        log.info("ApplicationEventListener:: orderEvent , {}", orderEvent.toString());
+        log.info("ApplicationEventListener:: orderEvent , {}", JsonUtils.obj2json(orderEvent));
         this.pushMemberSubscribeMessage(orderEvent.getOpenId(), orderEvent.getOrderId(), orderEvent.getStatus(),
                 orderEvent.getWaresName(), orderEvent.getActionTime(), orderEvent.getRemarks());
     }
@@ -75,11 +72,11 @@ public class ApplicationEventListener {
         }
         try {
             wxService.pushSubscribeMsg(openId, templateOpt.get().getId(), templateOpt.get().getPage(), WxMaConstants.MiniProgramState.DEVELOPER, new HashMap<String, Object>() {{
-                put("character_string1.DATA", orderId);
-                put("phrase3.DATA", status);
-                put("thing23.DATA", waresNames);
-                put("time12.DATA", actionTime);
-                put("thing8.DATA", remarks);
+                put("character_string1", orderId);
+                put("phrase3", status);
+                put("thing23", waresNames.length() > 20 ? waresNames.substring(0, 16) + "..." : waresNames);
+                put("time12", actionTime);
+                put("thing8", remarks);
             }});
         } catch (WxErrorException e) {
             log.error("ApplicationEventListener:: pushMemberSubscribeMessage error , {}", e.getMessage());

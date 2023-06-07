@@ -48,13 +48,20 @@ spring:
     password: ENC(wBJ46ge8zLzaXxH4FghHiUOSQT7cSxmvVXhQR2A9zKGK1WVFiLV7YCrnLLgZ9pmy)
 
 mybatis-plus:
-  mapper-locations:  classpath:/META-INF/mappers/*.xml
+  mapper-locations: classpath:/META-INF/mappers/*.xml
   configuration:
     map-underscore-to-camel-case: true
     cache-enabled: true
     lazy-loading-enabled: true
     multiple-result-sets-enabled: true
     log-impl: org.apache.ibatis.logging.stdout.StdOutImpl
+
+
+# 线程池
+executor:
+  core-pool-size: 10
+  max-pool-size: 20
+  queue-capacity: 5
 
 # springdoc-openapi项目配置
 springdoc:
@@ -67,7 +74,7 @@ springdoc:
   group-configs:
     - group: 'default'
       paths-to-match: '/**'
-      packages-to-scan:  cn.com.xuct.group.purchase.controller
+      packages-to-scan: cn.com.xuct.group.purchase.controller
 # knife4j的增强配置，不需要增强可以不配
 knife4j:
   enable: true

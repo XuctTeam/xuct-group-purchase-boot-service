@@ -56,10 +56,12 @@ public class AdminLoginController {
     @Operation(summary = "【登录】后台管理登录", description = "后台管理登录")
     @Log(modul = "【登录】后台管理登录", type = OptConstants.SELECT, desc = "后台管理登录")
     public R<LoginResult> login(@RequestBody @Validated AdminLoginParam param) {
-        String redisCode = stringRedisTemplate.opsForValue().get(RedisCacheConstants.ADMIN_LOGIN_CAPTCHA_KEY.concat(param.getRandomStr()));
+        String redisKey = RedisCacheConstants.ADMIN_LOGIN_CAPTCHA_KEY.concat(param.getRandomStr());
+        String redisCode = stringRedisTemplate.opsForValue().get(redisKey);
         if (!StringUtils.hasLength(redisCode) || !Objects.equals(redisCode, param.getCode())) {
             return R.fail("验证码错误！");
         }
+        stringRedisTemplate.delete(redisKey);
         User user = userService.findByUsername(param.getUsername());
         if (user == null) {
             return R.fail("用户不存在！");
