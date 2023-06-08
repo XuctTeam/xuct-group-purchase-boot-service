@@ -17,8 +17,11 @@ import cn.com.xuct.group.purchase.entity.MemberOrderItem;
 import cn.com.xuct.group.purchase.entity.MemberWaresEvaluate;
 import cn.com.xuct.group.purchase.service.MemberWaresEvaluateService;
 import cn.com.xuct.group.purchase.vo.param.EvaluateParam;
+import cn.dev33.satoken.annotation.SaIgnore;
 import cn.dev33.satoken.stp.StpUtil;
 import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.Parameter;
+import io.swagger.v3.oas.annotations.Parameters;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -32,7 +35,7 @@ import java.util.List;
 import java.util.Objects;
 
 /**
- * 〈一句话功能简述〉<br> 
+ * 〈一句话功能简述〉<br>
  * 〈〉
  *
  * @author Derek Xu
@@ -48,19 +51,23 @@ public class WaresEvaluateController {
 
     private final MemberWaresEvaluateService memberWaresEvaluateService;
 
-    @Operation(summary = "【订单】待评价商品", description = "待评价商品")
+    @Operation(summary = "【商品评价】待评价商品", description = "待评价商品")
     @GetMapping("/list")
     public R<List<MemberOrderItem>> evaluateList() {
         return R.data(memberWaresEvaluateService.evaluateList(StpUtil.getLoginIdAsLong()));
     }
 
-    @Operation(summary = "【订单】", description = "评价商品列表")
-    public R<List<MemberWaresEvaluate>> evaluateWaresList(@RequestParam("waresId")Long waresId) {
-        //return R.data(memberOrderService.evaluateList(StpUtil.getLoginIdAsLong()));
-        return null;
+    @SaIgnore
+    @Operation(summary = "【商品评价】", description = "商品评价列表")
+    @GetMapping("/wares/list")
+    @Parameters(value = {
+            @Parameter(name = "waresId", description = "商品ID"),
+    })
+    public R<List<MemberWaresEvaluate>> evaluateWaresList(@RequestParam("waresId") Long waresId, @RequestParam("top") Integer top) {
+        return R.data(memberWaresEvaluateService.evaluateWaresList(waresId, top));
     }
 
-    @Operation(summary = "【订单】评价商品上传图片", description = "评价商品上传图片")
+    @Operation(summary = "【商品评价】评价商品上传图片", description = "评价商品上传图片")
     @PostMapping("/upload")
     public R<String> uploadEvaluateImage(MultipartFile file) {
         try {
@@ -72,7 +79,7 @@ public class WaresEvaluateController {
         }
     }
 
-    @Operation(summary = "【订单】评价商品", description = "评价商品")
+    @Operation(summary = "【商品评价】评价商品", description = "评价商品")
     @PostMapping("")
     public R<String> evaluate(@RequestBody @Validated EvaluateParam param) {
         memberWaresEvaluateService.evaluateWares(StpUtil.getLoginIdAsLong(), param.getOrderItemId(), param.getRate(), param.getEvaluateImages(), param.getRemarks());

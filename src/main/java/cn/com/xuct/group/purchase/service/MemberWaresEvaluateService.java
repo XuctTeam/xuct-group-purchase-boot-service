@@ -37,6 +37,7 @@ public interface MemberWaresEvaluateService extends IBaseService<MemberWaresEval
      */
     List<MemberOrderItem> evaluateList(final Long memberId);
 
+
     /**
      * 【会员】保存评价
      *
@@ -47,6 +48,15 @@ public interface MemberWaresEvaluateService extends IBaseService<MemberWaresEval
      * @param remarks
      */
     void evaluateWares(final Long memberId, final Long orderItemId, final String rate, final String evaluateImages, final String remarks);
+
+    /**
+     * 【会员】商品评价列表
+     *
+     * @param waresId
+     * @param top
+     * @return
+     */
+    List<MemberWaresEvaluate> evaluateWaresList(final Long waresId, final Integer top);
 
     /**
      * 【管理员】评价商品列表

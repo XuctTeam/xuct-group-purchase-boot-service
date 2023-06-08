@@ -12,7 +12,10 @@ package cn.com.xuct.group.purchase.service.impl;
 
 import cn.com.xuct.group.purchase.base.service.BaseServiceImpl;
 import cn.com.xuct.group.purchase.base.vo.PageData;
-import cn.com.xuct.group.purchase.entity.*;
+import cn.com.xuct.group.purchase.entity.Member;
+import cn.com.xuct.group.purchase.entity.MemberOrderItem;
+import cn.com.xuct.group.purchase.entity.MemberWaresEvaluate;
+import cn.com.xuct.group.purchase.entity.Wares;
 import cn.com.xuct.group.purchase.mapper.MemberWaresEvaluateMapper;
 import cn.com.xuct.group.purchase.service.MemberOrderItemService;
 import cn.com.xuct.group.purchase.service.MemberWaresEvaluateService;
@@ -43,14 +46,7 @@ public class MemberWaresEvaluateServiceImpl extends BaseServiceImpl<MemberWaresE
 
     @Override
     public PageData<MemberWaresEvaluate> findPageWaresEvaluateList(String waresName, String memberName, Integer page, Integer size) {
-        MPJLambdaWrapper<MemberWaresEvaluate> qr = new MPJLambdaWrapper<MemberWaresEvaluate>()
-                .selectAll(MemberWaresEvaluate.class)//查询user表全部字段
-                .selectAs(Member::getNickname, MemberWaresEvaluate::getMemberName)
-                .selectAs(Member::getAvatar, MemberWaresEvaluate::getMemberAvatar)
-                .selectAs(Wares::getName, MemberWaresEvaluate::getWaresName)
-                .selectAs(Wares::getFirstDrawing, MemberWaresEvaluate::getWaresFirstDrawing)
-                .leftJoin(Member.class, Member::getId, MemberWaresEvaluate::getMemberId)
-                .leftJoin(Wares.class, Wares::getId, MemberWaresEvaluate::getWaresId);
+        MPJLambdaWrapper<MemberWaresEvaluate> qr = this.getMemberWaresEvaluateMpjLambdaWrapper();
         if (StringUtils.hasLength(waresName)) {
             qr.like(Wares::getName, waresName);
         }
@@ -59,6 +55,7 @@ public class MemberWaresEvaluateServiceImpl extends BaseServiceImpl<MemberWaresE
         }
         return this.convert(super.page(Page.of(page, size), qr));
     }
+
 
     @Override
     public List<MemberOrderItem> evaluateList(Long memberId) {
@@ -87,5 +84,26 @@ public class MemberWaresEvaluateServiceImpl extends BaseServiceImpl<MemberWaresE
         this.save(evaluate);
         item.setEvaluation(true);
         memberOrderItemService.updateById(item);
+    }
+
+    @Override
+    public List<MemberWaresEvaluate> evaluateWaresList(Long waresId, Integer top) {
+        MPJLambdaWrapper<MemberWaresEvaluate> qr = this.getMemberWaresEvaluateMpjLambdaWrapper();
+        qr.eq(MemberWaresEvaluate::getWaresId, waresId);
+        qr.orderByDesc(MemberWaresEvaluate::getCreateTime);
+        qr.last("limit 0," + top);
+        return this.getBaseMapper().selectList(qr);
+    }
+
+
+    private MPJLambdaWrapper<MemberWaresEvaluate> getMemberWaresEvaluateMpjLambdaWrapper() {
+        return new MPJLambdaWrapper<MemberWaresEvaluate>()
+                .selectAll(MemberWaresEvaluate.class)//查询user表全部字段
+                .selectAs(Member::getNickname, MemberWaresEvaluate::getMemberName)
+                .selectAs(Member::getAvatar, MemberWaresEvaluate::getMemberAvatar)
+                .selectAs(Wares::getName, MemberWaresEvaluate::getWaresName)
+                .selectAs(Wares::getFirstDrawing, MemberWaresEvaluate::getWaresFirstDrawing)
+                .leftJoin(Member.class, Member::getId, MemberWaresEvaluate::getMemberId)
+                .leftJoin(Wares.class, Wares::getId, MemberWaresEvaluate::getWaresId);
     }
 }
