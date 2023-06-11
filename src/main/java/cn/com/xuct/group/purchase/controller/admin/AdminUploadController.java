@@ -50,7 +50,17 @@ public class AdminUploadController {
     @SaCheckRole(value = {"super_admin", "admin"}, mode = SaMode.OR)
     @Operation(summary = "【文件上传】上传文件", description = "上传文件")
     @PostMapping("")
-    public R<Map<String, String>> uploadAvatar(MultipartFile file) {
+    public R<Map<String, String>> uploadAvatar(MultipartFile file) throws IOException {
+        BufferedImage image = null;
+        try {
+            image = ImageIO.read(file.getInputStream());
+        } catch (IOException e) {
+            log.error("AdminUploadController:: get image error , msg = {}", e.getMessage());
+            throw e;
+        }
+        if (image == null) {
+            return R.fail("文件格式错误");
+        }
         URL url = null;
         try {
             url = CosClient.uploadFile(file, FileFolderConstants.ADMIN.concat(Objects.requireNonNull(file.getOriginalFilename())));
@@ -58,14 +68,7 @@ public class AdminUploadController {
             log.error("UserController:: update avatar error");
             return R.fail("上传失败");
         }
-        String uri = url.toString();
-        try {
-            BufferedImage image = ImageIO.read(file.getInputStream());
-            uri = uri.concat("?width=" + image.getWidth()).concat("&height=" + image.getHeight());
-        } catch (IOException e) {
-            log.error("AdminUploadController:: get image error , msg = {}", e.getMessage());
-        }
-        String finalUrl1 = uri;
+        String finalUrl1 = url.toString().concat("?width=" + image.getWidth()).concat("&height=" + image.getHeight());
         Map<String, String> maps = new HashMap<>() {{
             put("fileUrl", finalUrl1);
         }};
